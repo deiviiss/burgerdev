@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Facebook, Instagram, Twitter, MessageCircle } from "lucide-react"
+import { Facebook, Instagram, Twitter } from "lucide-react"
+import { FaWhatsapp } from "react-icons/fa";
 
 export function Footer() {
   return (
@@ -25,14 +26,14 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/conditions" className="text-gray-300 hover:text-white transition-colors">
                   Términos y Condiciones
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/privacy" className="text-gray-300 hover:text-white transition-colors">
                   Política de Privacidad
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -40,39 +41,39 @@ export function Footer() {
           <div>
             <h3 className="text-xl font-bold mb-4">Síguenos</h3>
             <div className="flex space-x-4">
-              <a
+              <Link
                 href="#"
                 className="bg-gray-700 hover:bg-blue-600 p-2 rounded-full transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook className="h-5 w-5" />
-              </a>
-              <a
+              </Link>
+              <Link
                 href="#"
                 className="bg-gray-700 hover:bg-pink-600 p-2 rounded-full transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram className="h-5 w-5" />
-              </a>
-              <a
+              </Link>
+              <Link
                 href="#"
                 className="bg-gray-700 hover:bg-blue-400 p-2 rounded-full transition-colors"
                 aria-label="Twitter"
               >
                 <Twitter className="h-5 w-5" />
-              </a>
-              <a
+              </Link>
+              <Link
                 href="#"
                 className="bg-gray-700 hover:bg-green-600 p-2 rounded-full transition-colors"
                 aria-label="WhatsApp"
               >
-                <MessageCircle className="h-5 w-5" />
-              </a>
+                <FaWhatsapp className="h-5 w-5" />
+              </Link>
             </div>
             <div className="mt-4">
               <p className="text-gray-300">Contáctanos:</p>
               <p className="text-gray-300">info@burgerdev.com</p>
-              <p className="text-gray-300">+52 981 125 0049</p>
+              <p className="text-gray-300">981 125 0049</p>
             </div>
           </div>
         </div>

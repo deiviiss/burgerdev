@@ -7,6 +7,7 @@ import { Toaster } from "sonner"
 import { Providers } from "@/components/providers/Providers"
 import "./globals.css"
 import { ToogleDarkMode } from "@/components/dark-mode/toogle-dark-mode/ToogleDarkMode"
+import ScrollToTop from "@/components/scroll-to-top/ScrollToTop"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -28,10 +29,10 @@ export default function RootLayout({
           <Navbar />
           <SidebarCart />
           {children}
-          <Footer />
-          <Toaster position="bottom-right" richColors />
-          {/* dark mode button */}
           <ToogleDarkMode />
+          <ScrollToTop />
+          <Toaster position="bottom-right" richColors />
+          <Footer />
         </Providers>
       </body>
     </html>

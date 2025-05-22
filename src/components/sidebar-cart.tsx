@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { createUpdateOrder } from "@/actions/create-order"
 
 export function SidebarCart() {
   const { isSideCartOpen, closeSideCart } = useUiStore()
@@ -25,9 +26,17 @@ export function SidebarCart() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [closeSideCart])
 
-  const handleWhatsAppCheckout = () => {
-    const phoneNumber = process.env.NEXT_PUBLIC_PHONE_NUMBER // Business phone number
+  const handleWhatsAppCheckout = async () => {
+    const { ok, order } = await createUpdateOrder(new FormData())
 
+    if (!ok) {
+      toast.error("Error al crear el pedido, intente de nuevo!", {
+        position: "bottom-right",
+      })
+      return
+    }
+
+    const phoneNumber = process.env.NEXT_PUBLIC_PHONE_NUMBER // Business phone number
     let message = "🛒 *Nuevo Pedido*\n\n"
 
     // Add products to message
@@ -36,7 +45,8 @@ export function SidebarCart() {
       message += `*${item.quantity}x* ${item.product.name} - $${price.toFixed(2)}\n`
     })
 
-    message += `\n*Total:* $${getSubtotal().toFixed(2)}\n\n`
+    message += `\n*Total:* $${getSubtotal().toFixed(2)}\n`
+    message += `\n*Código de verificación:* ${order?.shortId}\n\n`
     message += "¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar."
 
     // Encode message for URL
@@ -47,7 +57,6 @@ export function SidebarCart() {
 
     // Close sidebar after sending order
     closeSideCart()
-    clearCart()
   }
 
   const handleRemoveItem = (productId: string, productName: string) => {
