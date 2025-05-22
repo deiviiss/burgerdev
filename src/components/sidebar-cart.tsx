@@ -27,7 +27,10 @@ export function SidebarCart() {
   }, [closeSideCart])
 
   const handleWhatsAppCheckout = async () => {
-    const { ok, order } = await createUpdateOrder(new FormData())
+    const data = new FormData()
+    data.append("status", "PENDING")
+
+    const { ok, order } = await createUpdateOrder(data)
 
     if (!ok) {
       toast.error("Error al crear el pedido, intente de nuevo!", {

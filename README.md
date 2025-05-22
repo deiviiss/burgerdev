@@ -1,8 +1,8 @@
-# Digital Menu
+# Burger Dev
 
 ## Description
 
-Digital Menu is a web application designed to manage digital menus for restaurants. It allows users to explore products, categories, promotions, and place orders via WhatsApp.
+Burger Dev is a web application designed to manage digital menus for restaurants. It allows users to explore products, categories, promotions, and place orders via WhatsApp.
 
 ## Main Features
 
@@ -18,17 +18,18 @@ Digital Menu is a web application designed to manage digital menus for restauran
 - **TypeScript**: Static typing for JavaScript.
 - **Tailwind CSS**: Utility-first CSS framework for design.
 - **Framer Motion**: Smooth and modern animations.
-- **LocalStorage**: Simulated database for data persistence.
+- **Server Actions**: Simulated database for data persistence.
 
 ## Project Structure
 
 ```
 public/         # Static files
 src/
+  actions/      # Server actions and API handlers
   app/          # Pages and main layout
-  components/   # Reusable components
-  hooks/        # Custom hooks
-  lib/          # Business logic and utilities
+  components/   # Reusable UI components
+  hooks/        # Custom React hooks
+  lib/          # Business logic, utilities, TypeScript type definitions
   store/        # Global state management
 ```
 
@@ -36,7 +37,7 @@ src/
 
 1. Clone this repository:
    ```bash
-   git clone <https://github.com/deiviiss/menu-digital.git>
+   git clone https://github.com/deiviiss/menu-digital.git
    ```
 2. Install dependencies:
    ```bash

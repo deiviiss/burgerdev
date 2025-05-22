@@ -17,6 +17,7 @@ export const createUpdateOrder = async (formData: FormData) => {
   try {
     const generatedShortId = await generateUniqueShortId()
     const data = Object.fromEntries(formData)
+
     const dataToParse = {
       ...data,
       shortId: generatedShortId

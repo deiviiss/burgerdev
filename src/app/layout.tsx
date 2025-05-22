@@ -12,9 +12,25 @@ import ScrollToTop from "@/components/scroll-to-top/ScrollToTop"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Menú Digital",
-  description: "Sistema de menú digital con integración de WhatsApp",
-  generator: 'v0.dev'
+  title: "Burger Dev",
+  description: "Burger Dev es un menú digital moderno para hamburgueserías, diseñado para ofrecer una experiencia interactiva y sencilla a tus clientes.",
+  keywords: [
+    "menú digital",
+    "hamburgueserías",
+    "burgers",
+    "burger dev",
+    "menú interactivo",
+    "experiencia del cliente",
+    "digital menu",
+    "restaurant menu",
+    "food delivery",
+  ],
+  authors: [
+    {
+      name: "David Hilera",
+      url: "https://davidhilera.dev",
+    },
+  ]
 }
 
 export default function RootLayout({
