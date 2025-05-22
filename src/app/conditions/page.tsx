@@ -54,7 +54,7 @@ export default function CompleteConditionsPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <motion.header
-        className="sticky top-0 z-40 w-full border-b bg-background"
+        className="sticky top-0 z-20 w-full border-b bg-background"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 15 }}
