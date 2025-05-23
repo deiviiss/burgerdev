@@ -2,48 +2,106 @@
 
 import { z } from "zod";
 import { generateUniqueShortId } from "@/actions/generate-unique-short-id";
+import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import { OrderStatus } from "@/lib/types";
 
 // Zod schema for order creation
 const createOrderSchema = z.object({
   id: z.string().optional(),
-  phone: z.string().min(8, "Phone must be at least 8 characters").optional(),
+  phoneNumber: z.string().min(10, "Phone must be at least 10 characters").optional(),
   address: z.string().min(5, "Address must be at least 5 characters").optional(),
-  shortId: z.string(),
-  status: z.enum(["PENDING", "COMPLETED", "CANCELLED"])
+  status: z.enum(["PENDING", "COMPLETED", "CANCELLED"]),
+  totalPrice: z.number().min(0, "El total no puede ser negativo"),
+  comment: z.string().optional(),
+  items: z.array(
+    z.object({
+      itemId: z.string(),
+      categoryId: z.string(),
+      quantity: z.number().min(1),
+      unitPrice: z.number().min(0),
+    })
+  ).min(1, "Debe haber al menos un producto en el pedido")
 });
 
-// Simulate order creation (in-memory)
+const PROMO_CATEGORY_ID = "8"
+
 export const createUpdateOrder = async (formData: FormData) => {
-  try {
-    const generatedShortId = await generateUniqueShortId()
-    const data = Object.fromEntries(formData)
+  const data = Object.fromEntries(formData)
 
-    const dataToParse = {
-      ...data,
-      shortId: generatedShortId
+  const dataParsed = {
+    ...data,
+    status: data.status as OrderStatus,
+    totalPrice: parseFloat(data.totalPrice.toString()),
+    items: JSON.parse(formData.get("items") as string) as {
+      itemId: string
+      categoryId: string
+      quantity: number
+      unitPrice: number
+    }[]
+  }
+
+  const orderParsed = createOrderSchema.safeParse(dataParsed);
+
+  if (!orderParsed.success) {
+    return {
+      ok: false,
+      message: 'Datos inválidos',
     }
+  }
 
-    const orderParsed = createOrderSchema.safeParse(dataToParse);
+  const { phoneNumber, address, status, totalPrice, comment, items, id } = orderParsed.data
 
-    if (!orderParsed.success) {
+  try {
+    if (id) {
+      const orderUpdated = await prisma.order.update({
+        where: {
+          id
+        },
+        data: {
+          phoneNumber,
+          address,
+          totalPrice,
+          comment,
+          status: status as OrderStatus
+        }
+      })
+
+      revalidatePath(`/admin/orders/${id}`)
+
       return {
-        ok: false,
-        message: 'Datos inválidos',
+        ok: true,
+        message: "Pedido actualizado con éxito",
+        order: orderUpdated
       }
     }
 
-    const { phone, address, shortId, status, id } = orderParsed.data
+    const generatedShortId = await generateUniqueShortId()
 
-    //TODO: Check if order exists with de id
-    //TODO: Saving to database
+    const order = await prisma.order.create({
+      data: {
+        shortId: generatedShortId,
+        phoneNumber: phoneNumber ? phoneNumber : '',
+        totalPrice,
+        address: address ? address : '',
+        status: 'PENDING',
+        createdAt: new Date(),
+      }
+    })
 
-    const order = {
-      shortId: `#${shortId}`,
-      phone: phone ? phone : null,
-      address: address ? address : null,
-      status,
-      createdAt: new Date(),
-    };
+    await prisma.orderItem.createMany({
+      data: items.map((item) => ({
+        orderId: order.id,
+        productId: item.categoryId?.toString() !== PROMO_CATEGORY_ID
+          ? item.itemId
+          : undefined,
+        promotionId: item.categoryId?.toString() === PROMO_CATEGORY_ID
+          ? item.itemId
+          : undefined,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      })),
+    });
 
     return {
       ok: true,

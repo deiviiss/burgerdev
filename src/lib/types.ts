@@ -5,13 +5,14 @@ export interface Product {
   price: number
   image: string
   categoryId: string
-  active: boolean
-  promotionPrice: number | null
+  isAvailable: boolean
+  createdAt: Date
 }
 
 export interface Category {
   id: string
   name: string
+  image: string | null
 }
 
 export interface Promotion {
@@ -19,10 +20,42 @@ export interface Promotion {
   name: string
   description: string
   discountPercentage: number
-  startDate: string
-  endDate: string
-  productIds: string[]
-  active: boolean
-  discountCode: string
-  image?: string // Añadimos campo para imagen de promoción
+  originalPrice: number
+  promoPrice: number
+  image: string
+  isActive: boolean
+  startDate: Date
+  endDate: Date
+  categoryId: string
+  createdAt: Date
+}
+
+export type OrderStatus = 'PENDING' | 'IN_PROGRESS' | 'DELIVERED' | 'CANCELLED'
+
+export interface OrderItem {
+  id: string
+  orderId: string
+  productId?: string
+  promotionId?: string
+  quantity: number
+  unitPrice: number
+}
+
+export interface Order {
+  id: string
+  shortId: string
+  phoneNumber: string
+  items: OrderItem[]
+  totalPrice: number
+  status: OrderStatus
+  address: string
+  comment?: string
+  createdAt: string
+}
+
+export type CartItemPayload = {
+  itemId: string
+  categoryId: string
+  quantity: number
+  unitPrice: number
 }

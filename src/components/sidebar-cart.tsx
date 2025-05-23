@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { createUpdateOrder } from "@/actions/create-order"
+import { CartItemPayload, OrderStatus } from "@/lib/types"
 
 export function SidebarCart() {
   const { isSideCartOpen, closeSideCart } = useUiStore()
@@ -28,7 +29,21 @@ export function SidebarCart() {
 
   const handleWhatsAppCheckout = async () => {
     const data = new FormData()
-    data.append("status", "PENDING")
+    data.append("status", "PENDING" as OrderStatus)
+    data.append("totalPrice", getSubtotal().toString())
+
+    // Format items for form submission
+    const items = cart.map<CartItemPayload>((item) => {
+      const { categoryId, price, id } = item.product
+
+      return {
+        itemId: id,
+        categoryId,
+        quantity: item.quantity,
+        unitPrice: price,
+      }
+    })
+    data.append("items", JSON.stringify(items))
 
     const { ok, order } = await createUpdateOrder(data)
 
@@ -44,12 +59,12 @@ export function SidebarCart() {
 
     // Add products to message
     cart.forEach((item) => {
-      const price = item.product.promotionPrice || item.product.price
+      const price = item.product.price
       message += `*${item.quantity}x* ${item.product.name} - $${price.toFixed(2)}\n`
     })
 
     message += `\n*Total:* $${getSubtotal().toFixed(2)}\n`
-    message += `\n*Código de verificación:* ${order?.shortId}\n\n`
+    message += `\n*Código de verificación:* BD-${order?.shortId}\n\n`
     message += "¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar."
 
     // Encode message for URL
@@ -168,7 +183,7 @@ export function SidebarCart() {
                     {/* Price and remove button */}
                     <div className="flex flex-col items-end">
                       <span className="font-medium text-sm">
-                        ${((item.product.promotionPrice || item.product.price) * item.quantity).toFixed(2)}
+                        ${((item.product.price) * item.quantity).toFixed(2)}
                       </span>
                       <button
                         onClick={() => handleRemoveItem(item.product.id, item.product.name)}

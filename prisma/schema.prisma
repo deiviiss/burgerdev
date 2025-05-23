@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  PENDING
+  IN_PROGRESS
+  DELIVERED
+  CANCELLED
+}
+
+model Category {
+  id         String      @id @default(uuid())
+  name       String
+  image      String?
+  products   Product[]
+  promotions Promotion[]
+}
+
+model Product {
+  id             String      @id @default(uuid())
+  name           String
+  description    String
+  price          Float
+  image          String
+  category       Category    @relation(fields: [categoryId], references: [id])
+  categoryId     String
+  isAvailable    Boolean     @default(true)
+  promotionPrice Int?
+  createdAt      DateTime    @default(now())
+  OrderItem      OrderItem[]
+}
+
+model Promotion {
+  id                 String      @id @default(uuid())
+  name               String
+  description        String
+  discountPercentage Float
+  originalPrice      Float
+  promoPrice         Float
+  image              String
+  isActive           Boolean     @default(true)
+  startDate          DateTime
+  endDate            DateTime
+  category           Category    @relation(fields: [categoryId], references: [id])
+  categoryId         String
+  createdAt          DateTime    @default(now())
+  OrderItem          OrderItem[]
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  shortId     String      @unique
+  phoneNumber String
+  items       OrderItem[]
+  totalPrice  Float
+  status      OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  address     String
+  comment     String?
+}
+
+model OrderItem {
+  id          String     @id @default(uuid())
+  order       Order      @relation(fields: [orderId], references: [id])
+  orderId     String
+  product     Product?   @relation(fields: [productId], references: [id])
+  productId   String?
+  promotion   Promotion? @relation(fields: [promotionId], references: [id])
+  promotionId String?
+  quantity    Int
+  unitPrice   Float
+}

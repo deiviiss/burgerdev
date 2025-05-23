@@ -27,11 +27,11 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Promociones destacadas */}
+        {/* Featured Promotions */}
         <section className="py-6 bg-muted">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold mb-6 text-center">Promociones Destacadas</h2>
-            <PromotionBanner promotions={promotions} products={products} />
+            <PromotionBanner promotions={promotions} />
           </div>
         </section>
 

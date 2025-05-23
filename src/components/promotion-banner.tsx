@@ -4,28 +4,27 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import type { Product, Promotion } from "@/lib/types"
+import type { Promotion } from "@/lib/types"
 import { ShoppingCart, Tag } from "lucide-react"
 import { useCartStore } from "@/store"
 import { toast } from "sonner"
 
 interface PromotionBannerProps {
   promotions: Promotion[]
-  products: Product[]
 }
 
-export function PromotionBanner({ promotions, products }: PromotionBannerProps) {
+export function PromotionBanner({ promotions }: PromotionBannerProps) {
   const { addToCart } = useCartStore()
   const [activePromotions, setActivePromotions] = useState<Promotion[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    // Filtrar promociones activas y dentro del rango de fechas
+    // Filter active promotions within the date range
     const now = new Date()
     const filtered = promotions.filter((promo) => {
       const startDate = new Date(promo.startDate)
       const endDate = new Date(promo.endDate)
-      return promo.active && startDate <= now && endDate >= now
+      return promo.isActive && startDate <= now && endDate >= now
     })
     setActivePromotions(filtered)
   }, [promotions])
@@ -35,33 +34,33 @@ export function PromotionBanner({ promotions, products }: PromotionBannerProps) 
   }
 
   const handleAddPromoToCart = (promotion: Promotion) => {
-    // Agregar todos los productos de la promoción al carrito
-    promotion.productIds.forEach((productId) => {
-      const product = products.find((p) => p.id === productId)
-      if (product) {
-        addToCart(product)
-        setIsLoading(false)
-        toast.success(`${product.name} agregado al carrito`, {
-          position: "bottom-right",
-        })
-      }
+    // Add all products from the promotion to the cart
+    const promoProduct = {
+      id: promotion.id,
+      name: promotion.name,
+      description: promotion.description,
+      price: promotion.promoPrice,
+      image: promotion.image,
+      categoryId: promotion.categoryId,
+      isAvailable: true,
+      isPromotion: true,
+      createdAt: new Date()
+    }
+
+    addToCart(promoProduct)
+    setIsLoading(false)
+    toast.success(`${promoProduct.name} agregado al carrito`, {
+      position: "bottom-right",
     })
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {activePromotions.map((promotion, index) => {
-        // Calcular el precio total y el precio con descuento
-        let totalPrice = 0
-        let discountedPrice = 0
-
-        promotion.productIds.forEach((productId) => {
-          const product = products.find((p) => p.id === productId)
-          if (product) {
-            totalPrice += product.price
-            discountedPrice += product.price * (1 - promotion.discountPercentage / 100)
-          }
-        })
+        // Calculate total price and discounted price
+        const { originalPrice, promoPrice } = promotion
+        const discountAmount = originalPrice - promoPrice
+        const discountPercentage = ((discountAmount / originalPrice) * 100).toFixed(0)
 
         return (
           <motion.div
@@ -87,7 +86,7 @@ export function PromotionBanner({ promotions, products }: PromotionBannerProps) 
                 <div className="flex items-center mt-1">
                   <Tag className="h-4 w-4 text-secondary dark:text-primary mr-1" />
                   <span className="text-secondary dark:text-primary font-semibold text-sm">
-                    {promotion.discountPercentage}% DESCUENTO
+                    {discountPercentage}% DESCUENTO
                   </span>
                 </div>
               </div>
@@ -96,11 +95,11 @@ export function PromotionBanner({ promotions, products }: PromotionBannerProps) 
               <p className="text-muted-foreground mb-3">{promotion.description}</p>
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <span className="text-lg font-bold text-destructive">${discountedPrice.toFixed(2)}</span>
-                  <span className="text-sm text-muted-foreground line-through ml-2">${totalPrice.toFixed(2)}</span>
+                  <span className="text-lg font-bold text-destructive">${promoPrice.toFixed(2)}</span>
+                  <span className="text-sm text-muted-foreground line-through ml-2">${originalPrice.toFixed(2)}</span>
                 </div>
                 <span className="bg-destructive/20 text-red-800 text-xs font-semibold px-2 py-1 rounded">
-                  AHORRA ${(totalPrice - discountedPrice).toFixed(2)}
+                  AHORRA ${discountAmount.toFixed(2)}
                 </span>
               </div>
               <Button

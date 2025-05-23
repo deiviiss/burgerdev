@@ -28,3 +28,6 @@ next-env.d.ts
 
 # diff.txt
 diff.txt
+
+# Postgres
+/postgres

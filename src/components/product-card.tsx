@@ -33,7 +33,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToCart = () => {
     setIsLoading(true)
-    // Simular un pequeño retraso para la animación
+    // Simulate a small delay for the animation
     setTimeout(() => {
       addToCart(product)
       setIsLoading(false)
@@ -42,8 +42,6 @@ export default function ProductCard({ product }: ProductCardProps) {
       })
     }, 300)
   }
-
-  const isPromotion = product.promotionPrice && product.promotionPrice < product.price
 
   return (
     <motion.div className="bg-card dark:border dark:border-primary rounded-lg shadow-md overflow-hidden" variants={cardVariants} whileHover="hover">
@@ -54,26 +52,11 @@ export default function ProductCard({ product }: ProductCardProps) {
           fill
           className="object-cover"
         />
-        {isPromotion && (
-          <div className="absolute top-2 right-2 bg-destructive text-card px-2 py-1 rounded-full text-xs font-bold">
-            Promoción
-          </div>
-        )}
       </div>
       <div className="p-4">
         <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
         {product.description && <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{product.description}</p>}
         <div className="flex justify-between items-center">
-          <div>
-            {isPromotion ? (
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold text-destructive">${product.promotionPrice ? product.promotionPrice.toFixed(2) : 0}</span>
-                <span className="text-sm text-muted-foreground line-through">${product.price.toFixed(2)}</span>
-              </div>
-            ) : (
-              <span className="text-lg font-bold">${product.price.toFixed(2)}</span>
-            )}
-          </div>
           <Button
             onClick={handleAddToCart}
             disabled={isLoading}

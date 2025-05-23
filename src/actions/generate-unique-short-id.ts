@@ -1,5 +1,5 @@
 'use server'
-// import { prisma } from '@/lib/prisma'
+import prisma from '@/lib/prisma'
 
 export const generateUniqueShortId = async (): Promise<string> => {
 
@@ -11,9 +11,8 @@ export const generateUniqueShortId = async (): Promise<string> => {
 
   for (let i = 0; i < 5; i++) {
     const shortId = generate()
-    // const exists = await prisma.order.findUnique({ where: { shortId } })
+    const exists = await prisma.order.findUnique({ where: { shortId } })
 
-    const exists = false
     if (!exists) return shortId
   }
 

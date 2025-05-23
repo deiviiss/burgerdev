@@ -20,10 +20,11 @@ const staggerContainer = {
 }
 
 export function ProductList({ products, categories }: ProductListProps) {
+
   return (
     <div className="space-y-12">
       {categories.map((category) => {
-        const categoryProducts = products.filter((product) => product.categoryId === category.id && product.active)
+        const categoryProducts = products.filter((product) => product.categoryId === category.id && product.isAvailable)
 
         if (categoryProducts.length === 0) return null
 
