@@ -66,6 +66,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             <PlusCircle className="mr-1 h-4 w-4" />
             Agregar
           </Button>
+
+          <p className="text-base font-bold text-primary">${product.price}</p>
         </div>
       </div>
     </motion.div>
