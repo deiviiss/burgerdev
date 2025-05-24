@@ -44,6 +44,7 @@ export interface OrderItem {
 export interface Order {
   id: string
   shortId: string
+  name: string
   phoneNumber: string
   items: OrderItem[]
   totalPrice: number
