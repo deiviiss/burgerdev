@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Burger Dev",
-  description: "Burger Dev es un menú digital moderno para hamburgueserías, diseñado para ofrecer una experiencia interactiva y sencilla a tus clientes.",
+  description: "Burger Dev es un menú digital moderno, diseñado para ofrecer una experiencia interactiva y sencilla a tus clientes.",
   keywords: [
     "menú digital",
     "hamburgueserías",
