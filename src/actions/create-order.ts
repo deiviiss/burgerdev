@@ -9,8 +9,6 @@ import { OrderStatus } from "@/lib/types";
 // Zod schema for order creation
 const createOrderSchema = z.object({
   id: z.string().optional(),
-  phoneNumber: z.string().min(10, "Phone must be at least 10 characters").optional(),
-  name: z.string().min(3, "Name must be at least 3 characters").optional(),
   address: z.string().min(5, "Address must be at least 5 characters").optional(),
   status: z.enum(["PENDING", "COMPLETED", "CANCELLED"]),
   totalPrice: z.number().min(0, "El total no puede ser negativo"),
@@ -51,7 +49,7 @@ export const createUpdateOrder = async (formData: FormData) => {
     }
   }
 
-  const { name, phoneNumber, address, status, totalPrice, comment, items, id } = orderParsed.data
+  const { address, status, totalPrice, comment, items, id } = orderParsed.data
 
   try {
     if (id) {
@@ -60,8 +58,6 @@ export const createUpdateOrder = async (formData: FormData) => {
           id
         },
         data: {
-          phoneNumber,
-          name,
           address,
           totalPrice,
           comment,
@@ -83,8 +79,6 @@ export const createUpdateOrder = async (formData: FormData) => {
     const order = await prisma.order.create({
       data: {
         shortId: generatedShortId,
-        phoneNumber: phoneNumber ? phoneNumber : '',
-        name: name ? name : '',
         totalPrice,
         address: address ? address : '',
         status: 'PENDING',

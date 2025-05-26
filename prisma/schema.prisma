@@ -54,16 +54,16 @@ model Promotion {
 }
 
 model Order {
-  id          String      @id @default(uuid())
-  shortId     String      @unique
-  name        String
-  phoneNumber String
-  items       OrderItem[]
-  totalPrice  Float
-  status      OrderStatus @default(PENDING)
-  createdAt   DateTime    @default(now())
-  address     String
-  comment     String?
+  id         String      @id @default(uuid())
+  shortId    String      @unique
+  items      OrderItem[]
+  totalPrice Float
+  status     OrderStatus @default(PENDING)
+  createdAt  DateTime    @default(now())
+  address    String
+  comment    String?
+  User       User?       @relation(fields: [userId], references: [id])
+  userId     String?
 }
 
 model OrderItem {
@@ -76,4 +76,12 @@ model OrderItem {
   promotionId String?
   quantity    Int
   unitPrice   Float
+}
+
+model User {
+  id          String   @id @default(uuid())
+  name        String
+  phoneNumber String   @unique
+  createdAt   DateTime @default(now())
+  orders      Order[]
 }
