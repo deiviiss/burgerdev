@@ -23,7 +23,7 @@ export function SidebarCategories({ categories }: SidebarCategoriesProps) {
 
   return (
     <>
-      {/* Overlay de fondo (solo en mobile) */}
+      {/* Background overlay (mobile only) */}
       <AnimatePresence>
         {
           isCategoriesOpen && (
@@ -40,7 +40,7 @@ export function SidebarCategories({ categories }: SidebarCategoriesProps) {
           )}
       </AnimatePresence>
 
-      {/* Sidebar de categorías */}
+      {/* Categories Sidebar */}
       <div
         className={
           cn(
@@ -50,20 +50,20 @@ export function SidebarCategories({ categories }: SidebarCategoriesProps) {
         }
       >
         <div className="flex flex-col h-full md:h-auto" >
-          {/* Encabezado (solo en mobile) */}
+          {/* Header (mobile only) */}
           < div className="flex justify-between items-center p-4 border-b md:hidden" >
             <h2 className="text-lg font-semibold" > Categorías </h2>
             < button
               onClick={closeCategories}
               className="p-1 rounded-full hover:bg-muted transition-colors md:hidden"
-              aria-label="Cerrar categorías"
+              aria-label="Close categories"
             >
               <X className="h-6 w-6" />
             </button>
           </div>
 
-          {/* Lista de categorías */}
-          <div className="overflow-y-auto" >
+          {/* Categories list */}
+          <div className="overflow-y-auto overflow-x-hidden" >
             <motion.ul
               className="divide-y"
               initial={{ opacity: 0 }}
