@@ -26,25 +26,26 @@ const itemVariants = {
 
 const conditions = [
   {
-    title: "1. Uso del Menú Digital",
+    title: "1. Uso del Menú Digital (Demostración)",
     items: [
-      "Este sitio web permite visualizar un menú digital y generar un mensaje de pedido que será enviado por WhatsApp.",
-      "El mensaje generado contiene los productos seleccionados por el usuario y debe ser enviado manualmente.",
-      "El usuario es responsable de verificar y enviar correctamente el mensaje desde su cuenta de WhatsApp.",
+      "Este sitio web permite visualizar un menú digital de demostración y simular un pedido que será enviado por WhatsApp.",
+      "El pedido generado no corresponde a una compra real, y no será procesado por ningún negocio.",
+      "El mensaje generado incluye productos de ejemplo y debe ser enviado manualmente por el usuario.",
+      "El objetivo de esta demostración es mostrar cómo funcionaría el sistema en un caso real.",
     ],
   },
   {
     title: "2. Modificación de Pedidos",
     items: [
-      "Si el usuario modifica el mensaje generado (como cambiar productos, precios o cantidades), el negocio se reserva el derecho de invalidar el pedido.",
-      "El pedido solo será válido si el mensaje enviado coincide con lo generado por el sistema.",
+      "Si el usuario modifica el mensaje generado (como cambiar productos, precios o cantidades), se pierde la validez del proceso de demostración.",
+      "La experiencia completa solo se garantiza si el mensaje enviado coincide con el generado por el sistema.",
     ],
   },
   {
     title: "3. Responsabilidad Limitada",
     items: [
-      "Este sitio genera únicamente el mensaje de pedido; no garantiza la entrega de productos ni la confirmación automática del pedido.",
-      "El negocio receptor es responsable de validar y procesar el pedido recibido por WhatsApp.",
+      "Este sitio no garantiza la entrega de productos ni la confirmación de ningún pedido realizado durante la demostración.",
+      "La demo es solo una herramienta visual e interactiva para mostrar el funcionamiento del menú digital.",
       "El servicio puede estar sujeto a interrupciones técnicas o fallas temporales fuera de nuestro control.",
     ],
   }
