@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, ShoppingBag, Trash2, MessageCircle } from "lucide-react"
 import { useUiStore, useCartStore } from "@/store"
@@ -12,6 +12,10 @@ import { createUpdateOrder } from "@/actions/create-order"
 import { CartItemPayload, OrderStatus } from "@/lib/types"
 
 export function SidebarCart() {
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+
+  const [showSafariModal, setShowSafariModal] = useState(false)
+  const [pendingMessage, setPendingMessage] = useState<string | null>(null)
   const { isSideCartOpen, closeSideCart } = useUiStore()
   const { cart, removeFromCart, updateQuantity, clearCart, getSubtotal } = useCartStore()
 
@@ -28,7 +32,6 @@ export function SidebarCart() {
   }, [closeSideCart])
 
   const handleWhatsAppCheckout = async () => {
-    const win = window.open("", "_blank") // Open new window for WhatsApp in safari
     const data = new FormData()
     data.append("status", "PENDING" as OrderStatus)
     data.append("totalPrice", getSubtotal().toString())
@@ -52,7 +55,6 @@ export function SidebarCart() {
       toast.error("Error al crear el pedido, intente de nuevo!", {
         position: "bottom-right",
       })
-      win?.close() // Close window
       return
     }
 
@@ -72,11 +74,17 @@ export function SidebarCart() {
     // Encode message for URL
     const encodedMessage = encodeURIComponent(message)
 
-    // Open WhatsApp with message
-    win!.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, "_blank")
+    if (!isSafari) {
+      // Open WhatsApp with message
+      window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, "_blank")
 
-    // Close sidebar after sending order
-    closeSideCart()
+      // Close sidebar after sending order
+      closeSideCart()
+    } else {
+      setShowSafariModal(true)
+      setPendingMessage(`https://wa.me/${phoneNumber}?text=${encodedMessage}`)
+    }
+
   }
 
   const handleRemoveItem = (productId: string, productName: string) => {
@@ -235,6 +243,34 @@ export function SidebarCart() {
           )}
         </div>
       </div>
+
+      {/* Safari modal */}
+      {showSafariModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-xl max-w-sm w-full text-center space-y-4">
+            <h3 className="text-lg font-semibold">Confirmar pedido</h3>
+            <p className="text-sm text-muted-foreground">
+              Tu pedido fue creado. Presiona el botón para abrir WhatsApp y enviarlo.
+            </p>
+            <div className="flex flex-col gap-2">
+              <Button
+                className="bg-green-600 hover:bg-green-700"
+                onClick={() => {
+                  if (pendingMessage) window.open(pendingMessage, "_blank")
+                  setShowSafariModal(false)
+                  setPendingMessage(null)
+                  closeSideCart()
+                }}
+              >
+                Enviar por WhatsApp
+              </Button>
+              <Button variant="outline" onClick={() => setShowSafariModal(false)}>
+                Cancelar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
