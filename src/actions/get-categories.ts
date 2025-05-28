@@ -4,7 +4,13 @@ import { Category } from "@/lib/types"
 
 export async function getCategories(): Promise<Category[]> {
   try {
-    const categories = await prisma.category.findMany({})
+    const categories = await prisma.category.findMany({
+      where: {
+        name: {
+          not: "Promociones"
+        }
+      }
+    })
 
     return categories
   } catch (error) {
