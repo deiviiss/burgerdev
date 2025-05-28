@@ -28,6 +28,7 @@ export function SidebarCart() {
   }, [closeSideCart])
 
   const handleWhatsAppCheckout = async () => {
+    const win = window.open("", "_blank") // Open new window for WhatsApp in safari
     const data = new FormData()
     data.append("status", "PENDING" as OrderStatus)
     data.append("totalPrice", getSubtotal().toString())
@@ -51,6 +52,7 @@ export function SidebarCart() {
       toast.error("Error al crear el pedido, intente de nuevo!", {
         position: "bottom-right",
       })
+      win?.close() // Close window
       return
     }
 
@@ -71,7 +73,7 @@ export function SidebarCart() {
     const encodedMessage = encodeURIComponent(message)
 
     // Open WhatsApp with message
-    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, "_blank")
+    win!.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, "_blank")
 
     // Close sidebar after sending order
     closeSideCart()
