@@ -85,3 +85,11 @@ model User {
   createdAt   DateTime @default(now())
   orders      Order[]
 }
+
+model PhoneNumberMenu {
+  id        String   @id @default(cuid())
+  label     String // 'demo', 'manual', etc.
+  number    String // the number in international format
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
