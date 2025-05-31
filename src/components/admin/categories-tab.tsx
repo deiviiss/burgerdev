@@ -8,21 +8,30 @@ import type { Category } from "@/lib/types"
 import { saveCategory, deleteCategory } from "@/lib/data"
 import { PlusCircle, Pencil, Trash2, Save, X } from "lucide-react"
 import { getCategories } from "@/actions/get-categories"
+import Loading from "@/app/loading"
 
 export default function CategoriesTab() {
   const [categories, setCategories] = useState<Category[]>([])
   const [isEditing, setIsEditing] = useState(false)
   const [currentCategory, setCurrentCategory] = useState<Category | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const emptyCategory: Category = {
     id: "",
     name: "",
+    image: ""
   }
 
   useEffect(() => {
     const loadData = async () => {
-      const categoriesData = await getCategories()
-      setCategories(categoriesData)
+      try {
+        const categoriesData = await getCategories()
+        setCategories(categoriesData)
+      } catch (error) {
+        console.error("Error al cargar los datos:", error)
+      } finally {
+        setIsLoading(false)
+      }
     }
 
     loadData()
@@ -85,6 +94,10 @@ export default function CategoriesTab() {
       console.error("Error al eliminar la categoría:", error)
       alert("Ocurrió un error al eliminar la categoría")
     }
+  }
+
+  if (isLoading) {
+    return <Loading />
   }
 
   return (

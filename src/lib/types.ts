@@ -35,23 +35,25 @@ export type OrderStatus = 'PENDING' | 'IN_PROGRESS' | 'DELIVERED' | 'CANCELLED'
 export interface OrderItem {
   id: string
   orderId: string
-  productId?: string
-  promotionId?: string
   quantity: number
   unitPrice: number
+  productId?: string | null
+  product?: Product
+  promotionId?: string | null
+  promotion?: Promotion
 }
 
 export interface Order {
   id: string
   shortId: string
-  name: string
-  phoneNumber: string
   items: OrderItem[]
   totalPrice: number
   status: OrderStatus
   address: string
-  comment?: string
-  createdAt: string
+  comment?: string | null
+  createdAt: Date
+  userId?: string | null
+  User?: Partial<User> | null
 }
 
 export type CartItemPayload = {
@@ -59,4 +61,12 @@ export type CartItemPayload = {
   categoryId: string
   quantity: number
   unitPrice: number
+}
+
+export type User = {
+  id: string
+  name: string
+  phoneNumber: string
+  createdAt: Date
+  orders: Order[]
 }

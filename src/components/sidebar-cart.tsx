@@ -248,7 +248,7 @@ export function SidebarCart() {
       {/* Safari modal */}
       {showSafariModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-xl max-w-sm w-full text-center space-y-4">
+          <div className="bg-muted p-6 rounded-2xl shadow-xl max-w-sm w-full text-center space-y-4">
             <h3 className="text-lg font-semibold">Confirmar pedido</h3>
             <p className="text-sm text-muted-foreground">
               Tu pedido fue creado. Presiona el botón para abrir WhatsApp y enviarlo.

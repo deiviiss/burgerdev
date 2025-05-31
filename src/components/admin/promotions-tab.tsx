@@ -10,32 +10,42 @@ import { savePromotion, deletePromotion, applyPromotion } from "@/lib/data"
 import { PlusCircle, Pencil, Trash2, Save, X, Calendar } from "lucide-react"
 import { getPromotions } from "@/actions/get-promotions"
 import { getProducts } from "@/actions/get-products"
+import Loading from "@/app/loading"
 
 export default function PromotionsTab() {
   const [promotions, setPromotions] = useState<Promotion[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [isEditing, setIsEditing] = useState(false)
   const [currentPromotion, setCurrentPromotion] = useState<Promotion | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const emptyPromotion: Promotion = {
     id: "",
     name: "",
     description: "",
     discountPercentage: 10,
-    startDate: new Date().toISOString().split("T")[0],
-    endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-    productIds: [],
-    active: true,
-    discountCode: "",
+    startDate: new Date(),
+    endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    isActive: true,
+    promoPrice: 0,
+    originalPrice: 0,
     image: "",
+    categoryId: "",
+    createdAt: new Date(),
   }
 
   useEffect(() => {
     const loadData = async () => {
-      const promotionsData = await getPromotions()
-      const productsData = await getProducts()
-      setPromotions(promotionsData)
-      setProducts(productsData)
+      try {
+        const promotionsData = await getPromotions()
+        const productsData = await getProducts()
+        setPromotions(promotionsData)
+        setProducts(productsData)
+      } catch (error) {
+        console.error("Error al cargar los datos:", error)
+      } finally {
+        setIsLoading(false)
+      }
     }
 
     loadData()
@@ -60,7 +70,7 @@ export default function PromotionsTab() {
     if (!currentPromotion) return
 
     // Validación básica
-    if (!currentPromotion.name || !currentPromotion.discountPercentage || !currentPromotion.productIds.length) {
+    if (!currentPromotion.name || !currentPromotion.discountPercentage) {
       alert(
         "Por favor completa los campos obligatorios: Nombre, Porcentaje de descuento y selecciona al menos un producto",
       )
@@ -71,7 +81,7 @@ export default function PromotionsTab() {
       await savePromotion(currentPromotion)
 
       // Aplicar la promoción a los productos
-      if (currentPromotion.active) {
+      if (currentPromotion.isActive) {
         await applyPromotion(currentPromotion)
       }
 
@@ -114,19 +124,8 @@ export default function PromotionsTab() {
     }
   }
 
-  const handleProductSelection = (productId: string) => {
-    if (!currentPromotion) return
-
-    const productIds = [...currentPromotion.productIds]
-    const index = productIds.indexOf(productId)
-
-    if (index >= 0) {
-      productIds.splice(index, 1)
-    } else {
-      productIds.push(productId)
-    }
-
-    setCurrentPromotion({ ...currentPromotion, productIds })
+  if (isLoading) {
+    return <Loading />
   }
 
   return (
@@ -158,7 +157,7 @@ export default function PromotionsTab() {
                 <tbody>
                   {promotions.map((promotion) => {
                     const isActive =
-                      promotion.active &&
+                      promotion.isActive &&
                       new Date(promotion.startDate) <= new Date() &&
                       new Date(promotion.endDate) >= new Date()
 
@@ -258,7 +257,7 @@ export default function PromotionsTab() {
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <Label htmlFor="discountCode">Código de Descuento (opcional)</Label>
                 <Input
                   id="discountCode"
@@ -266,7 +265,7 @@ export default function PromotionsTab() {
                   onChange={(e) => setCurrentPromotion({ ...currentPromotion!, discountCode: e.target.value })}
                   placeholder="PROMO10"
                 />
-              </div>
+              </div> */}
 
               {/* Añadir campo de imagen en el formulario de promociones */}
               <div>
@@ -287,8 +286,8 @@ export default function PromotionsTab() {
                   <Input
                     id="startDate"
                     type="date"
-                    value={currentPromotion?.startDate || ""}
-                    onChange={(e) => setCurrentPromotion({ ...currentPromotion!, startDate: e.target.value })}
+                    value={currentPromotion?.startDate ? new Date(currentPromotion.startDate).toISOString().split('T')[0] : ''}
+                    onChange={(e) => setCurrentPromotion({ ...currentPromotion!, startDate: new Date(e.target.value) })}
                   />
                   <Calendar className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 </div>
@@ -300,8 +299,8 @@ export default function PromotionsTab() {
                   <Input
                     id="endDate"
                     type="date"
-                    value={currentPromotion?.endDate || ""}
-                    onChange={(e) => setCurrentPromotion({ ...currentPromotion!, endDate: e.target.value })}
+                    value={currentPromotion?.endDate ? new Date(currentPromotion.endDate).toISOString().split('T')[0] : ''}
+                    onChange={(e) => setCurrentPromotion({ ...currentPromotion!, endDate: new Date(e.target.value) })}
                   />
                   <Calendar className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 </div>
@@ -311,8 +310,8 @@ export default function PromotionsTab() {
                 <input
                   type="checkbox"
                   id="active"
-                  checked={currentPromotion?.active || false}
-                  onChange={(e) => setCurrentPromotion({ ...currentPromotion!, active: e.target.checked })}
+                  checked={currentPromotion?.isActive || false}
+                  onChange={(e) => setCurrentPromotion({ ...currentPromotion!, isActive: e.target.checked })}
                   className="h-4 w-4 rounded border-gray-300 text-primary/80 focus:ring-primary"
                 />
                 <Label htmlFor="active">Promoción Activa</Label>
@@ -320,7 +319,7 @@ export default function PromotionsTab() {
             </div>
           </div>
 
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <Label>Selecciona los productos para esta promoción *</Label>
             <div className="mt-2 border rounded-md p-4 max-h-60 overflow-y-auto">
               {products.length === 0 ? (
@@ -344,7 +343,7 @@ export default function PromotionsTab() {
                 </div>
               )}
             </div>
-          </div>
+          </div> */}
 
           <div className="mt-6 flex justify-end">
             <Button onClick={handleSave} className="bg-primary hover:bg-primary/80">

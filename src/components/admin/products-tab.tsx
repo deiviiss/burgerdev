@@ -12,12 +12,14 @@ import { saveProduct, deleteProduct } from "@/lib/data"
 import { PlusCircle, Pencil, Trash2, Save, X } from "lucide-react"
 import { getProducts } from "@/actions/get-products"
 import { getCategories } from "@/actions/get-categories"
+import Loading from "@/app/loading"
 
 export default function ProductsTab() {
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [isEditing, setIsEditing] = useState(false)
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const emptyProduct: Product = {
     id: "",
@@ -26,20 +28,27 @@ export default function ProductsTab() {
     price: 0,
     image: "",
     categoryId: "",
-    active: true,
-    promotionPrice: null,
+    isAvailable: true,
+    createdAt: new Date()
   }
 
   useEffect(() => {
     const loadData = async () => {
-      const productsData = await getProducts()
-      const categoriesData = await getCategories()
-      setProducts(productsData)
-      setCategories(categoriesData)
+      try {
+        const productsData = await getProducts()
+        const categoriesData = await getCategories()
+        setProducts(productsData)
+        setCategories(categoriesData)
+      } catch (error) {
+        console.error("Error al cargar los datos:", error)
+      } finally {
+        setIsLoading(false)
+      }
     }
 
     loadData()
   }, [])
+
 
   const handleAddNew = () => {
     setCurrentProduct({ ...emptyProduct, id: Date.now().toString() })
@@ -59,7 +68,7 @@ export default function ProductsTab() {
   const handleSave = async () => {
     if (!currentProduct) return
 
-    // Validación básica
+    // Basic validation
     if (!currentProduct.name || !currentProduct.price || !currentProduct.categoryId) {
       alert("Por favor completa los campos obligatorios: Nombre, Precio y Categoría")
       return
@@ -68,7 +77,7 @@ export default function ProductsTab() {
     try {
       await saveProduct(currentProduct)
 
-      // Actualizar la lista local
+      // Update local list
       const updatedProducts = [...products]
       const index = updatedProducts.findIndex((p) => p.id === currentProduct.id)
 
@@ -97,6 +106,10 @@ export default function ProductsTab() {
       console.error("Error al eliminar el producto:", error)
       alert("Ocurrió un error al eliminar el producto")
     }
+  }
+
+  if (isLoading) {
+    return <Loading />
   }
 
   return (
@@ -133,20 +146,13 @@ export default function ProductsTab() {
                         <td className="p-3">{product.name}</td>
                         <td className="p-3">{category?.name || "Sin categoría"}</td>
                         <td className="p-3">
-                          {product.promotionPrice ? (
-                            <div>
-                              <span className="text-red-500 font-medium">${product.promotionPrice.toFixed(2)}</span>
-                              <span className="text-muted-foreground line-through ml-2">${product.price.toFixed(2)}</span>
-                            </div>
-                          ) : (
-                            <span>${product.price.toFixed(2)}</span>
-                          )}
+                          <span>${product.price.toFixed(2)}</span>
                         </td>
                         <td className="p-3">
                           <span
-                            className={`px-2 py-1 rounded-full text-xs ${product.active ? "bg-green-100 text-green-800" : "bg-muted text-gray-800"}`}
+                            className={`px-2 py-1 rounded-full text-xs ${product.isAvailable ? "bg-green-100 text-green-800" : "bg-muted text-gray-800"}`}
                           >
-                            {product.active ? "Activo" : "Inactivo"}
+                            {product.isAvailable ? "Activo" : "Inactivo"}
                           </span>
                         </td>
                         <td className="p-3 text-right">
@@ -247,22 +253,6 @@ export default function ProductsTab() {
               </div>
 
               <div>
-                <Label htmlFor="promotionPrice">Precio de Promoción</Label>
-                <Input
-                  id="promotionPrice"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={currentProduct?.promotionPrice || ""}
-                  onChange={(e) => {
-                    const value = e.target.value ? Number.parseFloat(e.target.value) : null
-                    setCurrentProduct({ ...currentProduct!, promotionPrice: value })
-                  }}
-                  placeholder="0.00"
-                />
-              </div>
-
-              <div>
                 <Label htmlFor="image">URL de la Imagen</Label>
                 <Input
                   id="image"
@@ -275,8 +265,8 @@ export default function ProductsTab() {
               <div className="flex items-center space-x-2 pt-2">
                 <Switch
                   id="active"
-                  checked={currentProduct?.active || false}
-                  onCheckedChange={(checked) => setCurrentProduct({ ...currentProduct!, active: checked })}
+                  checked={currentProduct?.isAvailable || false}
+                  onCheckedChange={(checked) => setCurrentProduct({ ...currentProduct!, isAvailable: checked })}
                 />
                 <Label htmlFor="active">Producto Activo</Label>
               </div>
