@@ -135,8 +135,10 @@ export default function PromotionsTab() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Lista de Promociones</h2>
             <Button onClick={handleAddNew} className="bg-primary hover:bg-primary/80">
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Nueva Promoción
+              <PlusCircle className="h-4 w-4" />
+              <span className="hidden md:inline  ml-2">
+                Nueva Promoción
+              </span>
             </Button>
           </div>
 

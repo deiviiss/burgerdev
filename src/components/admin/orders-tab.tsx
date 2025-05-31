@@ -112,10 +112,10 @@ export default function OrdersTab() {
 
   return (
     <Card className="bg-muted">
-      <CardHeader>
+      <CardHeader className="px-2 sm:px-6">
         <CardTitle>Gestión de Pedidos</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-2 sm:px-6">
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="relative flex-1">
