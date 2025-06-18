@@ -10,7 +10,7 @@ import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { createUpdateOrder } from "@/actions/create-order"
 import { CartItemPayload, OrderStatus } from "@/lib/types"
-import { getPhoneNumber } from "@/actions/get-phone-number"
+import { getPhoneNumberMenu } from "@/actions/get-phone-number-menu"
 
 export function SidebarCart() {
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
@@ -59,7 +59,7 @@ export function SidebarCart() {
       return
     }
 
-    const phoneNumber = await getPhoneNumber() // Business phone number
+    const phoneNumber = await getPhoneNumberMenu() // Business phone number
     let message = "🛒 *Nuevo Pedido*\n\n"
 
     // Add products to message

@@ -1,7 +1,7 @@
 'use server'
 import prisma from '@/lib/prisma'
 
-export async function getPhoneNumber() {
+export async function getPhoneNumberMenu() {
   try {
     const phoneNumberDB = await prisma.phoneNumberMenu.findFirst({
       where: {
