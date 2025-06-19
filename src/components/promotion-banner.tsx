@@ -19,12 +19,9 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    // Filter active promotions within the date range
-    const now = new Date()
+    // Filter active promotions within the state
     const filtered = promotions.filter((promo) => {
-      const startDate = new Date(promo.startDate)
-      const endDate = new Date(promo.endDate)
-      return promo.isActive && startDate <= now && endDate >= now
+      return promo.isActive
     })
     setActivePromotions(filtered)
   }, [promotions])
@@ -55,17 +52,17 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
       {activePromotions.map((promotion, index) => {
         // Calculate total price and discounted price
         const { originalPrice, promoPrice } = promotion
         const discountAmount = originalPrice - promoPrice
-        const discountPercentage = ((discountAmount / originalPrice) * 100).toFixed(0)
+        const discountPercentage = promotion.discountPercentage
 
         return (
           <motion.div
             key={promotion.id}
-            className="bg-card dark:border dark:border-primary rounded-lg shadow-md overflow-hidden"
+            className="bg-card dark:border dark:border-primary rounded-lg shadow-md overflow-hidden max-w-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -76,7 +73,7 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
           >
             <div className="relative h-48">
               <Image
-                src={promotion.image || "/placeholder.svg?height=300&width=400"}
+                src={promotion.image || "/images/placeholder.webp"}
                 alt={promotion.name}
                 fill
                 className="object-cover"
@@ -84,8 +81,8 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
                 <h3 className="font-bold text-xl text-white">{promotion.name}</h3>
                 <div className="flex items-center mt-1">
-                  <Tag className="h-4 w-4 text-secondary dark:text-primary mr-1" />
-                  <span className="text-secondary dark:text-primary font-semibold text-sm">
+                  <Tag className="h-4 w-4 text-white mr-1" />
+                  <span className="text-white font-semibold text-sm">
                     {discountPercentage}% DESCUENTO
                   </span>
                 </div>

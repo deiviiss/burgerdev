@@ -32,8 +32,8 @@
     "**/*.ts",
     "**/*.tsx",
     "next-env.d.ts",
-    ".next/types/**/*.ts"
-  ],
+    ".next/types/**/*.ts",
+    "src/seed/tsconfig.json"  ],
   "exclude": [
     "node_modules"
   ]
