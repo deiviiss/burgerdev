@@ -1,15 +1,12 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import { Navbar } from "@/components/navbar"
-import { SidebarCart } from "@/components/sidebar-cart"
-import { Footer } from "@/components/footer"
+import { Quicksand } from "next/font/google"
 import { Toaster } from "sonner"
 import { Providers } from "@/components/providers/Providers"
 import "./globals.css"
 import { ToogleDarkMode } from "@/components/dark-mode/toogle-dark-mode/ToogleDarkMode"
 import ScrollToTop from "@/components/scroll-to-top/ScrollToTop"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Quicksand({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Burger Dev",
@@ -42,13 +39,10 @@ export default function RootLayout({
     <html lang="es" className="scroll-smooth">
       <body className={inter.className}>
         <Providers>
-          <Navbar />
-          <SidebarCart />
           {children}
           <ToogleDarkMode />
           <ScrollToTop />
           <Toaster position="bottom-right" richColors />
-          <Footer />
         </Providers>
       </body>
     </html>

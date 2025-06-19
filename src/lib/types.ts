@@ -1,3 +1,13 @@
+export interface ProductOption {
+  id?: string;
+  productId: string;
+  name: string;
+  price: number;
+  type: "size" | "ingredient" | "variable";
+  quantity: number;
+  isAvailable: boolean;
+}
+
 export interface Product {
   id: string
   name: string
@@ -7,6 +17,8 @@ export interface Product {
   categoryId: string
   isAvailable: boolean
   createdAt: Date
+  options?: ProductOption[]
+  groupedOptions?: Record<string, ProductOption[]>
 }
 
 export interface Category {
@@ -24,36 +36,8 @@ export interface Promotion {
   promoPrice: number
   image: string
   isActive: boolean
-  startDate: Date
-  endDate: Date
   categoryId: string
   createdAt: Date
-}
-
-export type OrderStatus = 'PENDING' | 'IN_PROGRESS' | 'DELIVERED' | 'CANCELLED'
-
-export interface OrderItem {
-  id: string
-  orderId: string
-  quantity: number
-  unitPrice: number
-  productId?: string | null
-  product?: Product
-  promotionId?: string | null
-  promotion?: Promotion
-}
-
-export interface Order {
-  id: string
-  shortId: string
-  items: OrderItem[]
-  totalPrice: number
-  status: OrderStatus
-  address: string
-  comment?: string | null
-  createdAt: Date
-  userId?: string | null
-  User?: Partial<User> | null
 }
 
 export type CartItemPayload = {
@@ -63,10 +47,25 @@ export type CartItemPayload = {
   unitPrice: number
 }
 
+export enum Role {
+  ADMIN = "ADMIN",
+  USER = "USER"
+}
+
 export type User = {
   id: string
   name: string
+  email: string
   phoneNumber: string
+  role: Role
+  password: string
   createdAt: Date
-  orders: Order[]
+}
+
+export type PhoneNumberMenu = {
+  id: string
+  label: string
+  number: string
+  isActive: boolean
+  createdAt: Date
 }

@@ -3,44 +3,64 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import type { Promotion, Product } from "@/lib/types"
-import { savePromotion, deletePromotion, applyPromotion } from "@/lib/data"
-import { PlusCircle, Pencil, Trash2, Save, X, Calendar } from "lucide-react"
-import { getPromotions } from "@/actions/get-promotions"
-import { getProducts } from "@/actions/get-products"
+import type { Category, Promotion } from "@/lib/types"
+import { PlusCircle, Pencil, Trash2, Save, X } from "lucide-react"
+import { getPromotions } from "@/actions/promotions/get-promotions"
 import Loading from "@/app/loading"
+import { promotionSchema } from "@/schemas/promotion.schema"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { deletePromotion } from "@/actions/promotions/delete-promotion-by-id"
+import { toast } from "sonner"
+import { createUpdatePromotion } from "@/actions/promotions/createUpdatePromotion"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import ImageUpload from "@/components/image-upload"
+import { Switch } from "@/components/ui/switch"
+import { getCategoryPromotion } from "@/actions/categories/get-category-promotion"
+import { deleteImageFromCloudinary } from "@/actions/products/delete-image-from-cloudinary"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Image from "next/image"
+import { Badge } from "@/components/ui/badge"
 
 export default function PromotionsTab() {
   const [promotions, setPromotions] = useState<Promotion[]>([])
-  const [products, setProducts] = useState<Product[]>([])
-  const [isEditing, setIsEditing] = useState(false)
-  const [currentPromotion, setCurrentPromotion] = useState<Promotion | null>(null)
+  const [categoryPromotion, setCategoryPromotion] = useState<Category | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
 
-  const emptyPromotion: Promotion = {
-    id: "",
-    name: "",
-    description: "",
-    discountPercentage: 10,
-    startDate: new Date(),
-    endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    isActive: true,
-    promoPrice: 0,
-    originalPrice: 0,
-    image: "",
-    categoryId: "",
-    createdAt: new Date(),
-  }
+  const [currentPromotion, setCurrentPromotion] = useState<Promotion | null>(null)
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [promotionToDelete, setPromotionToDelete] = useState<Promotion | null>(null)
+
+  const form = useForm<z.infer<typeof promotionSchema>>({
+    resolver: zodResolver(promotionSchema),
+    defaultValues: {
+      name: currentPromotion?.name || "",
+      description: currentPromotion?.description || "",
+      promoPrice: currentPromotion?.promoPrice || 0,
+      originalPrice: currentPromotion?.originalPrice || 0,
+      discountPercentage: currentPromotion?.discountPercentage || 0,
+      image: currentPromotion?.image || "",
+      isActive: currentPromotion?.isActive || false,
+      categoryId: currentPromotion?.categoryId || categoryPromotion?.id,
+      createdAt: currentPromotion?.createdAt || new Date()
+    }
+  })
+
+  // Load data on mount
   useEffect(() => {
     const loadData = async () => {
       try {
         const promotionsData = await getPromotions()
-        const productsData = await getProducts()
+        const categoryPromotionData = await getCategoryPromotion()
         setPromotions(promotionsData)
-        setProducts(productsData)
+        setCategoryPromotion(categoryPromotionData)
       } catch (error) {
         console.error("Error al cargar los datos:", error)
       } finally {
@@ -51,77 +71,160 @@ export default function PromotionsTab() {
     loadData()
   }, [])
 
+  // Reset form on promotion change
+  useEffect(() => {
+    if (currentPromotion) {
+      form.reset({
+        name: currentPromotion?.name,
+        description: currentPromotion?.description,
+        discountPercentage: currentPromotion?.discountPercentage,
+        promoPrice: currentPromotion?.promoPrice,
+        originalPrice: currentPromotion?.originalPrice,
+        image: currentPromotion?.image,
+        categoryId: currentPromotion?.categoryId,
+        isActive: currentPromotion?.isActive,
+        createdAt: currentPromotion?.createdAt
+      })
+    }
+  }, [currentPromotion, form])
+
   const handleAddNew = () => {
-    setCurrentPromotion({ ...emptyPromotion, id: Date.now().toString() })
+    setCurrentPromotion(null)
     setIsEditing(true)
+
+    form.reset({
+      name: "",
+      description: "",
+      discountPercentage: 0,
+      promoPrice: 0,
+      originalPrice: 0,
+      image: "",
+      isActive: true,
+      categoryId: categoryPromotion?.id,
+      createdAt: new Date()
+    })
   }
 
   const handleEdit = (promotion: Promotion) => {
     setCurrentPromotion({ ...promotion })
     setIsEditing(true)
+    setSelectedImage(null)
   }
 
   const handleCancel = () => {
     setCurrentPromotion(null)
     setIsEditing(false)
-  }
-
-  const handleSave = async () => {
-    if (!currentPromotion) return
-
-    // Validación básica
-    if (!currentPromotion.name || !currentPromotion.discountPercentage) {
-      alert(
-        "Por favor completa los campos obligatorios: Nombre, Porcentaje de descuento y selecciona al menos un producto",
-      )
-      return
-    }
-
-    try {
-      await savePromotion(currentPromotion)
-
-      // Aplicar la promoción a los productos
-      if (currentPromotion.isActive) {
-        await applyPromotion(currentPromotion)
-      }
-
-      // Actualizar la lista local
-      const updatedPromotions = [...promotions]
-      const index = updatedPromotions.findIndex((p) => p.id === currentPromotion.id)
-
-      if (index >= 0) {
-        updatedPromotions[index] = currentPromotion
-      } else {
-        updatedPromotions.push(currentPromotion)
-      }
-
-      setPromotions(updatedPromotions)
-      setCurrentPromotion(null)
-      setIsEditing(false)
-
-      // Recargar los productos para ver los cambios de precio
-      const productsData = await getProducts()
-      setProducts(productsData)
-    } catch (error) {
-      console.error("Error al guardar la promoción:", error)
-      alert("Ocurrió un error al guardar la promoción")
-    }
+    setSelectedImage(null)
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("¿Estás seguro de que deseas eliminar esta promoción?")) return
+    if (!id) return
+    setIsSubmitting(true)
 
     try {
-      await deletePromotion(id)
-      setPromotions(promotions.filter((p) => p.id !== id))
+      const { ok, message } = await deletePromotion(id)
 
-      // Recargar los productos para ver los cambios de precio
-      const productsData = await getProducts()
-      setProducts(productsData)
+      if (!ok) {
+        toast.error(message || "No se pudo eliminar la promoción")
+        return
+      }
+
+      toast.success(message || "Promoción eliminada correctamente")
+
+      const updated = await getPromotions()
+      setPromotions(updated)
+      setIsSubmitting(false)
+      setPromotionToDelete(null)
+      setShowDeleteModal(false)
     } catch (error) {
       console.error("Error al eliminar la promoción:", error)
-      alert("Ocurrió un error al eliminar la promoción")
+      toast.error("Ocurrió un error al eliminar la promoción")
     }
+  }
+
+  const onSubmit = async (values: z.infer<typeof promotionSchema>) => {
+    setIsSubmitting(true)
+
+    if (!selectedImage && !values.image) {
+      toast.error("La imagen es obligatoria")
+      setIsSubmitting(false)
+      return
+    }
+
+    let imageUrl = values.image
+
+    if (selectedImage) {
+      const formDataImage = new FormData()
+      formDataImage.append("image", selectedImage)
+
+      try {
+        const res = await fetch("/api/upload-promo-image", {
+          method: "POST",
+          body: formDataImage,
+        })
+
+        const data = await res.json()
+
+        if (!data.ok) {
+          toast.error(data.message || "Error al subir la imagen")
+          setIsSubmitting(false)
+          return
+        }
+
+        imageUrl = data.url
+
+        if (currentPromotion?.image) {
+          const { ok, message } = await deleteImageFromCloudinary(currentPromotion.image)
+          if (!ok) {
+            toast.error(message || "Error al eliminar la imagen anterior")
+            setIsSubmitting(false)
+            return
+          }
+        }
+      } catch (error) {
+        console.error("Error al subir la imagen:", error)
+        toast.error("Error inesperado al subir la imagen")
+        setIsSubmitting(false)
+        return
+      }
+    }
+
+    const updatedValues = {
+      ...values,
+      image: imageUrl
+    }
+
+    const formData = new FormData()
+    formData.append("name", updatedValues.name)
+    formData.append("description", updatedValues.description)
+    formData.append("discountPercentage", updatedValues.discountPercentage.toString())
+    formData.append("isActive", updatedValues.isActive.toString())
+    formData.append("promoPrice", updatedValues.promoPrice.toString())
+    formData.append("originalPrice", updatedValues.originalPrice.toString())
+    formData.append("image", updatedValues.image || "")
+    formData.append("categoryId", categoryPromotion?.id || "")
+    formData.append("createdAt", updatedValues.createdAt?.toISOString() ?? new Date().toISOString())
+
+    // If we're editing an existing promotion
+    if (currentPromotion?.id) {
+      formData.append("id", currentPromotion.id)
+    }
+
+    const { ok, message } = await createUpdatePromotion(formData)
+
+    if (!ok) {
+      toast.error(message || "No se pudo guardar la promoción")
+      setIsSubmitting(false)
+      return
+    }
+
+    toast.success(message || "Promoción guardada correctamente")
+    setIsSubmitting(false)
+    setIsEditing(false)
+    setCurrentPromotion(null)
+
+    const updated = await getPromotions()
+    setPromotions(updated)
   }
 
   if (isLoading) {
@@ -129,232 +232,300 @@ export default function PromotionsTab() {
   }
 
   return (
-    <div>
-      {!isEditing ? (
-        <>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Lista de Promociones</h2>
-            <Button onClick={handleAddNew} className="bg-primary hover:bg-primary/80">
-              <PlusCircle className="h-4 w-4" />
-              <span className="hidden md:inline  ml-2">
-                Nueva Promoción
-              </span>
-            </Button>
-          </div>
+    <>
+      <div>
+        {!isEditing ? (
+          <>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Lista de Promociones</h2>
+              <Button onClick={handleAddNew} className="bg-primary hover:bg-primary/80">
+                <PlusCircle className="h-4 w-4" />
+                <span className="hidden md:inline  ml-2">
+                  Nueva Promoción
+                </span>
+              </Button>
+            </div>
 
-          {promotions.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">No hay promociones. ¡Agrega una nueva!</div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-muted">
-                    <th className="text-left p-3">Nombre</th>
-                    <th className="text-left p-3">Descuento</th>
-                    <th className="text-left p-3">Fechas</th>
-                    <th className="text-left p-3">Estado</th>
-                    <th className="text-right p-3">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {promotions.map((promotion) => {
-                    const isActive =
-                      promotion.isActive &&
-                      new Date(promotion.startDate) <= new Date() &&
-                      new Date(promotion.endDate) >= new Date()
+            {promotions.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">No hay promociones. ¡Agrega una nueva!</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {promotions.map((promotion) => {
+                  const isActive = promotion.isActive
 
-                    return (
-                      <tr key={promotion.id} className="border-b hover:bg-gray-50">
-                        <td className="p-3">{promotion.name}</td>
-                        <td className="p-3">{promotion.discountPercentage}%</td>
-                        <td className="p-3">
-                          <div className="text-sm">
-                            <div>Inicio: {new Date(promotion.startDate).toLocaleDateString()}</div>
-                            <div>Fin: {new Date(promotion.endDate).toLocaleDateString()}</div>
-                          </div>
-                        </td>
-                        <td className="p-3">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs ${isActive ? "bg-green-100 text-green-800" : "bg-muted text-gray-800"}`}
-                          >
+                  return (
+                    <Card key={promotion.id} className="overflow-hidden">
+                      <div className="relative h-48">
+                        <Image
+                          src={promotion.image || "/placeholder.svg?height=200&width=300"}
+                          alt={promotion.name}
+                          fill
+                          className="object-cover"
+                        />
+                        <div className="absolute top-2 right-2 flex gap-1">
+                          <Badge variant={isActive ? "default" : "secondary"} className="text-xs">
                             {isActive ? "Activa" : "Inactiva"}
-                          </span>
-                        </td>
-                        <td className="p-3 text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEdit(promotion)}
-                            className="text-blue-500 hover:text-blue-700 mr-1"
-                          >
-                            <Pencil className="h-4 w-4" />
+                          </Badge>
+                          <Badge variant="outline" className="text-xs bg-white/90">
+                            {promotion.discountPercentage}% OFF
+                          </Badge>
+                        </div>
+                      </div>
+
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-lg line-clamp-1">{promotion.name}</CardTitle>
+                      </CardHeader>
+
+                      <CardContent className="pt-0">
+                        {promotion.description && (
+                          <p className="text-gray-600 text-sm mb-3 line-clamp-2">{promotion.description}</p>
+                        )}
+
+                        <div className="text-sm text-gray-600 mb-4">
+                          <div>Original: ${promotion.originalPrice.toFixed(2)}</div>
+                          <div>Promoción: ${promotion.promoPrice.toFixed(2)}</div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleEdit(promotion)} className="flex-1">
+                            <Pencil className="h-4 w-4 mr-1" />
+                            Editar
                           </Button>
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
-                            onClick={() => handleDelete(promotion.id)}
-                            className="text-red-500 hover:text-red-700"
+                            onClick={() => {
+                              setPromotionToDelete(promotion);
+                              setShowDeleteModal(true);
+                            }}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="pb-5">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">
+                {currentPromotion ? "Editar Promoción" : "Nueva Promoción"}
+              </h2>
+              <Button variant="ghost" onClick={handleCancel}>
+                <X className="h-4 w-4 mr-2" />
+                Cancelar
+              </Button>
             </div>
-          )}
-        </>
-      ) : (
-        <div>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">
-              {currentPromotion?.id === emptyPromotion.id ? "Nueva Promoción" : "Editar Promoción"}
-            </h2>
-            <Button variant="ghost" onClick={handleCancel}>
-              <X className="h-4 w-4 mr-2" />
+
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Nombre de la Promoción *</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Nombre de la promoción"
+                              {...field}
+                              disabled={isSubmitting}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Descripción *</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Descripción de la promoción"
+                              {...field}
+                              disabled={isSubmitting}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="discountPercentage"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Porcentaje de Descuento *</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="1"
+                              placeholder="Porcentaje de descuento"
+                              {...field}
+                              onChange={(e) => {
+                                let value = parseInt(e.target.value, 10)
+                                if (Number.isNaN(value) || value < 1) value = 1
+                                field.onChange(value)
+                              }}
+                              disabled={isSubmitting}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="promoPrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Precio de la promoción *</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step={0.01}
+                              placeholder="Precio de la promoción"
+                              {...field}
+                              onChange={(e) => {
+                                const rawValue = parseFloat(e.target.value)
+
+                                const value = isNaN(rawValue) || rawValue < 0 ? 0 : parseFloat(rawValue.toFixed(2))
+
+                                field.onChange(value)
+                              }}
+                              disabled={isSubmitting}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="originalPrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Precio original *</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step={0.01}
+                              placeholder="Precio original"
+                              {...field}
+                              onChange={(e) => {
+                                const rawValue = parseFloat(e.target.value)
+
+                                const value = isNaN(rawValue) || rawValue < 0 ? 0 : parseFloat(rawValue.toFixed(2))
+
+                                field.onChange(value)
+                              }}
+                              disabled={isSubmitting}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="image"
+                      render={({ field }) => (
+                        <>
+                          <ImageUpload
+                            nameImage="de la Promoción"
+                            value={field.value}
+                            previewFile={selectedImage}
+                            onChange={(file) => {
+                              // If there's no image, I'll leave.If there's an image, I'll continue.
+                              setSelectedImage(file)
+                              // string dummy value to pass validation
+                              form.setValue("image", file ? "upload_pending" : "", { shouldValidate: true })
+                            }}
+                          />
+                          <FormMessage />
+                        </>
+                      )}
+                    />
+
+                    {/*  Switch to activate/deactivate the promotion */}
+                    <FormField
+                      control={form.control}
+                      name="isActive"
+                      render={({ field }) => (
+                        <FormItem className="md:col-span-2 flex items-center space-x-2 pt-2">
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={(checked) => field.onChange(checked)}
+                            disabled={isSubmitting}
+                          />
+                          <FormLabel>Promoción Activa</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-end">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-primary hover:bg-primary/80"
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    Guardar Promoción
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        )}
+      </div>
+      {/* delete modal */}
+      <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>¿Eliminar este producto?</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Esta acción no se puede deshacer. Se eliminará la promoción y todas las opciones asociadas.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="text-center my-4">
+            <p className="font-semibold text-lg">{promotionToDelete?.name}</p>
+          </div>
+
+          <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteModal(false)}
+            >
               Cancelar
             </Button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="name">Nombre de la Promoción *</Label>
-                <Input
-                  id="name"
-                  value={currentPromotion?.name || ""}
-                  onChange={(e) => setCurrentPromotion({ ...currentPromotion!, name: e.target.value })}
-                  placeholder="Nombre de la promoción"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="description">Descripción</Label>
-                <Textarea
-                  id="description"
-                  value={currentPromotion?.description || ""}
-                  onChange={(e) => setCurrentPromotion({ ...currentPromotion!, description: e.target.value })}
-                  placeholder="Descripción de la promoción"
-                  rows={3}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="discountPercentage">Porcentaje de Descuento *</Label>
-                <Input
-                  id="discountPercentage"
-                  type="number"
-                  min="1"
-                  max="100"
-                  value={currentPromotion?.discountPercentage || ""}
-                  onChange={(e) =>
-                    setCurrentPromotion({
-                      ...currentPromotion!,
-                      discountPercentage: Number.parseInt(e.target.value) || 0,
-                    })
-                  }
-                  placeholder="10"
-                />
-              </div>
-
-              {/* <div>
-                <Label htmlFor="discountCode">Código de Descuento (opcional)</Label>
-                <Input
-                  id="discountCode"
-                  value={currentPromotion?.discountCode || ""}
-                  onChange={(e) => setCurrentPromotion({ ...currentPromotion!, discountCode: e.target.value })}
-                  placeholder="PROMO10"
-                />
-              </div> */}
-
-              {/* Añadir campo de imagen en el formulario de promociones */}
-              <div>
-                <Label htmlFor="image">URL de la Imagen</Label>
-                <Input
-                  id="image"
-                  value={currentPromotion?.image || ""}
-                  onChange={(e) => setCurrentPromotion({ ...currentPromotion!, image: e.target.value })}
-                  placeholder="https://ejemplo.com/imagen.jpg"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="startDate">Fecha de Inicio *</Label>
-                <div className="relative">
-                  <Input
-                    id="startDate"
-                    type="date"
-                    value={currentPromotion?.startDate ? new Date(currentPromotion.startDate).toISOString().split('T')[0] : ''}
-                    onChange={(e) => setCurrentPromotion({ ...currentPromotion!, startDate: new Date(e.target.value) })}
-                  />
-                  <Calendar className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="endDate">Fecha de Fin *</Label>
-                <div className="relative">
-                  <Input
-                    id="endDate"
-                    type="date"
-                    value={currentPromotion?.endDate ? new Date(currentPromotion.endDate).toISOString().split('T')[0] : ''}
-                    onChange={(e) => setCurrentPromotion({ ...currentPromotion!, endDate: new Date(e.target.value) })}
-                  />
-                  <Calendar className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2 pt-2">
-                <input
-                  type="checkbox"
-                  id="active"
-                  checked={currentPromotion?.isActive || false}
-                  onChange={(e) => setCurrentPromotion({ ...currentPromotion!, isActive: e.target.checked })}
-                  className="h-4 w-4 rounded border-gray-300 text-primary/80 focus:ring-primary"
-                />
-                <Label htmlFor="active">Promoción Activa</Label>
-              </div>
-            </div>
-          </div>
-
-          {/* <div className="mt-6">
-            <Label>Selecciona los productos para esta promoción *</Label>
-            <div className="mt-2 border rounded-md p-4 max-h-60 overflow-y-auto">
-              {products.length === 0 ? (
-                <p className="text-muted-foreground">No hay productos disponibles</p>
-              ) : (
-                <div className="space-y-2">
-                  {products.map((product) => (
-                    <div key={product.id} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id={`product-${product.id}`}
-                        checked={currentPromotion?.productIds.includes(product.id) || false}
-                        onChange={() => handleProductSelection(product.id)}
-                        className="h-4 w-4 rounded border-gray-300 text-primary/80 focus:ring-primary"
-                      />
-                      <label htmlFor={`product-${product.id}`} className="ml-2 block text-sm">
-                        {product.name} - ${product.price.toFixed(2)}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div> */}
-
-          <div className="mt-6 flex justify-end">
-            <Button onClick={handleSave} className="bg-primary hover:bg-primary/80">
-              <Save className="h-4 w-4 mr-2" />
-              Guardar Promoción
+            <Button
+              variant="destructive"
+              disabled={isSubmitting}
+              onClick={() => handleDelete(promotionToDelete?.id || "")}
+            >
+              Eliminar
             </Button>
-          </div>
-        </div>
-      )}
-    </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

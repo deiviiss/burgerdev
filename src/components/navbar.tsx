@@ -6,6 +6,7 @@ import { ShoppingCart, List, Sandwich } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useUiStore, useCartStore } from "@/store"
 import { Badge } from "@/components/ui/badge"
+import Image from "next/image"
 
 export function Navbar() {
   const { openSideCart, toggleCategories } = useUiStore()
@@ -14,7 +15,7 @@ export function Navbar() {
   return (
     <header className="bg-card shadow-md sticky top-0 z-40">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
