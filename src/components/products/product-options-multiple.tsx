@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from "framer-motion"
-import { Product, ProductOption } from "@/lib/types"
+import { ProductOption } from "@/lib/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 

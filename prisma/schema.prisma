@@ -45,6 +45,7 @@ enum ProductOptionType {
   size
   ingredient
   variable
+  note
 }
 
 model ProductOption {
