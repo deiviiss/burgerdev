@@ -59,6 +59,7 @@ export type User = {
   phoneNumber: string
   role: Role
   password: string
+  orders: Order[]
   createdAt: Date
 }
 
@@ -68,4 +69,30 @@ export type PhoneNumberMenu = {
   number: string
   isActive: boolean
   createdAt: Date
+}
+
+export type OrderStatus = 'PENDING' | 'IN_PROGRESS' | 'DELIVERED' | 'CANCELLED'
+
+export interface OrderItem {
+  id: string
+  orderId: string
+  quantity: number
+  unitPrice: number
+  productId?: string | null
+  product?: Product
+  promotionId?: string | null
+  promotion?: Promotion
+}
+
+export interface Order {
+  id: string
+  shortId: string
+  items: OrderItem[]
+  totalPrice: number
+  status: OrderStatus
+  address: string
+  comment?: string | null
+  createdAt: Date
+  userId?: string | null
+  User?: Partial<User> | null
 }
