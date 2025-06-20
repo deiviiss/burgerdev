@@ -7,6 +7,7 @@ export async function Footer() {
   const googleMapsUrl = "https://maps.app.goo.gl/qAFDqDNZvYqwkaDG7"
   const phoneNumber = await getPhoneNumberMenu()
   const whatsappUrl = `https://wa.me/${phoneNumber?.replace(/\D/g, "")}`
+  const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME
 
   return (
     <footer className="bg-gray-800 dark:bg-gray-950 text-white py-8">
@@ -14,7 +15,7 @@ export async function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Company */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Burger Dev</h3>
+            <h3 className="text-xl font-bold mb-4">{companyName}</h3>
             <p className="text-gray-300">Lo bueno se comparte... y se pide por WhatsApp</p>
           </div>
 
@@ -130,10 +131,10 @@ export async function Footer() {
           >
             <Link href="/" className="absolute right-3 -top-36 sm:-top-72 md:-top-40 md:right-5 lg:right-20 lg:-top-48 text-3xl sm:text-4xl font-bold text-primary flex items-center gap-1">
               <Sandwich className="w-8 sm:w-12 h-8 sm:h-12 text-primary" />
-              Burger Dev
+              {companyName}
             </Link>
           </div>
-          <p>© {new Date().getFullYear()} Burger Dev. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} {companyName}. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>
