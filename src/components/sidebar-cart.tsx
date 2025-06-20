@@ -10,6 +10,7 @@ import Image from "next/image"
 import { cn, getProductTotal } from "@/lib/utils"
 import { getPhoneNumberMenu } from "@/actions/menu/get-phone-number-menu"
 import { useSearchParams } from "next/navigation"
+import { createUpdateOrder } from "@/actions/orders/create-order"
 
 export function SidebarCart() {
   const searchParams = useSearchParams()
@@ -38,38 +39,60 @@ export function SidebarCart() {
   }, [closeSideCart, showDeliveryModal, showSafariModal])
 
   const generateAndSendWhatsApp = async (option: "table" | "delivery") => {
+    const items = cart.map((item) => ({
+      itemId: item.product.id,
+      categoryId: item.product.categoryId,
+      quantity: item.quantity,
+      unitPrice: getProductTotal(item.product), // Incluye opciones en el cálculo
+    }))
+
+    const formData = new FormData()
+    formData.append("status", "PENDING")
+    formData.append("totalPrice", getSubtotal().toString())
+    formData.append("items", JSON.stringify(items))
+
+    formData.append("address", option === "delivery" ? "Pendiente" : `Mesa ${tableNumber || "?"}`)
+
+    const { ok, order, message } = await createUpdateOrder(formData)
+
+    if (!ok || !order) {
+      toast.error(message || "No se pudo crear el pedido")
+      return
+    }
+
     const phoneNumber = await getPhoneNumberMenu()
-    let message = "🛒 *Nuevo Pedido*\n\n"
+    let messageOrder = "🛒 *Nuevo Pedido*\n\n"
 
     cart.forEach((item) => {
       const productName = item.product.name
       const quantity = item.quantity
-      const unitTotal = getProductTotal(item.product) // ya incluye opciones
+      const unitTotal = getProductTotal(item.product) // already includes options
       const lineTotal = unitTotal * quantity
 
-      message += `*${quantity}x* ${productName} - $${lineTotal.toFixed(2)}\n`
+      messageOrder += `*${quantity}x* ${productName} - $${lineTotal.toFixed(2)}\n`
 
-      // Solo mostrar opciones si existen
+      // Only show options if they exist
       if (item.product.options && item.product.options.length > 0) {
-        // Agrupar por ID para evitar duplicados (si llegan por error)
+        // Group by ID to avoid duplicates (if they come from error)
         const printed = new Set()
         item.product.options.forEach((opt) => {
           if (!printed.has(opt.id)) {
             const optionTotal = (opt.price || 0) * (opt.quantity || 1)
-            message += `   - ${opt.name} (${opt.quantity}x) - $${optionTotal.toFixed(2)}\n`
+            messageOrder += `   - ${opt.name} (${opt.quantity}x) - $${optionTotal.toFixed(2)}\n`
             printed.add(opt.id)
           }
         })
       }
 
-      message += "\n" // Separador entre productos
+      messageOrder += "\n" // Separador entre productos
     })
 
-    message += `*Total:* $${getSubtotal().toFixed(2)}\n`
-    message += `*Tipo de pedido:* ${option === "table" ? `Mesa ${tableNumber}` : "Domicilio"}\n\n`
-    message += "¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar."
+    messageOrder += `*Total:* $${getSubtotal().toFixed(2)}\n`
+    messageOrder += `*Tipo de pedido:* ${option === "table" ? `Mesa ${tableNumber}` : "Domicilio"}\n\n`
+    messageOrder += `*Código de verificación:* BD-${order.shortId}\n\n`
+    messageOrder += "¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar.\n\n"
 
-    const encodedMessage = encodeURIComponent(message)
+    const encodedMessage = encodeURIComponent(messageOrder)
 
     if (!isSafari) {
       window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, "_blank")
