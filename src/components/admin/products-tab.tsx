@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import type { Product, Category, ProductOption } from "@/lib/types"
-import { PlusCircle, Pencil, Trash2, Save, X, Trash, Plus, DollarSign, Tag } from "lucide-react"
+import { PlusCircle, Pencil, Trash2, Save, X, Trash, Plus, Tag } from "lucide-react"
 import ImageUpload from "@/components/image-upload"
 import { getProducts } from "@/actions/products/get-products"
 import { getCategories } from "@/actions/categories/get-categories"
@@ -38,9 +38,20 @@ export default function ProductsTab() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
 
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null)
   const [newOption, setNewOption] = useState<Partial<ProductOption>>({ name: "", price: 0, isAvailable: false, type: "size" })
-  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const placeholderNewOption =
+    newOption.type === 'size'
+      ? 'Ej: Grande, Mediana...'
+      : newOption.type === 'ingredient'
+        ? 'Ej: Extra queso, tomate, lechuga...'
+        : newOption.type === 'variable'
+          ? 'Precio a confirmar por WhatsApp'
+          : newOption.type === 'note'
+            ? 'Sin cebolla, sin tomate, sin lechuga...'
+            : 'Escribe una opción...';
+
 
   const [showDeleteOptionsModal, setShowDeleteOptionsModal] = useState(false)
   const [optionToDeleteIndex, setOptionToDeleteIndex] = useState<number | null>(null)
@@ -582,25 +593,22 @@ export default function ProductsTab() {
                             onValueChange={(value) => setNewOption({ ...newOption, type: value as "size" | "ingredient" | "variable" })}
                             disabled={isSubmitting}
                           >
-                            <SelectTrigger className="w-1/3">
+                            <SelectTrigger className="w-1/2">
                               <SelectValue placeholder="Elige una opción..." />
                             </SelectTrigger>
                             <SelectContent>
 
                               <SelectItem value={"size"}>
-                                <div className="flex justify-between items-center w-full">
-                                  <span>Tamaño</span>
-                                </div>
+                                Tamaño
                               </SelectItem>
                               <SelectItem value={"ingredient"}>
-                                <div className="flex justify-between items-center w-full">
-                                  <span>Ingredientes</span>
-                                </div>
+                                Ingrediente
                               </SelectItem>
                               <SelectItem value={"variable"}>
-                                <div className="flex justify-between items-center w-full">
-                                  <span>Variable</span>
-                                </div>
+                                Variable
+                              </SelectItem>
+                              <SelectItem value={"note"}>
+                                Nota
                               </SelectItem>
                             </SelectContent>
                           </Select>
@@ -615,7 +623,7 @@ export default function ProductsTab() {
                                 id="optionName"
                                 value={newOption.name}
                                 onChange={(e) => setNewOption({ ...newOption, name: e.target.value })}
-                                placeholder="Ej: pulpo chico, pulpo grande, etc."
+                                placeholder={placeholderNewOption}
                                 disabled={isSubmitting}
                               />
                             </div>

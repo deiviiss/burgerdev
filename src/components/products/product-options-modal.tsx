@@ -2,16 +2,16 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, ShoppingCart, Minus, Plus, Info, MessageCircle } from "lucide-react"
+import { X, ShoppingCart, Minus, Plus, Info, MessageCircle, MessageSquare } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { Product } from "@/lib/types"
 import { useCartStore } from "@/store"
 import { toast } from "sonner"
 import Image from "next/image"
-import ProductSelector from "./product-selector"
-import { ProductOptionsMultiple } from "./product-options-multiple"
-import { Alert, AlertDescription } from "../ui/alert"
-import { generateCartItemId } from "@/lib/utils"
+import ProductSelector from "@/components/products/product-selector"
+import { ProductOptionsMultiple } from "@/components/products/product-options-multiple"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Textarea } from "@/components/ui/textarea"
 
 interface ProductOptionsModalProps {
   product: Product
@@ -20,22 +20,36 @@ interface ProductOptionsModalProps {
 }
 
 export default function ProductOptionsModal({ product, isOpen, onClose }: ProductOptionsModalProps) {
-  const [selectedOptionId, setSelectedOptionId] = useState<string>("")
-  const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>([])
+  const [selectedOptionId, setSelectedOptionId] = useState<string>("") // Size
+  const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>([]) // Ingredients
+  const [specialNote, setSpecialNote] = useState<string>("") // Note
+
   const [quantity, setQuantity] = useState<number>(1)
   const { addToCart } = useCartStore()
 
-  const selectedOption = product.options?.find((option) => option.id === selectedOptionId) || null
-  const selectedOptions = product.options?.filter((option) => selectedOptionIds.includes(option.id || '')) || []
+  const selectedOption = product.options?.find((option) => option.id === selectedOptionId) || null // Size
+  const selectedOptions = product.options?.filter((option) => selectedOptionIds.includes(option.id || '')) || [] // Ingredients
 
   const handleAddToCart = () => {
     if (!selectedOption && selectedOptions.length === 0 && !isVariableOnly) return
 
+    const noteOption = specialNote
+      ? [{
+        id: crypto.randomUUID(),
+        name: specialNote,
+        price: 0,
+        quantity: 1,
+        isAvailable: true,
+        type: "note"
+      }]
+      : []
+
     const options = [
       ...(selectedOption ? [selectedOption] : []),
-      ...(selectedOptions || [])
+      ...(selectedOptions || []),
+      ...noteOption
     ]
-
+    console.log('options', options)
     const productWithSelectedOption = {
       ...product,
       options,
@@ -48,6 +62,8 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
 
     const quantityText = quantity === 1 ? "" : ` (${quantity} unidades)`
     toast.success(`${product.name} ${quantityText} agregado al carrito`)
+
+    setSpecialNote("")
     onClose()
     setSelectedOptionId("")
     setSelectedOptionIds([])
@@ -68,6 +84,8 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
     }
   };
 
+  const noteOptions = product.options?.filter((option) => option.type === "note") || []
+  const hasNoteOptions = noteOptions.length > 0
   const variablePriceOptions = product.groupedOptions?.variable || []
   const sizeOptions = product.groupedOptions?.size || []
   const ingredientOptions = product.groupedOptions?.ingredient || []
@@ -151,7 +169,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                   product.groupedOptions?.variable &&
                   <>
                     <Alert className="mb-6 border-orange-200 bg-orange-50">
-                      <Info className="h-4 w-4 text-orange-600" />
+                      <Info className="h-4 w-4 text-primary" />
                       <AlertDescription className="text-orange-800">
                         <div className="space-y-2">
                           <p className="font-medium">💰 Precio variable según tamaño</p>
@@ -179,8 +197,8 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                   </>
                 }
 
-                {/* Option Selector for ingredients */}
                 <div className="flex flex-col gap-3">
+                  {/* Option Selector for ingredients */}
                   {
                     product.groupedOptions?.ingredient &&
                     <ProductOptionsMultiple
@@ -233,6 +251,36 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Special Instructions Section */}
+                  {hasNoteOptions && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, delay: 0.1 }}
+                      className="space-y-3"
+                    >
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4 text-primary" />
+                        <h4 className="font-medium">Instrucciones especiales</h4>
+                      </div>
+                      <div className="bg-muted border border-primary/20 rounded-lg p-3">
+                        <Textarea
+                          value={specialNote}
+                          onChange={(e) => setSpecialNote(e.target.value)}
+                          placeholder="Ej: sin cebolla, con doble queso, bien cocido, etc."
+                          className="min-h-[80px] resize-none border-primary focus:border-secondary focus:ring-secondary"
+                          maxLength={200}
+                        />
+                        <div className="flex justify-between items-center mt-2">
+                          <span className="text-xs text-primary/90">
+                            Opcional - Comparte cualquier preferencia especial
+                          </span>
+                          <span className="text-xs text-primary">{specialNote.length}/200</span>
+                        </div>
                       </div>
                     </motion.div>
                   )}

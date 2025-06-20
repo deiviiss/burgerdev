@@ -39,11 +39,12 @@ export function SidebarCart() {
   }, [closeSideCart, showDeliveryModal, showSafariModal])
 
   const generateAndSendWhatsApp = async (option: "table" | "delivery") => {
+
     const items = cart.map((item) => ({
       itemId: item.product.id,
       categoryId: item.product.categoryId,
       quantity: item.quantity,
-      unitPrice: getProductTotal(item.product), // Incluye opciones en el cálculo
+      unitPrice: getProductTotal(item.product),
     }))
 
     const formData = new FormData()
@@ -77,8 +78,7 @@ export function SidebarCart() {
         const printed = new Set()
         item.product.options.forEach((opt) => {
           if (!printed.has(opt.id)) {
-            const optionTotal = (opt.price || 0) * (opt.quantity || 1)
-            messageOrder += `   - ${opt.name} (${opt.quantity}x) - $${optionTotal.toFixed(2)}\n`
+            messageOrder += `   - ${opt.name}\n`
             printed.add(opt.id)
           }
         })
