@@ -11,6 +11,7 @@ import Image from "next/image"
 export function Navbar() {
   const { openSideCart, toggleCategories } = useUiStore()
   const totalItems = useCartStore((state) => state.getTotalItems())
+  const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME
 
   return (
     <header className="bg-card shadow-md sticky top-0 z-40">
@@ -25,7 +26,7 @@ export function Navbar() {
           >
             <Sandwich className="w-6 h-6 text-primary" />
             <Link href="/" className="text-xl font-bold text-primary">
-              Burger Dev
+              {companyName}
             </Link>
           </motion.div>
 

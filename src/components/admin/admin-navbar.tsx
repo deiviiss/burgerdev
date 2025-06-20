@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { LucideFolderDown, Sandwich } from "lucide-react";
 
 export function NavbarAdmin() {
+  const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME
+
   return (
     <header className="bg-card shadow-md sticky top-0 z-40">
       <div className="container mx-auto px-4">
@@ -20,7 +22,7 @@ export function NavbarAdmin() {
           >
             <Sandwich className="w-6 h-6 text-primary" />
             <Link href="/" className="text-xl font-bold text-primary">
-              Burger Dev
+              {companyName}
             </Link>
           </motion.div>
 

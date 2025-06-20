@@ -52,7 +52,7 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center max-w-screen-lg mx-auto">
       {activePromotions.map((promotion, index) => {
         // Calculate total price and discounted price
         const { originalPrice, promoPrice } = promotion
