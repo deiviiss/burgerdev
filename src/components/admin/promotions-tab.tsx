@@ -57,7 +57,7 @@ export default function PromotionsTab() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const promotionsData = await getPromotions()
+        const promotionsData = await getPromotions({ onlyActive: false })
         const categoryPromotionData: Category | null = await getCategoryPromotion()
         setPromotions(promotionsData)
         setCategoryPromotion(categoryPromotionData)
