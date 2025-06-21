@@ -10,6 +10,9 @@ export async function getCategories(): Promise<Category[]> {
         name: {
           not: 'Promociones'
         }
+      },
+      orderBy: {
+        name: 'asc'
       }
     })
 
