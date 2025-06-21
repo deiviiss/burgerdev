@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { motion } from "framer-motion"
-import type { Product, Category } from "@/lib/types"
-import ProductCard from "@/components/products/product-card"
+import { motion } from 'framer-motion'
+import ProductCard from '@/components/products/product-card'
+import type { Product, Category } from '@/lib/types'
 
 interface ProductListProps {
   products: Product[]
@@ -14,13 +14,12 @@ const staggerContainer = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-    },
-  },
+      staggerChildren: 0.1
+    }
+  }
 }
 
 export function ProductList({ products, categories }: ProductListProps) {
-
   return (
     <div className="space-y-12">
       {categories.map((category) => {

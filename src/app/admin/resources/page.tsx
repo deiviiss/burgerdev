@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { FileDown, ArrowLeft } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion } from 'framer-motion'
+import { FileDown, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 // Variants for container animations
 const containerVariants = {
@@ -12,9 +12,9 @@ const containerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.3,
-    },
-  },
+      delayChildren: 0.3
+    }
+  }
 }
 
 // Variants for child element animations
@@ -23,8 +23,8 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5 },
-  },
+    transition: { duration: 0.5 }
+  }
 }
 
 export default function ContractPage() {

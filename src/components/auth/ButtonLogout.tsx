@@ -22,7 +22,7 @@ export const ButtonLogout = ({ className, icon, name }: Props) => {
       className={className}
     >
       {icon || <IoLogOutOutline />}
-      <span className='hidden min-[500px]:block' >{name ? name : "Sign Out"}</span>
+      <span className='hidden min-[500px]:block' >{name || 'Cerrar Sesión'}</span>
     </Button>
   )
 }

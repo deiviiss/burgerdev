@@ -1,9 +1,9 @@
-import { Navbar } from "@/components/navbar"
-import { SidebarCart } from "@/components/sidebar-cart"
-import { Footer } from "@/components/footer"
+import { Footer } from '@/components/footer'
+import { Navbar } from '@/components/navbar'
+import { SidebarCart } from '@/components/sidebar-cart'
 
 export default function MenuLayout({
-  children,
+  children
 }: {
   children: React.ReactNode
 }) {

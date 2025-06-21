@@ -1,11 +1,11 @@
-import { Suspense } from "react"
-import { PromotionBanner } from "@/components/promotion-banner"
-import { ProductList } from "@/components/products/product-list"
-import { SidebarCategories } from "@/components/sidebar-categories"
-import { getProducts } from "@/actions/products/get-products"
-import { getCategories } from "@/actions/categories/get-categories"
-import { getPromotions } from "@/actions/promotions/get-promotions"
-import Loading from "../loading"
+import { Suspense } from 'react'
+import Loading from '../loading'
+import { getCategories } from '@/actions/categories/get-categories'
+import { getProducts } from '@/actions/products/get-products'
+import { getPromotions } from '@/actions/promotions/get-promotions'
+import { ProductList } from '@/components/products/product-list'
+import { PromotionBanner } from '@/components/promotion-banner'
+import { SidebarCategories } from '@/components/sidebar-categories'
 
 export default async function Home() {
   const products = await getProducts()

@@ -1,38 +1,38 @@
 // Archivo: PrivacyPolicyPage.tsx
-"use client"
+'use client'
 
-import { motion } from "framer-motion"
-import { ArrowLeft } from "lucide-react"
-import Link from "next/link"
+import { motion } from 'framer-motion'
+import { ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
 
 const sections = [
   {
-    title: "1. Información que recopilamos",
+    title: '1. Información que recopilamos',
     content: [
-      "Recopilamos información personal cuando el usuario contacta al negocio mediante WhatsApp, realiza un pedido o deja un comentario en el mensaje.",
-      "La información puede incluir nombre, número de teléfono, y contenido del mensaje enviado a través de WhatsApp.",
-    ],
+      'Recopilamos información personal cuando el usuario contacta al negocio mediante WhatsApp, realiza un pedido o deja un comentario en el mensaje.',
+      'La información puede incluir nombre, número de teléfono, y contenido del mensaje enviado a través de WhatsApp.'
+    ]
   },
   {
-    title: "2. Uso de la información",
+    title: '2. Uso de la información',
     content: [
-      "La información proporcionada se utiliza únicamente para procesar los pedidos, brindar atención al cliente y mejorar el servicio.",
-      "No se comparte ni se vende la información a terceros.",
-    ],
+      'La información proporcionada se utiliza únicamente para procesar los pedidos, brindar atención al cliente y mejorar el servicio.',
+      'No se comparte ni se vende la información a terceros.'
+    ]
   },
   {
-    title: "3. Seguridad",
+    title: '3. Seguridad',
     content: [
-      "Tomamos medidas razonables para proteger los datos recibidos a través de WhatsApp, pero no garantizamos la seguridad total debido a la naturaleza del medio.",
-      "El almacenamiento de datos es responsabilidad exclusiva del negocio receptor.",
-    ],
+      'Tomamos medidas razonables para proteger los datos recibidos a través de WhatsApp, pero no garantizamos la seguridad total debido a la naturaleza del medio.',
+      'El almacenamiento de datos es responsabilidad exclusiva del negocio receptor.'
+    ]
   },
   {
-    title: "4. Contacto",
+    title: '4. Contacto',
     content: [
-      "Si tienes dudas sobre esta política, puedes comunicarte directamente con el negocio a través del número de WhatsApp disponible en el menú digital.",
-    ],
-  },
+      'Si tienes dudas sobre esta política, puedes comunicarte directamente con el negocio a través del número de WhatsApp disponible en el menú digital.'
+    ]
+  }
 ]
 
 export default function PrivacyPolicyPage() {
@@ -42,7 +42,7 @@ export default function PrivacyPolicyPage() {
         className="sticky top-0 z-20 w-full border-b bg-background"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 100, damping: 15 }}
+        transition={{ type: 'spring', stiffness: 100, damping: 15 }}
       >
         <div className="container flex h-16 items-center px-4 md:px-6">
           <motion.div whileHover={{ x: -5 }} whileTap={{ scale: 0.95 }}>

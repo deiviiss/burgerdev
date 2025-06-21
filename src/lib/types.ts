@@ -1,11 +1,11 @@
 export interface ProductOption {
-  id?: string;
-  productId: string;
-  name: string;
-  price: number;
-  type: "size" | "ingredient" | "variable" | "note";
-  quantity: number;
-  isAvailable: boolean;
+  id?: string
+  productId: string
+  name: string
+  price: number
+  type: 'size' | 'ingredient' | 'variable' | 'note'
+  quantity: number
+  isAvailable: boolean
 }
 
 export interface Product {
@@ -40,7 +40,7 @@ export interface Promotion {
   createdAt: Date
 }
 
-export type CartItemPayload = {
+export interface CartItemPayload {
   itemId: string
   categoryId: string
   quantity: number
@@ -48,22 +48,22 @@ export type CartItemPayload = {
 }
 
 export enum Role {
-  ADMIN = "ADMIN",
-  USER = "USER"
+  ADMIN = 'ADMIN',
+  USER = 'USER'
 }
 
-export type User = {
+export interface User {
   id: string
   name: string
   email: string
   phoneNumber: string
   role: Role
   password: string
-  orders: Order[]
+  orders?: Order[]
   createdAt: Date
 }
 
-export type PhoneNumberMenu = {
+export interface PhoneNumberMenu {
   id: string
   label: string
   number: string

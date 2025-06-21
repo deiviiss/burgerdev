@@ -1,8 +1,8 @@
+import { ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
-import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 
 export default async function AuthLayout({
   children

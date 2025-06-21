@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from 'zod'
 
 export const promotionSchema = z.object({
   id: z
@@ -55,10 +55,10 @@ export const promotionSchema = z.object({
     .union([
       z
         .string()
-        .url("La imagen es requerida")
-        .min(1, "La imagen es obligatoria"),
+        .url('La imagen es requerida')
+        .min(1, 'La imagen es obligatoria'),
       z
-        .literal("upload_pending") // string dummy value to pass validation
+        .literal('upload_pending') // string dummy value to pass validation
     ]),
   categoryId: z
     .string({

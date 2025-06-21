@@ -1,12 +1,12 @@
-import { z } from "zod"
+import { z } from 'zod'
 
 export const optionSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1).max(100),
   price: z.coerce.number().nonnegative(),
   isAvailable: z.boolean().default(true),
-  type: z.enum(["size", "ingredient", "variable", "note"]),
-  quantity: z.number().int().nonnegative().optional().default(0),
+  type: z.enum(['size', 'ingredient', 'variable', 'note']),
+  quantity: z.number().int().nonnegative().optional().default(0)
 })
 
 export const productSchema = z.object({
@@ -42,8 +42,8 @@ export const productSchema = z.object({
     .transform(val => Number(val.toFixed(2))),
   image: z
     .union([
-      z.string().url("La imagen es requerida").min(1, "La imagen es obligatoria"),
-      z.literal("upload_pending") // string dummy value to pass validation
+      z.string().url('La imagen es requerida').min(1, 'La imagen es obligatoria'),
+      z.literal('upload_pending') // string dummy value to pass validation
     ]),
   categoryId: z
     .string({

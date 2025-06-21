@@ -1,10 +1,10 @@
-import { ProductOption } from '@/lib/types';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { type ProductOption } from '@/lib/types'
 
 interface ProductSelectorProps {
-  options: ProductOption[];
-  selectedOptionId: string;
-  setSelectedOptionId: React.Dispatch<React.SetStateAction<string>>;
+  options: ProductOption[]
+  selectedOptionId: string
+  setSelectedOptionId: React.Dispatch<React.SetStateAction<string>>
 }
 
 const ProductSelector = ({
@@ -12,7 +12,6 @@ const ProductSelector = ({
   selectedOptionId,
   setSelectedOptionId
 }: ProductSelectorProps) => {
-
   return (
     <div className="space-y-4">
       {/* Options Select */}
@@ -28,7 +27,7 @@ const ProductSelector = ({
                 <div className="flex justify-between items-center w-full">
                   <span>{option.name}</span>
                   <span className="text-muted-foreground ml-4">
-                    {option.price > 0 ? `$${option.price.toFixed(2)}` : "Incluido"}
+                    {option.price > 0 ? `$${option.price.toFixed(2)}` : 'Incluido'}
                   </span>
                 </div>
               </SelectItem>
@@ -37,7 +36,7 @@ const ProductSelector = ({
         </Select>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductSelector;
+export default ProductSelector

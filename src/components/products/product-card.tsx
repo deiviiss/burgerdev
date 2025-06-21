@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import Image from "next/image"
-import { useState } from "react"
-import { motion } from "framer-motion"
-import type { Product } from "@/lib/types"
-import { Button } from "@/components/ui/button"
-import { useCartStore } from "@/store"
-import { toast } from "sonner"
-import ProductOptionsModal from "./product-options-modal"
-import { ProductOptionButton } from "./product-options-button"
+import { motion } from 'framer-motion'
+import Image from 'next/image'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { ProductOptionButton } from './product-options-button'
+import ProductOptionsModal from './product-options-modal'
+import { Button } from '@/components/ui/button'
+import type { Product } from '@/lib/types'
+import { useCartStore } from '@/store'
 
 interface ProductCardProps {
   product: Product
@@ -19,13 +19,13 @@ const cardVariants = {
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.3 },
+    transition: { duration: 0.3 }
   },
   hover: {
     y: -5,
-    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-    transition: { duration: 0.2 },
-  },
+    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    transition: { duration: 0.2 }
+  }
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
@@ -35,7 +35,6 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleAddToCart = () => {
-
     if (hasOptions) {
       setIsModalOpen(true)
       return
@@ -47,7 +46,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       addToCart(product)
       setIsSubmitting(false)
       toast.success(`${product.name} agregado al carrito`, {
-        position: "bottom-right",
+        position: 'bottom-right'
       })
     }, 300)
   }
@@ -57,7 +56,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <motion.div className="bg-card dark:border dark:border-primary rounded-lg shadow-md overflow-hidden h-full flex flex-col" variants={cardVariants} whileHover="hover">
         <div className="relative h-48">
           <Image
-            src={product.image || "/images/placeholder.webp"}
+            src={product.image || '/images/placeholder.webp'}
             alt={product.name}
             fill
             className="object-cover"
@@ -84,7 +83,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </motion.div>
 
-      <ProductOptionsModal product={product} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <ProductOptionsModal product={product} isOpen={isModalOpen} onClose={() => { setIsModalOpen(false) }} />
 
     </>
   )

@@ -1,4 +1,4 @@
-import { create } from "zustand"
+import { create } from 'zustand'
 
 interface UIState {
   // Sidebar de carrito
@@ -17,13 +17,13 @@ interface UIState {
 export const useUiStore = create<UIState>((set) => ({
   // Estado inicial del sidebar de carrito
   isSideCartOpen: false,
-  openSideCart: () => set({ isSideCartOpen: true }),
-  closeSideCart: () => set({ isSideCartOpen: false }),
-  toggleSideCart: () => set((state) => ({ isSideCartOpen: !state.isSideCartOpen })),
+  openSideCart: () => { set({ isSideCartOpen: true }) },
+  closeSideCart: () => { set({ isSideCartOpen: false }) },
+  toggleSideCart: () => { set((state) => ({ isSideCartOpen: !state.isSideCartOpen })) },
 
   // Estado inicial del sidebar de categorías
   isCategoriesOpen: false,
-  openCategories: () => set({ isCategoriesOpen: true }),
-  closeCategories: () => set({ isCategoriesOpen: false }),
-  toggleCategories: () => set((state) => ({ isCategoriesOpen: !state.isCategoriesOpen })),
+  openCategories: () => { set({ isCategoriesOpen: true }) },
+  closeCategories: () => { set({ isCategoriesOpen: false }) },
+  toggleCategories: () => { set((state) => ({ isCategoriesOpen: !state.isCategoriesOpen })) }
 }))

@@ -1,15 +1,15 @@
 'use server'
 
-import { prisma } from "@/lib/prisma"
-import { Product, ProductOption } from "@/lib/types"
+import { prisma } from '@/lib/prisma'
+import { type Product, type ProductOption } from '@/lib/types'
 
 function groupOptionsByType(options: ProductOption[] = []) {
-  return options.reduce((acc, option) => {
+  return options.reduce<Record<string, ProductOption[]>>((acc, option) => {
     const type = option.type
     if (!acc[type]) acc[type] = []
     acc[type].push(option)
     return acc
-  }, {} as Record<string, ProductOption[]>)
+  }, {})
 }
 
 export async function getProducts(): Promise<Product[]> {
@@ -22,12 +22,12 @@ export async function getProducts(): Promise<Product[]> {
       orderBy: [
         {
           category: {
-            name: "asc"
-          },
+            name: 'asc'
+          }
         },
         {
-          name: "asc",
-        },
+          name: 'asc'
+        }
       ]
     })
 
@@ -38,7 +38,7 @@ export async function getProducts(): Promise<Product[]> {
       groupedOptions: groupOptionsByType(p.options)
     }))
   } catch (error) {
-    console.error("Error al obtener productos:", error)
+    console.error('Error al obtener productos:', error)
     return []
   }
 }

@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import ProductsTab from "./products-tab"
-import CategoriesTab from "./categories-tab"
-import PromotionsTab from "./promotions-tab"
-import OrdersTab from "./orders-tab"
+import { useState } from 'react'
+import CategoriesTab from './categories-tab'
+import OrdersTab from './orders-tab'
+import ProductsTab from './products-tab'
+import PromotionsTab from './promotions-tab'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function AdminTabs() {
-  const [activeTab, setActiveTab] = useState("products")
+  const [activeTab, setActiveTab] = useState('products')
 
   return (
     <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="px-2">

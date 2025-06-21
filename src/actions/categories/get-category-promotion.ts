@@ -1,8 +1,9 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { type Category } from '@/lib/types'
 
-export const getCategoryPromotion = async () => {
+export const getCategoryPromotion = async (): Promise<Category | null> => {
   try {
     const category = await prisma.category.findFirst({
       where: {
@@ -14,7 +15,6 @@ export const getCategoryPromotion = async () => {
 
     return category
   } catch (error) {
-    console.error('Error fetching category promotion:', error)
     return null
   }
 }

@@ -1,7 +1,7 @@
-import { Suspense } from "react"
-import AdminTabs from "@/components/admin/admin-tabs"
-import AdminHeader from "@/components/admin/admin-header"
-import Loading from "@/app/loading"
+import { Suspense } from 'react'
+import Loading from '@/app/loading'
+import AdminHeader from '@/components/admin/admin-header'
+import AdminTabs from '@/components/admin/admin-tabs'
 
 export default function AdminPage() {
   return (

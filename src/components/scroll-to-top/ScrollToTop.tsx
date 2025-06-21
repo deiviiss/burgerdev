@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { motion, AnimatePresence } from 'framer-motion'
+import { ChevronUp } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false)
@@ -18,15 +18,15 @@ export default function ScrollToTop() {
       }
     }
 
-    window.addEventListener("scroll", toggleVisibility)
-    return () => window.removeEventListener("scroll", toggleVisibility)
+    window.addEventListener('scroll', toggleVisibility)
+    return () => { window.removeEventListener('scroll', toggleVisibility) }
   }, [])
 
   // Function to smoothly scroll to the top
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: 'smooth'
     })
   }
 
@@ -34,7 +34,7 @@ export default function ScrollToTop() {
     <AnimatePresence>
       {isVisible && (
         <Button
-          size={"lg"}
+          size={'lg'}
           className="fixed bottom-3 right-3 z-40"
           asChild
         >
