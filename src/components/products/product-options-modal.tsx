@@ -1,17 +1,17 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { X, ShoppingCart, Minus, Plus, Info, MessageCircle, MessageSquare } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import type { Product } from "@/lib/types"
-import { useCartStore } from "@/store"
-import { toast } from "sonner"
-import Image from "next/image"
-import ProductSelector from "@/components/products/product-selector"
-import { ProductOptionsMultiple } from "@/components/products/product-options-multiple"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Textarea } from "@/components/ui/textarea"
+import { motion, AnimatePresence } from 'framer-motion'
+import { X, ShoppingCart, Minus, Plus, Info, MessageCircle, MessageSquare } from 'lucide-react'
+import Image from 'next/image'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { ProductOptionsMultiple } from '@/components/products/product-options-multiple'
+import ProductSelector from '@/components/products/product-selector'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import type { Product } from '@/lib/types'
+import { useCartStore } from '@/store'
 
 interface ProductOptionsModalProps {
   product: Product
@@ -20,9 +20,9 @@ interface ProductOptionsModalProps {
 }
 
 export default function ProductOptionsModal({ product, isOpen, onClose }: ProductOptionsModalProps) {
-  const [selectedOptionId, setSelectedOptionId] = useState<string>("") // Size
+  const [selectedOptionId, setSelectedOptionId] = useState<string>('') // Size
   const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>([]) // Ingredients
-  const [specialNote, setSpecialNote] = useState<string>("") // Note
+  const [specialNote, setSpecialNote] = useState<string>('') // Note
 
   const [quantity, setQuantity] = useState<number>(1)
   const { addToCart } = useCartStore()
@@ -33,15 +33,17 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
   const handleAddToCart = () => {
     if (!selectedOption && selectedOptions.length === 0 && !isVariableOnly) return
 
+    const noteOptionDefaultValues = {
+      id: crypto.randomUUID(),
+      name: specialNote,
+      price: 0,
+      quantity: 1,
+      isAvailable: true,
+      type: 'note'
+    }
+
     const noteOption = specialNote
-      ? [{
-        id: crypto.randomUUID(),
-        name: specialNote,
-        price: 0,
-        quantity: 1,
-        isAvailable: true,
-        type: "note"
-      }]
+      ? [noteOptionDefaultValues]
       : []
 
     const options = [
@@ -49,10 +51,10 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
       ...(selectedOptions || []),
       ...noteOption
     ]
-    console.log('options', options)
+
     const productWithSelectedOption = {
       ...product,
-      options,
+      options
     }
 
     // Add the specified quantity to the cart
@@ -60,19 +62,19 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
       addToCart(productWithSelectedOption as Product)
     }
 
-    const quantityText = quantity === 1 ? "" : ` (${quantity} unidades)`
+    const quantityText = quantity === 1 ? '' : ` (${quantity} unidades)`
     toast.success(`${product.name} ${quantityText} agregado al carrito`)
 
-    setSpecialNote("")
+    setSpecialNote('')
     onClose()
-    setSelectedOptionId("")
+    setSelectedOptionId('')
     setSelectedOptionIds([])
     setQuantity(1)
   }
 
   const handleClose = () => {
     onClose()
-    setSelectedOptionId("")
+    setSelectedOptionId('')
     setSelectedOptionIds([])
     setQuantity(1)
   }
@@ -82,9 +84,9 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
     if (newQuantity >= 1 && newQuantity <= 99) {
       setQuantity(newQuantity)
     }
-  };
+  }
 
-  const noteOptions = product.options?.filter((option) => option.type === "note") || []
+  const noteOptions = product.options?.filter((option) => option.type === 'note') || []
   const hasNoteOptions = noteOptions.length > 0
   const variablePriceOptions = product.groupedOptions?.variable || []
   const sizeOptions = product.groupedOptions?.size || []
@@ -104,7 +106,6 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
         : hasIngredientOptions
           ? selectedOptionIds.length > 0
           : true
-
 
   const showQuantitySelector = selectedOption || selectedOptionIds.length > 0
 
@@ -133,7 +134,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
             <div className="bg-muted rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-hidden border">
               {/* Header */}
               <div className="flex justify-between items-center p-4 border-b">
-                <h2 className="text-lg font-semibold">{hasVariableOptions ? "Precio Variable" : "Elegir opción"}</h2>
+                <h2 className="text-lg font-semibold">{hasVariableOptions ? 'Precio Variable' : 'Elegir opción'}</h2>
                 <button
                   onClick={handleClose}
                   className="p-1 rounded-full hover:bg-muted transition-colors"
@@ -149,7 +150,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                 <div className="flex gap-3 mb-6">
                   <div className="relative h-20 w-20 rounded-md overflow-hidden flex-shrink-0">
                     <Image
-                      src={product.image || "/placeholder.svg?height=80&width=80"}
+                      src={product.image || '/placeholder.svg?height=80&width=80'}
                       alt={product.name}
                       fill
                       className="object-cover"
@@ -231,7 +232,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                         <Button
                           variant="outline"
                           size="icon"
-                          onClick={() => handleQuantityChange(-1)}
+                          onClick={() => { handleQuantityChange(-1) }}
                           disabled={quantity <= 1}
                           className="h-8 w-8"
                         >
@@ -245,7 +246,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                         <Button
                           variant="outline"
                           size="icon"
-                          onClick={() => handleQuantityChange(1)}
+                          onClick={() => { handleQuantityChange(1) }}
                           disabled={quantity >= 99}
                           className="h-8 w-8"
                         >
@@ -270,7 +271,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                       <div className="bg-muted border border-primary/20 rounded-lg p-3">
                         <Textarea
                           value={specialNote}
-                          onChange={(e) => setSpecialNote(e.target.value)}
+                          onChange={(e) => { setSpecialNote(e.target.value) }}
                           placeholder="Ej: sin cebolla, con doble queso, bien cocido, etc."
                           className="min-h-[80px] resize-none border-primary focus:border-secondary focus:ring-secondary"
                           maxLength={200}

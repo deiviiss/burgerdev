@@ -1,7 +1,7 @@
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
-import type { Product } from "@/lib/types"
-import { getProductTotal } from "@/lib/utils"
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import type { Product } from '@/lib/types'
+import { getProductTotal } from '@/lib/utils'
 
 interface CartItem {
   cartItemId: string
@@ -27,7 +27,14 @@ export const useCartStore = create<CartState>()(
 
       addToCart: (product: Product) => {
         const options = product.options || []
-        const optionsPart = options.length > 0 ? `-${options.map(o => o.id).sort().join("-")}` : ""
+        // Generate a unique identifier for the product considering its selected options (sorted by id)
+        // This allows distinguishing different variants of the same product (e.g., with different ingredients)
+        const optionsPart = options.length > 0
+          ? `-${options
+            .map(o => o.id)
+            .sort((a, b) => (a ?? '').localeCompare(b ?? ''))
+            .join('-')}`
+          : ''
         const cartItemId = `${product.id}${optionsPart}`
         const cart = get().cart
 
@@ -51,9 +58,9 @@ export const useCartStore = create<CartState>()(
           cartItemId,
           product: {
             ...product,
-            options: newOptions,
+            options: newOptions
           },
-          quantity: 1, // Only 1 unit of this combination
+          quantity: 1 // Only 1 unit of this combination
         }
 
         set({ cart: [...cart, newItem] })
@@ -89,10 +96,10 @@ export const useCartStore = create<CartState>()(
         return get().cart.reduce((total, item) => {
           return total + getProductTotal(item.product) * item.quantity
         }, 0)
-      },
+      }
     }),
     {
-      name: "cart-storage",
-    },
-  ),
+      name: 'cart-storage'
+    }
+  )
 )

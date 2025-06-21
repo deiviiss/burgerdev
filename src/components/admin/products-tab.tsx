@@ -1,38 +1,38 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import type { Product, Category, ProductOption } from "@/lib/types"
-import { PlusCircle, Pencil, Trash2, Save, X, Trash, Plus, Tag } from "lucide-react"
-import ImageUpload from "@/components/image-upload"
-import { getProducts } from "@/actions/products/get-products"
-import { getCategories } from "@/actions/categories/get-categories"
-import { useForm } from "react-hook-form"
-import { productSchema } from "@/schemas/product.schema"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { createUpdateProduct } from "@/actions/products/create-update-product"
-import { toast } from "sonner"
-import Loading from "@/app/loading"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { deleteProduct } from "@/actions/products/delete-product-by-id"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { deleteImageFromCloudinary } from "@/actions/products/delete-image-from-cloudinary"
-import { DialogDescription } from "@radix-ui/react-dialog"
-import Image from "next/image"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { BsCash } from "react-icons/bs";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { DialogDescription } from '@radix-ui/react-dialog'
+import { PlusCircle, Pencil, Trash2, Save, X, Trash, Plus, Tag } from 'lucide-react'
+import Image from 'next/image'
+import { useState, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { BsCash } from 'react-icons/bs'
+import { toast } from 'sonner'
+import { type z } from 'zod'
+import { getCategories } from '@/actions/categories/get-categories'
+import { createUpdateProduct } from '@/actions/products/create-update-product'
+import { deleteImageFromCloudinary } from '@/actions/products/delete-image-from-cloudinary'
+import { deleteProduct } from '@/actions/products/delete-product-by-id'
+import { getProducts } from '@/actions/products/get-products'
+import Loading from '@/app/loading'
+import ImageUpload from '@/components/image-upload'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
+import type { Product, Category, ProductOption } from '@/lib/types'
+import { productSchema } from '@/schemas/product.schema'
 
 export default function ProductsTab() {
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState('')
 
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -40,7 +40,7 @@ export default function ProductsTab() {
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null)
-  const [newOption, setNewOption] = useState<Partial<ProductOption>>({ name: "", price: 0, isAvailable: false, type: "size" })
+  const [newOption, setNewOption] = useState<Partial<ProductOption>>({ name: '', price: 0, isAvailable: false, type: 'size' })
   const placeholderNewOption =
     newOption.type === 'size'
       ? 'Ej: Grande, Mediana...'
@@ -50,8 +50,7 @@ export default function ProductsTab() {
           ? 'Precio a confirmar por WhatsApp'
           : newOption.type === 'note'
             ? 'Sin cebolla, sin tomate, sin lechuga...'
-            : 'Escribe una opción...';
-
+            : 'Escribe una opción...'
 
   const [showDeleteOptionsModal, setShowDeleteOptionsModal] = useState(false)
   const [optionToDeleteIndex, setOptionToDeleteIndex] = useState<number | null>(null)
@@ -61,11 +60,11 @@ export default function ProductsTab() {
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: currentProduct?.name || "",
-      description: currentProduct?.description || "",
+      name: currentProduct?.name || '',
+      description: currentProduct?.description || '',
       price: currentProduct?.price || 0,
       image: currentProduct?.image,
-      categoryId: currentProduct?.categoryId || "",
+      categoryId: currentProduct?.categoryId || '',
       isAvailable: currentProduct?.isAvailable || true,
       options: currentProduct?.options || []
     }
@@ -80,7 +79,6 @@ export default function ProductsTab() {
         setProducts(productsData)
         setCategories(categoriesData)
       } catch (error) {
-        console.error("Error al cargar los datos:", error)
       } finally {
         setIsLoading(false)
       }
@@ -109,11 +107,11 @@ export default function ProductsTab() {
     setIsEditing(true)
 
     form.reset({
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       price: 0,
-      image: "",
-      categoryId: "",
+      image: '',
+      categoryId: '',
       isAvailable: true,
       options: []
     })
@@ -127,7 +125,7 @@ export default function ProductsTab() {
 
   const handleCancel = () => {
     setCurrentProduct(null)
-    setNewOption({ name: "", price: 0, isAvailable: true, type: "size" })
+    setNewOption({ name: '', price: 0, isAvailable: true, type: 'size' })
     setIsEditing(false)
     setSelectedImage(null)
   }
@@ -135,7 +133,7 @@ export default function ProductsTab() {
   // Functions to manage product options
   const addOption = () => {
     if (!newOption.name?.trim() || !newOption.type) {
-      toast.error("El nombre es requerido.")
+      toast.error('El nombre es requerido.')
       return
     }
 
@@ -148,28 +146,28 @@ export default function ProductsTab() {
       type: newOption.type || 'size'
     }
 
-    const current = form.getValues("options") || []
-    form.setValue("options", [...current, newOpt])
-    setNewOption({ name: "", price: 0, isAvailable: true, type: "size" })
-    toast.success("Opción agregada correctamente")
+    const current = form.getValues('options') || []
+    form.setValue('options', [...current, newOpt])
+    setNewOption({ name: '', price: 0, isAvailable: true, type: 'size' })
+    toast.success('Opción agregada correctamente')
   }
 
   const updateOption = (index: number, field: keyof ProductOption, value: any) => {
-    const options = form.getValues("options") || []
+    const options = form.getValues('options') || []
 
     const updated = [...options]
     updated[index] = {
       ...updated[index],
       [field]: value
     }
-    form.setValue("options", updated)
+    form.setValue('options', updated)
   }
 
   const removeOption = (index: number) => {
-    const current = form.getValues("options") || []
+    const current = form.getValues('options') || []
     const updated = [...current]
     updated.splice(index, 1)
-    form.setValue("options", updated)
+    form.setValue('options', updated)
   }
 
   const handleDelete = async (productId: string) => {
@@ -180,11 +178,11 @@ export default function ProductsTab() {
       const { ok, message } = await deleteProduct(productId)
 
       if (!ok) {
-        toast.error(message || "No se pudo eliminar el producto")
+        toast.error(message || 'No se pudo eliminar el producto')
         return
       }
 
-      toast.success(message || "Producto eliminado correctamente")
+      toast.success(message || 'Producto eliminado correctamente')
 
       const updated = await getProducts()
       setProducts(updated)
@@ -192,8 +190,7 @@ export default function ProductsTab() {
       setShowDeleteModal(false)
       setProductToDelete(null)
     } catch (error) {
-      console.error("Error al eliminar el producto:", error)
-      toast.error("Ocurrió un error al eliminar el producto")
+      toast.error('Ocurrió un error al eliminar el producto')
     }
   }
 
@@ -201,7 +198,7 @@ export default function ProductsTab() {
     setIsSubmitting(true)
 
     if (!selectedImage && !values.image) {
-      toast.error("La imagen es obligatoria")
+      toast.error('La imagen es obligatoria')
       setIsSubmitting(false)
       return
     }
@@ -210,18 +207,18 @@ export default function ProductsTab() {
 
     if (selectedImage) {
       const formDataImage = new FormData()
-      formDataImage.append("image", selectedImage)
+      formDataImage.append('image', selectedImage)
 
       try {
-        const res = await fetch("/api/upload-product-image", {
-          method: "POST",
-          body: formDataImage,
+        const res = await fetch('/api/upload-product-image', {
+          method: 'POST',
+          body: formDataImage
         })
 
         const data = await res.json()
 
         if (!data.ok) {
-          toast.error(data.message || "Error al subir la imagen")
+          toast.error(data.message as string || 'Error al subir la imagen')
           setIsSubmitting(false)
           return
         }
@@ -231,14 +228,13 @@ export default function ProductsTab() {
         if (currentProduct?.image) {
           const { ok, message } = await deleteImageFromCloudinary(currentProduct.image)
           if (!ok) {
-            toast.error(message || "Error al eliminar la imagen anterior")
+            toast.error(message || 'Error al eliminar la imagen anterior')
             setIsSubmitting(false)
             return
           }
         }
       } catch (error) {
-        console.error("Error al subir la imagen:", error)
-        toast.error("Error inesperado al subir la imagen")
+        toast.error('Error inesperado al subir la imagen')
         setIsSubmitting(false)
         return
       }
@@ -250,28 +246,28 @@ export default function ProductsTab() {
     }
 
     const formData = new FormData()
-    formData.append("name", updatedValues.name)
-    formData.append("description", updatedValues?.description)
-    formData.append("price", updatedValues.price.toString()) // Convert number to string
-    formData.append("image", updatedValues.image)
-    formData.append("categoryId", updatedValues.categoryId)
-    formData.append("isAvailable", updatedValues.isAvailable.toString())
-    formData.append("options", JSON.stringify(updatedValues.options))
+    formData.append('name', updatedValues.name)
+    formData.append('description', updatedValues?.description)
+    formData.append('price', updatedValues.price.toString()) // Convert number to string
+    formData.append('image', updatedValues.image)
+    formData.append('categoryId', updatedValues.categoryId)
+    formData.append('isAvailable', updatedValues.isAvailable.toString())
+    formData.append('options', JSON.stringify(updatedValues.options))
 
     // If we're editing an existing product
     if (currentProduct?.id) {
-      formData.append("id", currentProduct.id)
+      formData.append('id', currentProduct.id)
     }
 
     const { ok, message } = await createUpdateProduct(formData)
 
     if (!ok) {
-      toast.error(message || "No se pudo guardar el producto")
+      toast.error(message || 'No se pudo guardar el producto')
       setIsSubmitting(false)
       return
     }
 
-    toast.success(message || "Producto guardado correctamente")
+    toast.success(message || 'Producto guardado correctamente')
     setIsSubmitting(false)
     setIsEditing(false)
     setCurrentProduct(null)
@@ -287,8 +283,7 @@ export default function ProductsTab() {
   return (
     <>
       {!isEditing
-        ?
-        (
+        ? (
           <>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">Lista de Productos</h2>
@@ -296,7 +291,7 @@ export default function ProductsTab() {
                 <Input
                   placeholder="Buscar producto..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => { setSearchTerm(e.target.value) }}
                   className="w-full md:w-64"
                 />
                 <Button onClick={handleAddNew} className="bg-primary hover:bg-primary/80">
@@ -310,101 +305,97 @@ export default function ProductsTab() {
 
             {products.length === 0
               ? (
-                <div className="text-center py-8 text-muted-foreground">No hay productos. ¡Agrega uno nuevo!</div>
-              )
-              :
-              (
+                <div className="text-center py-8 text-muted-foreground">No hay productos. ¡Agrega uno nuevo!</div>)
+              : (
                 <>
                   {
-                    products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase())).length === 0 ? (
-                      <div className="text-center py-8 text-muted-foreground">No hay productos que coincidan con tu búsqueda.</div>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {
-                          products.filter((product) => product.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map((product) => {
-                            const category = categories.find((c) => c.id === product.categoryId)
-                            const hasOptions = product.options && product.options.length > 0
+                    products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase())).length === 0
+                      ? (
+                        <div className="text-center py-8 text-muted-foreground">No hay productos que coincidan con tu búsqueda.</div>)
+                      : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {
+                            products.filter((product) => product.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())).map((product) => {
+                              const category = categories.find((c) => c.id === product.categoryId)
+                              const hasOptions = product.options && product.options.length > 0
 
-                            return (
-                              <Card key={product.id} className="overflow-hidden">
-                                <div className="relative h-48">
-                                  <Image
-                                    src={product.image || "/placeholder.svg?height=200&width=300"}
-                                    alt={product.name}
-                                    fill
-                                    className="object-cover"
-                                  />
-                                  <div className="absolute top-2 right-2 flex gap-1">
-                                    <Badge variant={product.isAvailable ? "default" : "secondary"} className="text-xs">
-                                      {product.isAvailable ? "Activo" : "Inactivo"}
-                                    </Badge>
-                                    {hasOptions && (
-                                      <Badge variant="secondary" className="text-xs">
-                                        {product.options?.length} opciones
+                              return (
+                                <Card key={product.id} className="overflow-hidden">
+                                  <div className="relative h-48">
+                                    <Image
+                                      src={product.image || '/placeholder.svg?height=200&width=300'}
+                                      alt={product.name}
+                                      fill
+                                      className="object-cover"
+                                    />
+                                    <div className="absolute top-2 right-2 flex gap-1">
+                                      <Badge variant={product.isAvailable ? 'default' : 'secondary'} className="text-xs">
+                                        {product.isAvailable ? 'Activo' : 'Inactivo'}
                                       </Badge>
-                                    )}
+                                      {hasOptions && (
+                                        <Badge variant="secondary" className="text-xs">
+                                          {product.options?.length} opciones
+                                        </Badge>
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
 
-                                <CardHeader className="pb-3">
-                                  <div className="flex justify-between items-start">
-                                    <div className="flex-1">
-                                      <CardTitle className="text-lg line-clamp-1">{product.name}</CardTitle>
-                                      <div className="flex items-center gap-2 mt-1">
-                                        <Tag className="h-3 w-3 text-gray-500" />
-                                        <span className="text-sm text-gray-600">{category?.name || "Sin categoría"}</span>
+                                  <CardHeader className="pb-3">
+                                    <div className="flex justify-between items-start">
+                                      <div className="flex-1">
+                                        <CardTitle className="text-lg line-clamp-1">{product.name}</CardTitle>
+                                        <div className="flex items-center gap-2 mt-1">
+                                          <Tag className="h-3 w-3 text-gray-500" />
+                                          <span className="text-sm text-gray-600">{category?.name || 'Sin categoría'}</span>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </CardHeader>
+                                  </CardHeader>
 
-                                <CardContent className="pt-0">
-                                  {product.description && (
-                                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
-                                  )}
+                                  <CardContent className="pt-0">
+                                    {product.description && (
+                                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+                                    )}
 
-                                  <div className="flex items-center justify-between mb-4">
-                                    <div className="flex items-center gap-2">
-                                      <BsCash className="h-4 w-4 text-green-600" />
-                                      <span className="text-lg font-bold">{product.price > 0 ? product.price.toFixed(2) : 'Precio en opciones'}</span>
+                                    <div className="flex items-center justify-between mb-4">
+                                      <div className="flex items-center gap-2">
+                                        <BsCash className="h-4 w-4 text-green-600" />
+                                        <span className="text-lg font-bold">{product.price > 0 ? product.price.toFixed(2) : 'Precio en opciones'}</span>
+                                      </div>
                                     </div>
-                                  </div>
 
-                                  <div className="flex gap-2">
-                                    <Button variant="outline" size="sm" onClick={() => handleEdit(product)} className="flex-1">
-                                      <Pencil className="h-4 w-4 mr-1" />
-                                      Editar
-                                    </Button>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => {
-                                        setProductToDelete(product)
-                                        setShowDeleteModal(true)
-                                      }}
-                                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                </CardContent>
-                              </Card>
-                            )
-                          })
-                        }
-                      </div>
-                    )
+                                    <div className="flex gap-2">
+                                      <Button variant="outline" size="sm" onClick={() => { handleEdit(product) }} className="flex-1">
+                                        <Pencil className="h-4 w-4 mr-1" />
+                                        Editar
+                                      </Button>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                          setProductToDelete(product)
+                                          setShowDeleteModal(true)
+                                        }}
+                                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              )
+                            })
+                          }
+                        </div>)
                   }
-                </>
-              )}
-          </>
-        )
-        :
-        (
+                </>)
+            }
+          </>)
+        : (
           <div className="pb-5">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">
-                {currentProduct ? "Editar Producto" : "Nuevo Producto"}
+                {currentProduct ? 'Editar Producto' : 'Nuevo Producto'}
               </h2>
               <Button variant="ghost" onClick={handleCancel}>
                 <X className="h-4 w-4 mr-2" />
@@ -516,7 +507,7 @@ export default function ProductsTab() {
                               // If there's no image, I'll leave.If there's an image, I'll continue.
                               setSelectedImage(file)
                               // string dummy value to pass validation
-                              form.setValue("image", file ? "upload_pending" : "", { shouldValidate: true })
+                              form.setValue('image', file ? 'upload_pending' : '', { shouldValidate: true })
                             }}
                           />
                           <FormMessage />
@@ -530,15 +521,15 @@ export default function ProductsTab() {
                         <h3 className="text-lg font-medium mb-4">Opciones del Producto</h3>
 
                         {/* Existing Options */}
-                        {(form.watch("options") || []).length > 0 && (
+                        {(form.watch('options') || []).length > 0 && (
                           <div className="space-y-3 mb-4">
                             <h4 className="text-sm font-medium text-foreground">Opciones existentes:</h4>
-                            {(form.watch("options") || []).map((option, index) => (
+                            {(form.watch('options') || []).map((option, index) => (
                               <div key={index} className="flex items-center gap-3 p-3 border rounded-lg bg-primary/10">
                                 <div className="flex-1">
                                   <Input
                                     value={option.name}
-                                    onChange={(e) => updateOption(index, "name", e.target.value)}
+                                    onChange={(e) => { updateOption(index, 'name', e.target.value) }}
                                     placeholder="Nombre de la opción"
                                     disabled={isSubmitting}
                                     className="mb-2"
@@ -548,7 +539,7 @@ export default function ProductsTab() {
                                     min="0"
                                     step="0.01"
                                     value={option.price}
-                                    onChange={(e) => updateOption(index, "price", Number.parseFloat(e.target.value) || 0)}
+                                    onChange={(e) => { updateOption(index, 'price', Number.parseFloat(e.target.value) || 0) }}
                                     placeholder="Precio"
                                     disabled={isSubmitting}
                                   />
@@ -557,7 +548,7 @@ export default function ProductsTab() {
                                   <div className="flex items-center space-x-2">
                                     <Switch
                                       checked={option.isAvailable}
-                                      onCheckedChange={(checked) => updateOption(index, "isAvailable", checked)}
+                                      onCheckedChange={(checked) => { updateOption(index, 'isAvailable', checked) }}
                                       disabled={isSubmitting}
                                     />
                                     <Label className="text-xs">Disponible</Label>
@@ -590,7 +581,7 @@ export default function ProductsTab() {
                           {/* select option type */}
                           <Select
                             value={newOption.type}
-                            onValueChange={(value) => setNewOption({ ...newOption, type: value as "size" | "ingredient" | "variable" })}
+                            onValueChange={(value) => { setNewOption({ ...newOption, type: value as 'size' | 'ingredient' | 'variable' }) }}
                             disabled={isSubmitting}
                           >
                             <SelectTrigger className="w-1/2">
@@ -598,16 +589,16 @@ export default function ProductsTab() {
                             </SelectTrigger>
                             <SelectContent>
 
-                              <SelectItem value={"size"}>
+                              <SelectItem value={'size'}>
                                 Tamaño
                               </SelectItem>
-                              <SelectItem value={"ingredient"}>
+                              <SelectItem value={'ingredient'}>
                                 Ingrediente
                               </SelectItem>
-                              <SelectItem value={"variable"}>
+                              <SelectItem value={'variable'}>
                                 Variable
                               </SelectItem>
-                              <SelectItem value={"note"}>
+                              <SelectItem value={'note'}>
                                 Nota
                               </SelectItem>
                             </SelectContent>
@@ -622,7 +613,7 @@ export default function ProductsTab() {
                               <Input
                                 id="optionName"
                                 value={newOption.name}
-                                onChange={(e) => setNewOption({ ...newOption, name: e.target.value })}
+                                onChange={(e) => { setNewOption({ ...newOption, name: e.target.value }) }}
                                 placeholder={placeholderNewOption}
                                 disabled={isSubmitting}
                               />
@@ -638,8 +629,7 @@ export default function ProductsTab() {
                                 min="0"
                                 step="0.01"
                                 value={newOption.price}
-                                onChange={(e) =>
-                                  setNewOption({ ...newOption, price: Number.parseFloat(e.target.value) || 0 })
+                                onChange={(e) => { setNewOption({ ...newOption, price: Number.parseFloat(e.target.value) || 0 }) }
                                 }
                                 placeholder="0.00"
                                 disabled={isSubmitting}
@@ -662,7 +652,7 @@ export default function ProductsTab() {
                           <div className="flex items-center space-x-2 mt-3">
                             <Switch
                               checked={newOption.isAvailable}
-                              onCheckedChange={(checked) => setNewOption({ ...newOption, isAvailable: checked })}
+                              onCheckedChange={(checked) => { setNewOption({ ...newOption, isAvailable: checked }) }}
                               disabled={isSubmitting}
                             />
                             <Label className="text-sm">Opción disponible</Label>
@@ -678,7 +668,7 @@ export default function ProductsTab() {
                         <FormItem className="md:col-span-2 flex items-center space-x-2 pt-2">
                           <Switch
                             checked={field.value}
-                            onCheckedChange={(checked) => field.onChange(checked)}
+                            onCheckedChange={(checked) => { field.onChange(checked) }}
                             disabled={isSubmitting}
                           />
                           <FormLabel>Producto Activo</FormLabel>
@@ -701,9 +691,7 @@ export default function ProductsTab() {
                 </div>
               </form>
             </Form>
-
-          </div >
-        )
+          </div >)
       }
 
       {/* delete modal */}
@@ -724,14 +712,14 @@ export default function ProductsTab() {
             <Button
               variant="outline"
               disabled={isSubmitting}
-              onClick={() => setShowDeleteModal(false)}
+              onClick={() => { setShowDeleteModal(false) }}
             >
               Cancelar
             </Button>
             <Button
               variant="destructive"
               disabled={isSubmitting}
-              onClick={() => handleDelete(productToDelete?.id || "")}
+              onClick={async () => { await handleDelete(productToDelete?.id || '') }}
             >
               Eliminar
             </Button>
@@ -750,7 +738,7 @@ export default function ProductsTab() {
           </DialogHeader>
 
           <div className="text-center my-4">
-            <p className="font-semibold text-lg">{optionToDeleteIndex !== null && form.watch("options")?.[optionToDeleteIndex]?.name}
+            <p className="font-semibold text-lg">{optionToDeleteIndex !== null && form.watch('options')?.[optionToDeleteIndex]?.name}
             </p>
           </div>
 
@@ -771,7 +759,7 @@ export default function ProductsTab() {
                   removeOption(optionToDeleteIndex)
                   setOptionToDeleteIndex(null)
                   setShowDeleteOptionsModal(false)
-                  toast.success("Opción eliminada correctamente")
+                  toast.success('Opción eliminada correctamente')
                 }
               }}
             >

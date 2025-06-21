@@ -16,7 +16,6 @@ export const authConfig: NextAuthConfig = {
       return token
     },
     session({ session, token }) {
-
       // TODO: fix type any
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       session.user = token.data as any

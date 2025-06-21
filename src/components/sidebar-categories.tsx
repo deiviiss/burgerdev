@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import { motion, AnimatePresence } from "framer-motion"
-import { X } from "lucide-react"
-import { useUiStore } from "@/store"
-import type { Category } from "@/lib/types"
-import { cn } from "@/lib/utils"
+import { motion, AnimatePresence } from 'framer-motion'
+import { X } from 'lucide-react'
+import type { Category } from '@/lib/types'
+import { cn } from '@/lib/utils'
+import { useUiStore } from '@/store'
 
 interface SidebarCategoriesProps {
   categories: Category[]
@@ -16,7 +16,7 @@ export function SidebarCategories({ categories }: SidebarCategoriesProps) {
   const scrollToCategory = (categoryId: string) => {
     const element = document.getElementById(`category-${categoryId}`)
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
+      element.scrollIntoView({ behavior: 'smooth' })
     }
     closeCategories()
   }
@@ -44,8 +44,8 @@ export function SidebarCategories({ categories }: SidebarCategoriesProps) {
       <div
         className={
           cn(
-            "fixed md:sticky top-0 left-0 h-full md:h-auto w-[250px] md:w-[190px] lg:w-full bg-card shadow-xl z-50 md:z-0 transform transition-transform duration-300 ease-in-out md:translate-x-0",
-            isCategoriesOpen ? "translate-x-0" : "-translate-x-full",
+            'fixed md:sticky top-0 left-0 h-full md:h-auto w-[250px] md:w-[190px] lg:w-full bg-card shadow-xl z-50 md:z-0 transform transition-transform duration-300 ease-in-out md:translate-x-0',
+            isCategoriesOpen ? 'translate-x-0' : '-translate-x-full'
           )
         }
       >
@@ -79,7 +79,7 @@ export function SidebarCategories({ categories }: SidebarCategoriesProps) {
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                   >
                     <motion.button
-                      onClick={() => scrollToCategory(category.id)}
+                      onClick={() => { scrollToCategory(category.id) }}
                       className="w-full text-left px-4 py-3 hover:bg-primary/10 transition-colors"
                       whileHover={{ x: 5 }}
                     >

@@ -1,20 +1,18 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { useSearchParams } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { GiShrimp } from "react-icons/gi";
-import { Eye, EyeOff, LogIn } from "lucide-react"
-import { toast } from "sonner"
-import { z } from "zod"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { login } from "@/actions/auth/login"
+import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import Image from "next/image"
+import { Eye, EyeOff } from 'lucide-react'
+import Image from 'next/image'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card'
+import { login } from '@/actions/auth/login'
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 
 const loginSchema = z.object({
   email: z.string({
@@ -62,9 +60,9 @@ export default function LoginForm() {
       toast.success(message)
       setIsSubmitting(false)
       // router.push("/admin")
-      window.location.replace("/admin")
+      window.location.replace('/admin')
     } catch (error) {
-      toast.error("Error al iniciar sesión")
+      toast.error('Error al iniciar sesión')
     } finally {
       setIsSubmitting(false)
     }
@@ -123,7 +121,7 @@ export default function LoginForm() {
                     <FormLabel>Contraseña</FormLabel>
                     <FormControl>
                       <Input
-                        type={showPassword ? "text" : "password"}
+                        type={showPassword ? 'text' : 'password'}
                         placeholder='Contraseña'
                         {...field}
                         value={field.value}
@@ -131,7 +129,7 @@ export default function LoginForm() {
                     </FormControl>
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={() => { setShowPassword(!showPassword) }}
                       className="absolute right-3 top-2/3 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

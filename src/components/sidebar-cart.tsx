@@ -1,16 +1,16 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { X, ShoppingBag, Trash2, MessageCircle } from "lucide-react"
-import { useUiStore, useCartStore } from "@/store"
-import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
-import Image from "next/image"
-import { cn, getProductTotal } from "@/lib/utils"
-import { getPhoneNumberMenu } from "@/actions/menu/get-phone-number-menu"
-import { useSearchParams } from "next/navigation"
-import { createUpdateOrder } from "@/actions/orders/create-order"
+import { motion, AnimatePresence } from 'framer-motion'
+import { X, ShoppingBag, Trash2, MessageCircle } from 'lucide-react'
+import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
+import { getPhoneNumberMenu } from '@/actions/menu/get-phone-number-menu'
+import { createUpdateOrder } from '@/actions/orders/create-order'
+import { Button } from '@/components/ui/button'
+import { cn, getProductTotal } from '@/lib/utils'
+import { useUiStore, useCartStore } from '@/store'
 
 export function SidebarCart() {
   const searchParams = useSearchParams()
@@ -27,42 +27,41 @@ export function SidebarCart() {
   // Close sidebar with Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         closeSideCart()
         setShowDeliveryModal(false)
         setShowSafariModal(false)
       }
     }
 
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
+    window.addEventListener('keydown', handleKeyDown)
+    return () => { window.removeEventListener('keydown', handleKeyDown) }
   }, [closeSideCart, showDeliveryModal, showSafariModal])
 
-  const generateAndSendWhatsApp = async (option: "table" | "delivery") => {
-
+  const generateAndSendWhatsApp = async (option: 'table' | 'delivery') => {
     const items = cart.map((item) => ({
       itemId: item.product.id,
       categoryId: item.product.categoryId,
       quantity: item.quantity,
-      unitPrice: getProductTotal(item.product),
+      unitPrice: getProductTotal(item.product)
     }))
 
     const formData = new FormData()
-    formData.append("status", "PENDING")
-    formData.append("totalPrice", getSubtotal().toString())
-    formData.append("items", JSON.stringify(items))
+    formData.append('status', 'PENDING')
+    formData.append('totalPrice', getSubtotal().toString())
+    formData.append('items', JSON.stringify(items))
 
-    formData.append("address", option === "delivery" ? "Pendiente" : `Mesa ${tableNumber || "?"}`)
+    formData.append('address', option === 'delivery' ? 'Pendiente' : `Mesa ${tableNumber || '?'}`)
 
     const { ok, order, message } = await createUpdateOrder(formData)
 
     if (!ok || !order) {
-      toast.error(message || "No se pudo crear el pedido")
+      toast.error(message || 'No se pudo crear el pedido')
       return
     }
 
     const phoneNumber = await getPhoneNumberMenu()
-    let messageOrder = "🛒 *Nuevo Pedido*\n\n"
+    let messageOrder = '🛒 *Nuevo Pedido*\n\n'
 
     cart.forEach((item) => {
       const productName = item.product.name
@@ -84,18 +83,18 @@ export function SidebarCart() {
         })
       }
 
-      messageOrder += "\n" // Separador entre productos
+      messageOrder += '\n' // Separador entre productos
     })
 
     messageOrder += `*Total:* $${getSubtotal().toFixed(2)}\n`
-    messageOrder += `*Tipo de pedido:* ${option === "table" ? `Mesa ${tableNumber}` : "Domicilio"}\n\n`
+    messageOrder += `*Tipo de pedido:* ${option === 'table' ? `Mesa ${tableNumber}` : 'Domicilio'}\n\n`
     messageOrder += `*Código de verificación:* BD-${order.shortId}\n\n`
-    messageOrder += "¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar.\n\n"
+    messageOrder += '¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar.\n\n'
 
     const encodedMessage = encodeURIComponent(messageOrder)
 
     if (!isSafari) {
-      window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, "_blank")
+      window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank')
       closeSideCart()
     } else {
       setShowSafariModal(true)
@@ -114,8 +113,8 @@ export function SidebarCart() {
 
   const handleClearCart = () => {
     clearCart()
-    toast.error("Carrito vaciado", {
-      position: "bottom-right",
+    toast.error('Carrito vaciado', {
+      position: 'bottom-right'
     })
   }
 
@@ -138,8 +137,8 @@ export function SidebarCart() {
       {/* Cart sidebar */}
       <div
         className={cn(
-          "fixed top-0 right-0 h-full w-full sm:w-[350px] bg-card shadow-xl z-50 transform transition-transform duration-300 ease-in-out",
-          isSideCartOpen ? "translate-x-0" : "translate-x-full",
+          'fixed top-0 right-0 h-full w-full sm:w-[350px] bg-card shadow-xl z-50 transform transition-transform duration-300 ease-in-out',
+          isSideCartOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
         <div className="flex flex-col h-full">
@@ -160,133 +159,134 @@ export function SidebarCart() {
 
           {/* Cart content */}
           <div className="flex-1 overflow-y-auto p-4">
-            {cart.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-                <ShoppingBag className="h-16 w-16 mb-4 opacity-30" />
-                <p className="text-center">Tu carrito está vacío</p>
-                <Button variant="link" className="mt-2 text-primary" onClick={closeSideCart}>
-                  Continuar comprando
-                </Button>
-              </div>
-            ) : (
-              <ul className="space-y-4">
-                {cart.map((item) => {
-                  const hasOptions = item.product.options && item.product.options.length > 0
-                  return (
-                    <motion.li
-                      key={item.cartItemId}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="flex gap-3 border-b pb-4"
-                    >
-                      {/* Product image */}
-                      <div className="relative h-16 w-16 rounded-md overflow-hidden flex-shrink-0">
-                        <Image
-                          src={item.product.image || "/placeholder.svg?height=64&width=64"}
-                          alt={item.product.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
+            {cart.length === 0
+              ? (
+                <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                  <ShoppingBag className="h-16 w-16 mb-4 opacity-30" />
+                  <p className="text-center">Tu carrito está vacío</p>
+                  <Button variant="link" className="mt-2 text-primary" onClick={closeSideCart}>
+                    Continuar comprando
+                  </Button>
+                </div>)
+              : (
+                <ul className="space-y-4">
+                  {cart.map((item) => {
+                    const hasOptions = item.product.options && item.product.options.length > 0
+                    return (
+                      <motion.li
+                        key={item.cartItemId}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="flex gap-3 border-b pb-4"
+                      >
+                        {/* Product image */}
+                        <div className="relative h-16 w-16 rounded-md overflow-hidden flex-shrink-0">
+                          <Image
+                            src={item.product.image || '/placeholder.svg?height=64&width=64'}
+                            alt={item.product.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
 
-                      {
-                        hasOptions ? (
-                          <>
-                            {/* Products details with options */}
-                            <div className="flex-1">
-                              <h3 className="font-medium text-sm">{item.product.name}</h3>
-                              <div className="flex items-center mt-1">
-                                <div className="flex flex-col">
-                                  {
-                                    item.product.options?.map((option) => (
-                                      <div
-                                        key={option.id}
-                                        className="flex gap-4 items-center mr-2 px-2 py-1 rounded text-xs"
-                                      >
+                        {
+                          hasOptions
+                            ? (
+                              <>
+                                {/* Products details with options */}
+                                <div className="flex-1">
+                                  <h3 className="font-medium text-sm">{item.product.name}</h3>
+                                  <div className="flex items-center mt-1">
+                                    <div className="flex flex-col">
+                                      {
+                                        item.product.options?.map((option) => (
+                                          <div
+                                            key={option.id}
+                                            className="flex gap-4 items-center mr-2 px-2 py-1 rounded text-xs"
+                                          >
 
-                                        <span className="font-medium">{option.name}</span>
-                                        {
-                                          option.type === 'size' && (
-                                            <div className="flex items-center justify-around gap-2">
-                                              <button
-                                                onClick={() => updateQuantity(item.cartItemId, Math.max(1, item.quantity - 1))}
-                                                className="text-muted-foreground  hover:text-primary w-5 h-5 flex items-center justify-center"
-                                              >
-                                                -
-                                              </button>
-                                              <span className="ml-1 text-muted-foreground">{item.quantity}</span>
-                                              <button
-                                                onClick={() => updateQuantity(item.cartItemId, Math.max(1, item.quantity + 1))}
-                                                className="text-muted-foreground  hover:text-primary w-5 h-5 flex items-center justify-center"
-                                              >
-                                                +
-                                              </button>
-                                            </div>
-                                          )
-                                        }
-                                      </div>
-                                    ))
-                                  }
+                                            <span className="font-medium">{option.name}</span>
+                                            {
+                                              option.type === 'size' && (
+                                                <div className="flex items-center justify-around gap-2">
+                                                  <button
+                                                    onClick={() => { updateQuantity(item.cartItemId, Math.max(1, item.quantity - 1)) }}
+                                                    className="text-muted-foreground  hover:text-primary w-5 h-5 flex items-center justify-center"
+                                                  >
+                                                    -
+                                                  </button>
+                                                  <span className="ml-1 text-muted-foreground">{item.quantity}</span>
+                                                  <button
+                                                    onClick={() => { updateQuantity(item.cartItemId, Math.max(1, item.quantity + 1)) }}
+                                                    className="text-muted-foreground  hover:text-primary w-5 h-5 flex items-center justify-center"
+                                                  >
+                                                    +
+                                                  </button>
+                                                </div>
+                                              )
+                                            }
+                                          </div>
+                                        ))
+                                      }
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
 
-                            {/* Price and remove button */}
-                            <div className="flex flex-col items-end">
-                              <span className="font-medium text-sm">
-                                ${getCartItemTotal(item.cartItemId).toFixed(2)}
-                              </span>
-                              <button
-                                onClick={() => handleRemoveItem(item.cartItemId, item.product.name)}
-                                className="text-destructive/70 hover:text-destructive mt-1"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            {/* Product details */}
-                            <div className="flex-1">
-                              <h3 className="font-medium text-sm">{item.product.name}</h3>
-                              <div className="flex items-center mt-1">
-                                <button
-                                  onClick={() => updateQuantity(item.product.id, Math.max(1, item.quantity - 1))}
-                                  className="text-muted-foreground  hover:text-primary w-6 h-6 flex items-center justify-center"
-                                >
-                                  -
-                                </button>
-                                <span className="mx-2 w-6 text-center text-sm">{item.quantity}</span>
-                                <button
-                                  onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                                  className="text-muted-foreground hover:text-primary w-6 h-6 flex items-center justify-center"
-                                >
-                                  +
-                                </button>
-                              </div>
-                            </div>
+                                {/* Price and remove button */}
+                                <div className="flex flex-col items-end">
+                                  <span className="font-medium text-sm">
+                                    ${getCartItemTotal(item.cartItemId).toFixed(2)}
+                                  </span>
+                                  <button
+                                    onClick={() => { handleRemoveItem(item.cartItemId, item.product.name) }}
+                                    className="text-destructive/70 hover:text-destructive mt-1"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              </>)
+                            : (
+                              <>
+                                {/* Product details */}
+                                <div className="flex-1">
+                                  <h3 className="font-medium text-sm">{item.product.name}</h3>
+                                  <div className="flex items-center mt-1">
+                                    <button
+                                      onClick={() => { updateQuantity(item.product.id, Math.max(1, item.quantity - 1)) }}
+                                      className="text-muted-foreground  hover:text-primary w-6 h-6 flex items-center justify-center"
+                                    >
+                                      -
+                                    </button>
+                                    <span className="mx-2 w-6 text-center text-sm">{item.quantity}</span>
+                                    <button
+                                      onClick={() => { updateQuantity(item.product.id, item.quantity + 1) }}
+                                      className="text-muted-foreground hover:text-primary w-6 h-6 flex items-center justify-center"
+                                    >
+                                      +
+                                    </button>
+                                  </div>
+                                </div>
 
-                            {/* Price and remove button */}
-                            <div className="flex flex-col items-end">
-                              <span className="font-medium text-sm">
-                                {(item.product.price) === 0 ? 'Pendiente' : `$${((item.product.price) * item.quantity).toFixed(2)}`}
-                              </span>
-                              <button
-                                onClick={() => handleRemoveItem(item.product.id, item.product.name)}
-                                className="text-destructive/70 hover:text-destructive mt-1"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </div>
-                          </>
-                        )
-                      }
-                    </motion.li>
-                  )
-                })}
-              </ul>
-            )}
+                                {/* Price and remove button */}
+                                <div className="flex flex-col items-end">
+                                  <span className="font-medium text-sm">
+                                    {(item.product.price) === 0 ? 'Pendiente' : `$${((item.product.price) * item.quantity).toFixed(2)}`}
+                                  </span>
+                                  <button
+                                    onClick={() => { handleRemoveItem(item.product.id, item.product.name) }}
+                                    className="text-destructive/70 hover:text-destructive mt-1"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              </>)
+                        }
+                      </motion.li>
+                    )
+                  })}
+                </ul>)
+            }
           </div>
 
           {/* Summary and action buttons */}
@@ -343,7 +343,7 @@ export function SidebarCart() {
               <Button
                 className="bg-green-600 hover:bg-green-700"
                 onClick={() => {
-                  if (pendingMessage) window.open(pendingMessage, "_blank")
+                  if (pendingMessage) window.open(pendingMessage, '_blank')
                   setShowSafariModal(false)
                   setPendingMessage(null)
                   closeSideCart()
@@ -353,7 +353,7 @@ export function SidebarCart() {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => setShowSafariModal(false)}
+                onClick={() => { setShowSafariModal(false) }}
                 className="w-full text-destructive border-destructive bg-background hover:bg-destructive/10 hover:text-black dark:hover:text-destructive"
               >
                 Cancelar
@@ -378,17 +378,17 @@ export function SidebarCart() {
               <Button
                 disabled={!tableNumber}
                 onClick={() => {
-                  generateAndSendWhatsApp("table")
+                  generateAndSendWhatsApp('table')
                   setShowDeliveryModal(false)
                 }}
                 className="bg-sidebar-accent-foreground hover:bg-sidebar-accent-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {tableNumber ? `Consumir en mesa (Mesa ${tableNumber})` : "Consumir en mesa"}
+                {tableNumber ? `Consumir en mesa (Mesa ${tableNumber})` : 'Consumir en mesa'}
               </Button>
 
               <Button
                 onClick={() => {
-                  generateAndSendWhatsApp("delivery")
+                  generateAndSendWhatsApp('delivery')
                   setShowDeliveryModal(false)
                 }}
                 className="bg-primary hover:bg-primary/90"
@@ -397,7 +397,7 @@ export function SidebarCart() {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => setShowDeliveryModal(false)}
+                onClick={() => { setShowDeliveryModal(false) }}
                 className="w-full text-destructive border-destructive bg-background hover:bg-destructive/10 hover:text-black dark:hover:text-destructive"
               >
                 Cancelar

@@ -1,9 +1,9 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { prisma } from '@/lib/prisma'
 import { deleteImageFromCloudinary } from '../products/delete-image-from-cloudinary'
 import { getPromotionById } from '@/actions/promotions/get-promotion-by-id'
+import { prisma } from '@/lib/prisma'
 
 export const deletePromotion = async (id: string) => {
   if (!id) return { ok: false, message: 'ID requerido' }
@@ -24,7 +24,7 @@ export const deletePromotion = async (id: string) => {
     revalidatePath('/admin/promotions')
 
     if (('image' in promo)) {
-      const { ok } = await deleteImageFromCloudinary(promo.image)
+      const { ok } = await deleteImageFromCloudinary(promo.image as string)
       if (!ok) {
         return { ok: true, message: 'Producto eliminado correctamente, cloudinary no pudo eliminar la imagen' }
       }

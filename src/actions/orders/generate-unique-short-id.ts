@@ -3,7 +3,6 @@
 import { prisma } from '@/lib/prisma'
 
 export const generateUniqueShortId = async (): Promise<string> => {
-
   const generate = () => {
     const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase()
     const datePart = new Date().getSeconds().toString().padStart(2, '0') // something a bit more dynamic than just the last 2 digits of the timestamp

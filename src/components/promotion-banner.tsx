@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import { motion } from "framer-motion"
-import Image from "next/image"
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import type { Promotion } from "@/lib/types"
-import { ShoppingCart, Tag } from "lucide-react"
-import { useCartStore } from "@/store"
-import { toast } from "sonner"
+import { motion } from 'framer-motion'
+import { ShoppingCart, Tag } from 'lucide-react'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
+import type { Promotion } from '@/lib/types'
+import { useCartStore } from '@/store'
 
 interface PromotionBannerProps {
   promotions: Promotion[]
@@ -47,7 +47,7 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
     addToCart(promoProduct)
     setIsLoading(false)
     toast.success(`${promoProduct.name} agregado al carrito`, {
-      position: "bottom-right",
+      position: 'bottom-right'
     })
   }
 
@@ -68,12 +68,12 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
             transition={{ duration: 0.5, delay: index * 0.1 }}
             whileHover={{
               y: -5,
-              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
             }}
           >
             <div className="relative h-48">
               <Image
-                src={promotion.image || "/images/placeholder.webp"}
+                src={promotion.image || '/images/placeholder.webp'}
                 alt={promotion.name}
                 fill
                 className="object-cover"
@@ -100,7 +100,7 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
                 </span>
               </div>
               <Button
-                onClick={() => handleAddPromoToCart(promotion)}
+                onClick={() => { handleAddPromoToCart(promotion) }}
                 disabled={isLoading}
                 className="w-full bg-primary hover:bg-primary/80 transition-colors"
               >

@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { motion } from "framer-motion"
-import { ArrowLeft } from "lucide-react"
-import Link from "next/link"
+import { motion } from 'framer-motion'
+import { ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -10,9 +10,9 @@ const containerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.3,
-    },
-  },
+      delayChildren: 0.3
+    }
+  }
 }
 
 const itemVariants = {
@@ -20,32 +20,32 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5 },
-  },
+    transition: { duration: 0.5 }
+  }
 }
 
 const conditions = [
   {
-    title: "1. Uso del Menú Digital (Demostración)",
+    title: '1. Uso del Menú Digital (Demostración)',
     items: [
-      "Este sitio web permite visualizar un menú digital y generar un mensaje de pedido que será enviado por WhatsApp.",
-      "El mensaje generado contiene los productos seleccionados por el usuario y debe ser enviado manualmente.",
-      "El usuario es responsable de verificar y enviar correctamente el mensaje desde su cuenta de WhatsApp."
-    ],
+      'Este sitio web permite visualizar un menú digital y generar un mensaje de pedido que será enviado por WhatsApp.',
+      'El mensaje generado contiene los productos seleccionados por el usuario y debe ser enviado manualmente.',
+      'El usuario es responsable de verificar y enviar correctamente el mensaje desde su cuenta de WhatsApp.'
+    ]
   },
   {
-    title: "2. Modificación de Pedidos",
+    title: '2. Modificación de Pedidos',
     items: [
-      "Si el usuario modifica el mensaje generado (como cambiar productos, precios o cantidades), el negocio se reserva el derecho de invalidar el pedido."
-    ],
+      'Si el usuario modifica el mensaje generado (como cambiar productos, precios o cantidades), el negocio se reserva el derecho de invalidar el pedido.'
+    ]
   },
   {
-    title: "3. Responsabilidad Limitada",
+    title: '3. Responsabilidad Limitada',
     items: [
-      "Este sitio genera únicamente el mensaje de pedido; no garantiza la entrega de productos ni la confirmación automática del pedido.",
-      "El negocio receptor es responsable de validar y procesar el pedido recibido por WhatsApp.",
-      "El servicio puede estar sujeto a interrupciones técnicas o fallas temporales fuera de nuestro control."
-    ],
+      'Este sitio genera únicamente el mensaje de pedido; no garantiza la entrega de productos ni la confirmación automática del pedido.',
+      'El negocio receptor es responsable de validar y procesar el pedido recibido por WhatsApp.',
+      'El servicio puede estar sujeto a interrupciones técnicas o fallas temporales fuera de nuestro control.'
+    ]
   }
 ]
 
@@ -56,7 +56,7 @@ export default function CompleteConditionsPage() {
         className="sticky top-0 z-20 w-full border-b bg-background"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 100, damping: 15 }}
+        transition={{ type: 'spring', stiffness: 100, damping: 15 }}
       >
         <div className="container flex h-16 items-center px-4 md:px-6">
           <motion.div whileHover={{ x: -5 }} whileTap={{ scale: 0.95 }}>

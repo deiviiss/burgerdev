@@ -1,12 +1,12 @@
-import Link from "next/link"
-import { Clock, Facebook, MapPin, Phone, Sandwich } from "lucide-react"
-import { FaWhatsapp } from "react-icons/fa";
-import { getPhoneNumberMenu } from "@/actions/menu/get-phone-number-menu";
+import { Clock, Facebook, MapPin, Phone, Sandwich } from 'lucide-react'
+import Link from 'next/link'
+import { FaWhatsapp } from 'react-icons/fa'
+import { getPhoneNumberMenu } from '@/actions/menu/get-phone-number-menu'
 
 export async function Footer() {
-  const googleMapsUrl = "https://maps.app.goo.gl/qAFDqDNZvYqwkaDG7"
+  const googleMapsUrl = 'https://maps.app.goo.gl/qAFDqDNZvYqwkaDG7'
   const phoneNumber = await getPhoneNumberMenu()
-  const whatsappUrl = `https://wa.me/${phoneNumber?.replace(/\D/g, "")}`
+  const whatsappUrl = `https://wa.me/${phoneNumber?.replace(/\D/g, '')}`
   const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME
 
   return (

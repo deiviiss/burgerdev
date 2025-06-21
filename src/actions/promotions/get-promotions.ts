@@ -1,7 +1,7 @@
 'use server'
 
-import { prisma } from "@/lib/prisma"
-import { Promotion } from "@/lib/types"
+import { prisma } from '@/lib/prisma'
+import { type Promotion } from '@/lib/types'
 
 export async function getPromotions(): Promise<Promotion[]> {
   try {
@@ -11,7 +11,7 @@ export async function getPromotions(): Promise<Promotion[]> {
 
     return promotions
   } catch (error) {
-    console.error("Error al obtener promociones:", error)
+    console.error('Error al obtener promociones:', error)
     return []
   }
 }

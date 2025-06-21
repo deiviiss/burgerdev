@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { ButtonLogout } from "@/components/auth/ButtonLogout";
-import { Button } from "@/components/ui/button";
-import { LucideFolderDown, Sandwich } from "lucide-react";
+import { motion } from 'framer-motion'
+import { LucideFolderDown, Sandwich } from 'lucide-react'
+import Link from 'next/link'
+import { ButtonLogout } from '@/components/auth/ButtonLogout'
+import { Button } from '@/components/ui/button'
 
 export function NavbarAdmin() {
   const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME
