@@ -62,7 +62,7 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
         return (
           <motion.div
             key={promotion.id}
-            className="bg-card dark:border dark:border-primary rounded-lg shadow-md overflow-hidden max-w-lg"
+            className="bg-card dark:border dark:border-primary rounded-lg shadow-md overflow-hidden max-w-lg h-full flex flex-col"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -88,7 +88,7 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
                 </div>
               </div>
             </div>
-            <div className="p-4">
+            <div className="p-4 flex-grow justify-between flex flex-col">
               <p className="text-muted-foreground mb-3">{promotion.description}</p>
               <div className="flex justify-between items-center mb-4">
                 <div>
@@ -99,6 +99,9 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
                   AHORRA ${discountAmount.toFixed(2)}
                 </span>
               </div>
+            </div>
+
+            <div className="flex justify-between items-center p-4 pt-0">
               <Button
                 onClick={() => { handleAddPromoToCart(promotion) }}
                 disabled={isLoading}
@@ -108,6 +111,7 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
                 Agregar al carrito
               </Button>
             </div>
+
           </motion.div>
         )
       })}
