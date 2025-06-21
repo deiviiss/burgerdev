@@ -2,12 +2,11 @@
 
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { getCategoryPromotion } from '@/actions/categories/get-category-promotion'
 import { generateUniqueShortId } from '@/actions/orders/generate-unique-short-id'
 import { prisma } from '@/lib/prisma'
 import { type OrderStatus } from '@/lib/types'
 import { orderSchema } from '@/schemas/order.schema'
-
-const PROMO_CATEGORY_ID = process.env.PROMO_ID
 
 export const createUpdateOrder = async (formData: FormData) => {
   const data = Object.fromEntries(formData)
@@ -36,6 +35,15 @@ export const createUpdateOrder = async (formData: FormData) => {
   const { address, status, totalPrice, comment, items, id } = orderParsed.data
 
   try {
+    const categoryPromotion = await getCategoryPromotion()
+
+    if (!categoryPromotion) {
+      return {
+        ok: false,
+        message: 'No se encontró la categoría de promociones'
+      }
+    }
+
     if (id) {
       const orderUpdated = await prisma.order.update({
         where: {
@@ -73,10 +81,10 @@ export const createUpdateOrder = async (formData: FormData) => {
     await prisma.orderItem.createMany({
       data: items.map((item) => ({
         orderId: order.id,
-        productId: item.categoryId?.toString() !== PROMO_CATEGORY_ID
+        productId: item.categoryId?.toString() !== categoryPromotion.id
           ? item.itemId
           : undefined,
-        promotionId: item.categoryId?.toString() === PROMO_CATEGORY_ID
+        promotionId: item.categoryId?.toString() === categoryPromotion.id
           ? item.itemId
           : undefined,
         quantity: item.quantity,
