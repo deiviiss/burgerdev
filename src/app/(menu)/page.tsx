@@ -40,7 +40,7 @@ export default async function Home() {
 
         {
           products.length > 0 &&
-          <div className="container mx-auto px-4 py-8">
+          <div className="container mx-auto px-4 py-3 md:py-8">
             <div className="flex flex-col md:flex-row gap-6">
               {/* Sidebar with categories */}
               <div className="md:w-1/4">
