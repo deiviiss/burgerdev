@@ -266,7 +266,7 @@ export default function PromotionsTab() {
                               <Badge variant={isActive ? 'default' : 'secondary'} className="text-xs">
                                 {isActive ? 'Activa' : 'Inactiva'}
                               </Badge>
-                              <Badge variant="outline" className="text-xs bg-white/90">
+                              <Badge variant="secondary" className="text-xs bg-muted-foreground">
                                 {promotion.discountPercentage}% OFF
                               </Badge>
                             </div>
