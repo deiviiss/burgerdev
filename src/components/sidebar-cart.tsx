@@ -6,11 +6,10 @@ import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { getPhoneNumberMenu } from '@/actions/menu/get-phone-number-menu'
 import { createUpdateOrder } from '@/actions/orders/create-order'
 import { Button } from '@/components/ui/button'
 import { cn, getProductTotal } from '@/lib/utils'
-import { useUiStore, useCartStore } from '@/store'
+import { useUiStore, useCartStore, useBranchStore } from '@/store'
 
 export function SidebarCart() {
   const searchParams = useSearchParams()
@@ -23,6 +22,7 @@ export function SidebarCart() {
   const [pendingMessage, setPendingMessage] = useState<string | null>(null)
   const { isSideCartOpen, closeSideCart } = useUiStore()
   const { cart, removeFromCart, updateQuantity, clearCart, getSubtotal, getCartItemTotal } = useCartStore()
+  const { selectedBranch } = useBranchStore()
 
   // Close sidebar with Escape key
   useEffect(() => {
@@ -39,6 +39,13 @@ export function SidebarCart() {
   }, [closeSideCart, showDeliveryModal, showSafariModal])
 
   const generateAndSendWhatsApp = async (option: 'table' | 'delivery') => {
+    if (!selectedBranch) {
+      toast.error('Selecciona una sucursal antes de hacer tu pedido')
+      setShowDeliveryModal(false)
+      closeSideCart()
+      return
+    }
+
     const items = cart.map((item) => ({
       itemId: item.product.id,
       categoryId: item.product.categoryId,
@@ -60,7 +67,7 @@ export function SidebarCart() {
       return
     }
 
-    const phoneNumber = await getPhoneNumberMenu()
+    const phoneNumber = selectedBranch.phone
     let messageOrder = '🛒 *Nuevo Pedido*\n\n'
 
     cart.forEach((item) => {
@@ -94,11 +101,11 @@ export function SidebarCart() {
     const encodedMessage = encodeURIComponent(messageOrder)
 
     if (!isSafari) {
-      window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank')
+      window.open(`https://wa.me/+521${phoneNumber}?text=${encodedMessage}`, '_blank')
       closeSideCart()
     } else {
       setShowSafariModal(true)
-      setPendingMessage(`https://wa.me/${phoneNumber}?text=${encodedMessage}`)
+      setPendingMessage(`https://wa.me/+521${phoneNumber}?text=${encodedMessage}`)
     }
   }
 

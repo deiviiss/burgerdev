@@ -17,7 +17,8 @@ export async function getProducts(): Promise<Product[]> {
     const products: Product[] = await prisma.product.findMany({
       include: {
         options: true,
-        category: true
+        category: true,
+        branches: true
       },
       orderBy: [
         {

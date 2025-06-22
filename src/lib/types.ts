@@ -19,6 +19,7 @@ export interface Product {
   createdAt: Date
   options?: ProductOption[]
   groupedOptions?: Record<string, ProductOption[]>
+  branches?: Branch[]
 }
 
 export interface Category {
@@ -95,4 +96,17 @@ export interface Order {
   createdAt: Date
   userId?: string | null
   User?: Partial<User> | null
+}
+
+export interface Branch {
+  id: string
+  name: string
+  label: string // Unique label for the branch, e.g., 'sucursal-1', 'sucursal-campeche'
+  address: string
+  phone: string
+  phoneBot: string | null
+  phoneUser: string | null
+  hours: string | null
+  isOpen: boolean
+  products?: Product[]
 }

@@ -35,7 +35,7 @@ export default function ScrollToTop() {
       {isVisible && (
         <Button
           size={'lg'}
-          className="fixed bottom-3 right-3 z-40"
+          className="fixed bottom-3 right-3 z-30"
           asChild
         >
           <motion.button
