@@ -39,6 +39,7 @@ model Product {
   options     ProductOption[] // Relation 1:N
   createdAt   DateTime        @default(now())
   orderItems  OrderItem[]
+  branches    Branch[]        @relation("ProductBranches")
 }
 
 enum ProductOptionType {
@@ -57,6 +58,19 @@ model ProductOption {
   type        ProductOptionType
   quantity    Int               @default(0) // Could be ignored
   isAvailable Boolean           @default(true)
+}
+
+model Branch {
+  id        String    @id @default(uuid())
+  name      String
+  label     String    @unique // ej: 'sucursal-1', 'sucursal-campeche'
+  address   String
+  phone     String // 📞 CURRENT number to which orders are sent (bot or user)
+  phoneBot  String? // 🤖 Bot number (saved for activation)
+  phoneUser String? // 👤 User number (saved for deactivation)
+  hours     String?
+  isOpen    Boolean   @default(true)
+  products  Product[] @relation("ProductBranches")
 }
 
 model Promotion {
@@ -83,14 +97,6 @@ model User {
   password    String?
   createdAt   DateTime @default(now())
   orders      Order[]
-}
-
-model PhoneNumberMenu {
-  id        String   @id @default(uuid())
-  label     String   @unique // 'demo', 'manual', etc.
-  number    String // the number in international format
-  isActive  Boolean  @default(false)
-  createdAt DateTime @default(now())
 }
 
 model Order {

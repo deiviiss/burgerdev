@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import ProductCard from '@/components/products/product-card'
 import type { Product, Category } from '@/lib/types'
+import { useBranchStore } from '@/store'
 
 interface ProductListProps {
   products: Product[]
@@ -20,10 +21,18 @@ const staggerContainer = {
 }
 
 export function ProductList({ products, categories }: ProductListProps) {
+  const { selectedBranch } = useBranchStore()
+
   return (
     <div className="space-y-12">
       {categories.map((category) => {
-        const categoryProducts = products.filter((product) => product.categoryId === category.id && product.isAvailable)
+        const categoryProducts = products.filter((product) => {
+          const belongsToBranch = selectedBranch
+            ? product.branches?.some(branch => branch.id === selectedBranch.id)
+            : true
+
+          return product.categoryId === category.id && product.isAvailable && belongsToBranch
+        })
 
         if (categoryProducts.length === 0) return null
 

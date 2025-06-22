@@ -1,12 +1,11 @@
 import { Clock, Facebook, MapPin, Phone, Sandwich } from 'lucide-react'
 import Link from 'next/link'
 import { FaWhatsapp } from 'react-icons/fa'
-import { getPhoneNumberMenu } from '@/actions/menu/get-phone-number-menu'
+import { getBranches } from '@/actions/branches/get-branches'
 
 export async function Footer() {
-  const googleMapsUrl = 'https://maps.app.goo.gl/qAFDqDNZvYqwkaDG7'
-  const phoneNumber = await getPhoneNumberMenu()
-  const whatsappUrl = `https://wa.me/${phoneNumber?.replace(/\D/g, '')}`
+  // const googleMapsUrl = 'https://maps.app.goo.gl/qAFDqDNZvYqwkaDG7'
+  const branches = await getBranches()
   const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME
 
   return (
@@ -18,45 +17,40 @@ export async function Footer() {
             <h3 className="text-xl font-bold mb-4">{companyName}</h3>
             <p className="text-gray-300">Lo bueno se comparte... y se pide por WhatsApp</p>
           </div>
-
-          {/* Schedule */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">Horarios</h3>
-            <div className="space-y-3">
-              <div className="flex items-start gap-2">
-                <Clock className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-gray-300 font-medium">Horarios de Atención:</p>
-                  <p className="text-gray-300 text-sm">Jueves a Martes</p>
-                  <p className="text-gray-300 text-sm">10:00 AM - 6:00 PM</p>
-                  <p className="text-red-300 text-sm">Cerrado los Miércoles</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Location */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">Ubicación</h3>
-            <div className="flex items-start gap-2">
-              <MapPin className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
-              <Link
-                href={googleMapsUrl}
-                target="_blank" rel="noopener noreferrer"
-              >
-                <p className="text-gray-300 font-medium">Ubicación:</p>
-                <span
-                  className="text-gray-300 hover:text-blue-400 transition-colors text-sm text-left"
-                >
-                  Calle José María Iglesias
-                  <br />
-                  Presidentes de México
-                  <br />
-                  San Francisco de Campeche, Campeche
+          {/* Branches */}
+          {branches.map((branch) => (
+            <div key={branch.id}>
+              <h3 className="text-xl font-bold mb-2">{branch.name}</h3>
+              <div className="flex items-start gap-2 mb-2">
+                <MapPin className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-300 text-sm whitespace-pre-line">
+                  {branch.address}
                 </span>
-              </Link>
+              </div>
+              {branch.hours && (
+                <div className="flex items-start gap-2 mb-2">
+                  <Clock className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-300 text-sm whitespace-pre-line">
+                    {branch.hours}
+                  </span>
+                </div>
+              )}
+              <p className="text-red-300 text-sm mb-2">Cerrado los Miércoles</p>
+              {branch.phone && (
+                <div className="flex items-center gap-2">
+                  <FaWhatsapp className="h-4 w-4 text-gray-400" />
+                  <Link
+                    href={`https://wa.me/+521${branch.phone.replace(/\D/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-300 hover:text-green-400 transition-colors text-sm"
+                  >
+                    {branch.phone}
+                  </Link>
+                </div>
+              )}
             </div>
-          </div>
+          ))}
 
           {/* Links */}
           <div>
@@ -99,7 +93,7 @@ export async function Footer() {
                 <Facebook className="h-5 w-5" />
               </Link>
               <Link
-                href={whatsappUrl}
+                href={'https://wa.me/+5219811250049'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-gray-700 hover:bg-green-600 p-2 rounded-full transition-colors"
@@ -112,7 +106,7 @@ export async function Footer() {
             <div className="mt-4">
               <p className="text-gray-300 font-medium">Contáctanos:</p>
               <Link
-                href={`tel:${phoneNumber}`}
+                href={'tel:9811250049'}
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2"
               >

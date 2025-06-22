@@ -3,7 +3,32 @@
 import bcrypt from 'bcryptjs'
 import { randomUUID } from 'crypto'
 import { prisma } from '../lib/prisma'
-import { type Category, type Product, type ProductOption, type Promotion, Role, type User, type PhoneNumberMenu } from '../lib/types'
+import { type Category, type Product, type ProductOption, type Promotion, Role, type User, type Branch } from '../lib/types'
+
+const initialBranches: Branch[] = [
+  {
+    id: randomUUID(),
+    name: 'Sucursal Centro',
+    label: 'sucursal-centro',
+    address: 'Av. Central #123',
+    phone: '9903715312',
+    phoneBot: '9903715312',
+    phoneUser: '9811250049',
+    hours: '9:00 AM - 10:00 PM',
+    isOpen: true
+  },
+  {
+    id: randomUUID(),
+    name: 'Sucursal Norte',
+    label: 'sucursal-norte',
+    address: 'Calle 50 #456',
+    phone: '9903715312',
+    phoneBot: '9903715312',
+    phoneUser: '9811250049',
+    hours: '10:00 AM - 11:00 PM',
+    isOpen: true
+  }
+]
 
 // Category data
 const initialCategories: Category[] = [
@@ -405,29 +430,25 @@ const initialUsers: User[] = [
   }
 ]
 
-// PhoneNumberMenu data
-const initialPhoneNumberMenu: PhoneNumberMenu[] = [
-  {
-    id: randomUUID(),
-    label: 'menu',
-    number: '+5219903715312',
-    isActive: true,
-    createdAt: new Date()
-  }
-]
-
 // Main function to run the seed
 const seed = async () => {
   console.log('⏳ Limpiando base de datos...')
-  await prisma.productOption.deleteMany()
-  await prisma.product.deleteMany()
-  await prisma.promotion.deleteMany()
-  await prisma.category.deleteMany()
-  await prisma.user.deleteMany()
-  await prisma.phoneNumberMenu.deleteMany()
+  await prisma.$transaction([
+    prisma.orderItem.deleteMany(),
+    prisma.order.deleteMany(),
+    prisma.productOption.deleteMany(),
+    prisma.product.deleteMany(),
+    prisma.promotion.deleteMany(),
+    prisma.category.deleteMany(),
+    prisma.branch.deleteMany(),
+    prisma.user.deleteMany()
+  ])
 
   console.log('⏳ Insertando categorías...')
   await prisma.category.createMany({ data: initialCategories })
+
+  console.log('⏳ Insertando sucursales...')
+  await prisma.branch.createMany({ data: initialBranches })
 
   console.log('⏳ Insertando productos...')
   await prisma.product.createMany({ data: initialProducts })
@@ -441,8 +462,25 @@ const seed = async () => {
   console.log('⏳ Insertando usuarios...')
   await prisma.user.createMany({ data: initialUsers })
 
-  console.log('⏳ Insertando números de menú...')
-  await prisma.phoneNumberMenu.createMany({ data: initialPhoneNumberMenu })
+  console.log('⏳ Relacionando productos con sucursales...')
+
+  const branches = await prisma.branch.findMany()
+  const centro = branches.find(b => b.name === 'Sucursal Centro')!
+  const norte = branches.find(b => b.name === 'Sucursal Norte')!
+  const products = await prisma.product.findMany()
+
+  const centroOnlyNames = ['Hamburguesa con Queso', 'Torta Cubana', 'Papas Fritas con Salsa']
+  const norteOnlyNames = ['Hot Dog Jumbo', 'Alitas BBQ (6 pzas)', 'Flan Napolitano']
+
+  const centroIds = products.filter(p => centroOnlyNames.includes(p.name)).map(p => p.id)
+  const norteIds = products.filter(p => norteOnlyNames.includes(p.name)).map(p => p.id)
+  const ambas = products.filter(p => !centroOnlyNames.includes(p.name) && !norteOnlyNames.includes(p.name))
+
+  await Promise.all([
+    ...centroIds.map(async id => await prisma.product.update({ where: { id }, data: { branches: { connect: [{ id: centro.id }] } } })),
+    ...norteIds.map(async id => await prisma.product.update({ where: { id }, data: { branches: { connect: [{ id: norte.id }] } } })),
+    ...ambas.map(async p => await prisma.product.update({ where: { id: p.id }, data: { branches: { connect: [{ id: centro.id }, { id: norte.id }] } } }))
+  ])
 
   console.log('✅ Seed completado')
 };
