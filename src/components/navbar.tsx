@@ -152,7 +152,7 @@ export function Navbar() {
       </Suspense>
 
       <Dialog open={showChangeBranchModal} onOpenChange={setShowChangeBranchModal}>
-        <DialogContent className="max-w-sm bg-muted">
+        <DialogContent className="max-w-sm bg-card">
           <DialogHeader>
             <DialogTitle>¿Cambiar de sucursal?</DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground">
@@ -171,6 +171,7 @@ export function Navbar() {
                 setShowChangeBranchModal(false)
                 setPendingBranch(null)
               }}
+
             >
               Cancelar
             </Button>
