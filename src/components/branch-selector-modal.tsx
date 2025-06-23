@@ -53,7 +53,7 @@ export default function BranchSelectorModal({
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
-            <div className="bg-background rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-hidden border">
+            <div className="bg-muted rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-hidden border">
               {/* Header */}
               <div className="flex justify-between items-center p-4 border-b">
                 <div className="flex items-center gap-2">
