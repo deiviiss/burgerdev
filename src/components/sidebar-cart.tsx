@@ -100,12 +100,10 @@ export function SidebarCart() {
       const unitTotal = getProductTotal(item.product) // already includes options
       const lineTotal = unitTotal * quantity
 
-      console.log('item', item)
-
       const hasVariable = item.product.options?.some(opt => opt.type === 'variable')
-      console.log('hasVariable', hasVariable)
+
       messageOrder += `*${quantity}x* ${productName} - ${hasVariable ? '*Pendiente*' : `$${lineTotal.toFixed(2)}`}\n`
-      console.log('messageOrder', messageOrder)
+
       // Only show options if they exist
       if (item.product.options && item.product.options.length > 0) {
         // Group by ID to avoid duplicates (if they come from error)

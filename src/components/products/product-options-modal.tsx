@@ -46,34 +46,20 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
 
     if (!hasSomethingSelected) return
 
-    const noteOptionDefaultValues = {
-      id: crypto.randomUUID(),
-      name: specialNote,
-      price: 0,
-      quantity: 1,
-      isAvailable: true,
-      type: 'note'
-    }
-
     const noteOption = specialNote
-      ? [noteOptionDefaultValues]
+      ? [{ id: crypto.randomUUID(), name: specialNote, price: 0, quantity: 1, isAvailable: true, type: 'note' }]
       : []
 
-    const variableOption = [{
-      id: crypto.randomUUID(),
-      name: 'Precio pendiente',
-      price: 0,
-      quantity: 1,
-      isAvailable: true,
-      type: 'variable'
-    }]
+    const variableOption = isVariableOnly
+      ? [{ id: crypto.randomUUID(), name: 'Precio pendiente', price: 0, quantity: 1, isAvailable: true, type: 'variable' }]
+      : []
 
     const options = [
       ...(selectedOption ? [selectedOption] : []),
       ...(selectedOptions || []),
       ...(selectedLimitedOptions || []),
-      ...noteOption,
-      ...(isVariableOnly ? variableOption : [])
+      ...variableOption,
+      ...noteOption
     ]
 
     const productWithSelectedOption = {
@@ -93,6 +79,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
     onClose()
     setSelectedOptionId('')
     setSelectedOptionIds([])
+    setSelectedLimitedOptionIds([])
     setQuantity(1)
   }
 
