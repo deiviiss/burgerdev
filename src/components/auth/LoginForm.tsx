@@ -79,13 +79,13 @@ export default function LoginForm() {
         >
           <Card>
             <CardHeader>
-              <div className="mx-auto w-24 h-24 mb-4 rounded-full">
+              <div className="mx-auto w-24 h-24 mb-4 rounded-full bg-black p-3">
                 <Image
                   src="/images/logo-form.webp"
                   alt="burger dev"
                   width={96}
                   height={96}
-                  className="object-contain mx-auto rounded-full"
+                  className="object-contain mx-auto"
                   priority
                 />
               </div>

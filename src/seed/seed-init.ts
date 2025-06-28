@@ -11,7 +11,8 @@ const initialBranches: Branch[] = [
     name: 'Sucursal Centro',
     label: 'sucursal-centro',
     address: 'Av. Central #123',
-    phone: '9903715312',
+    urlMap: 'https://www.google.com/maps/place/Sucursal+Centro/@19.4219444,-99.1666667,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d19.4219444!4d-99.1666667!16s%2Fg%2F1z4c2w0q',
+    phone: '9811250049',
     phoneBot: '9903715312',
     phoneUser: '9811250049',
     hours: '9:00 AM - 10:00 PM',
@@ -22,6 +23,7 @@ const initialBranches: Branch[] = [
     name: 'Sucursal Norte',
     label: 'sucursal-norte',
     address: 'Calle 50 #456',
+    urlMap: 'https://www.google.com/maps/place/Sucursal+Norte/@19.4219444,-99.1666667,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d19.4219444!4d-99.1666667!16s%2Fg%2F1z4c2w0q',
     phone: '9903715312',
     phoneBot: '9903715312',
     phoneUser: '9811250049',
@@ -298,7 +300,7 @@ const initialProducts: Product[] = [
 
 // ProductOption data
 const initialProductOptions: ProductOption[] = [
-  // Hamburger (ingredients)
+  // Hamburger with cheese (ingredients)
   {
     id: randomUUID(),
     productId: initialProducts.find(p => p.name === 'Hamburguesa con Queso')!.id,
@@ -335,6 +337,114 @@ const initialProductOptions: ProductOption[] = [
     isAvailable: true,
     type: 'ingredient'
   },
+  // Double hamburger (ingredients)
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Queso extra',
+    price: 25,
+    quantity: 0,
+    isAvailable: true,
+    type: 'ingredient'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Cebolla',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'ingredient'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Tomate',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'ingredient'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Lechuga',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'ingredient'
+  },
+
+  // Double hamburger (limited ingredients)
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Res',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'limited_ingredient'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Pollo',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'limited_ingredient'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Cerdo',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'limited_ingredient'
+
+  },
+
+  // Hawaiian hamburger (limited ingredients)
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Hawaiana')!.id,
+    name: 'Res',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'limited_ingredient'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Hawaiana')!.id,
+    name: 'Pollo',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'limited_ingredient'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Hawaiana')!.id,
+    name: 'Cerdo',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'limited_ingredient'
+
+  },
+
+  // Cuban cake (note)
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Torta Cubana')!.id,
+    name: 'Nota',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'note'
+  },
 
   // Fries (sizes)
   {
@@ -365,7 +475,7 @@ const initialProductOptions: ProductOption[] = [
     type: 'size'
   },
 
-  // Fries (variables)
+  // Fries with sauce (variable)
   {
     id: randomUUID(),
     productId: initialProducts.find(p => p.name === 'Papas Fritas con Salsa')!.id,

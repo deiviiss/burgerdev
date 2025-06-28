@@ -23,7 +23,7 @@ export async function getProducts(): Promise<Product[]> {
       orderBy: [
         {
           category: {
-            name: 'asc'
+            name: 'desc'
           }
         },
         {

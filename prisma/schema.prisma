@@ -47,6 +47,7 @@ enum ProductOptionType {
   ingredient
   variable
   note
+  limited_ingredient
 }
 
 model ProductOption {
@@ -65,6 +66,7 @@ model Branch {
   name      String
   label     String    @unique // ej: 'sucursal-1', 'sucursal-campeche'
   address   String
+  urlMap    String?
   phone     String // 📞 CURRENT number to which orders are sent (bot or user)
   phoneBot  String? // 🤖 Bot number (saved for activation)
   phoneUser String? // 👤 User number (saved for deactivation)
