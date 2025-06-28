@@ -3,7 +3,7 @@ export interface ProductOption {
   productId: string
   name: string
   price: number
-  type: 'size' | 'ingredient' | 'variable' | 'note'
+  type: 'size' | 'ingredient' | 'variable' | 'note' | 'limited_ingredient'
   quantity: number
   isAvailable: boolean
 }
@@ -64,14 +64,6 @@ export interface User {
   createdAt: Date
 }
 
-export interface PhoneNumberMenu {
-  id: string
-  label: string
-  number: string
-  isActive: boolean
-  createdAt: Date
-}
-
 export type OrderStatus = 'PENDING' | 'IN_PROGRESS' | 'DELIVERED' | 'CANCELLED'
 
 export interface OrderItem {
@@ -103,10 +95,24 @@ export interface Branch {
   name: string
   label: string // Unique label for the branch, e.g., 'sucursal-1', 'sucursal-campeche'
   address: string
+  urlMap: string | null
   phone: string
   phoneBot: string | null
   phoneUser: string | null
   hours: string | null
   isOpen: boolean
   products?: Product[]
+}
+
+export interface DeliveryForm {
+  address: string
+  reference: string
+  receiverName: string
+  receiverPhone: string
+  paymentMethod: string
+}
+
+export interface PickupForm {
+  name: string
+  paymentMethod: string
 }

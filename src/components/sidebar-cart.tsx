@@ -3,19 +3,41 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ShoppingBag, Trash2, MessageCircle } from 'lucide-react'
 import Image from 'next/image'
-import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { Input } from './ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { createUpdateOrder } from '@/actions/orders/create-order'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from '@/components/ui/dialog'
 import { cn, getProductTotal } from '@/lib/utils'
 import { useUiStore, useCartStore, useBranchStore } from '@/store'
 
 export function SidebarCart() {
-  const searchParams = useSearchParams()
-  const table = searchParams.get('table')
-  const tableNumber = Number(table)
+  // const searchParams = useSearchParams()
+  // const table = searchParams.get('table')
+  // const tableNumber = Number(table)
+
   const [showDeliveryModal, setShowDeliveryModal] = useState(false)
+  const [deliveryType, setDeliveryType] = useState<'pickup' | 'delivery' | null>(null)
+  const [pickupForm, setPickupForm] = useState({
+    name: '',
+    paymentMethod: ''
+  })
+  const [deliveryForm, setDeliveryForm] = useState({
+    address: '',
+    reference: '',
+    receiverName: '',
+    receiverPhone: '',
+    paymentMethod: ''
+  })
 
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
   const [showSafariModal, setShowSafariModal] = useState(false)
@@ -38,7 +60,7 @@ export function SidebarCart() {
     return () => { window.removeEventListener('keydown', handleKeyDown) }
   }, [closeSideCart, showDeliveryModal, showSafariModal])
 
-  const generateAndSendWhatsApp = async (option: 'table' | 'delivery') => {
+  const generateAndSendWhatsApp = async (option: 'pickup' | 'delivery') => {
     if (!selectedBranch) {
       toast.error('Selecciona una sucursal antes de hacer tu pedido')
       setShowDeliveryModal(false)
@@ -58,7 +80,7 @@ export function SidebarCart() {
     formData.append('totalPrice', getSubtotal().toString())
     formData.append('items', JSON.stringify(items))
 
-    formData.append('address', option === 'delivery' ? 'Pendiente' : `Mesa ${tableNumber || '?'}`)
+    formData.append('address', option === 'delivery' ? 'Pendiente' : 'Pickup')
 
     const { ok, order, message } = await createUpdateOrder(formData)
 
@@ -70,14 +92,20 @@ export function SidebarCart() {
     const phoneNumber = selectedBranch.phone
     let messageOrder = '🛒 *Nuevo Pedido*\n\n'
 
+    messageOrder += `*Código de verificación:* BD-${order.shortId}\n\n`
+
     cart.forEach((item) => {
       const productName = item.product.name
       const quantity = item.quantity
       const unitTotal = getProductTotal(item.product) // already includes options
       const lineTotal = unitTotal * quantity
 
-      messageOrder += `*${quantity}x* ${productName} - $${lineTotal.toFixed(2)}\n`
+      console.log('item', item)
 
+      const hasVariable = item.product.options?.some(opt => opt.type === 'variable')
+      console.log('hasVariable', hasVariable)
+      messageOrder += `*${quantity}x* ${productName} - ${hasVariable ? '*Pendiente*' : `$${lineTotal.toFixed(2)}`}\n`
+      console.log('messageOrder', messageOrder)
       // Only show options if they exist
       if (item.product.options && item.product.options.length > 0) {
         // Group by ID to avoid duplicates (if they come from error)
@@ -90,23 +118,74 @@ export function SidebarCart() {
         })
       }
 
-      messageOrder += '\n' // Separador entre productos
+      messageOrder += '\n' // Separator between products
     })
 
-    messageOrder += `*Total:* $${getSubtotal().toFixed(2)}\n`
-    messageOrder += `*Tipo de pedido:* ${option === 'table' ? `Mesa ${tableNumber}` : 'Domicilio'}\n\n`
-    messageOrder += `*Código de verificación:* BD-${order.shortId}\n\n`
-    messageOrder += '¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar.\n\n'
+    messageOrder += `*Total:* $${getSubtotal().toFixed(2)}\n
+------\n`
+    messageOrder += `*Tipo de pedido:* ${option === 'pickup' ? 'Para pasar a recoger' : 'Domicilio'}\n\n`
+
+    if (option === 'pickup') {
+      messageOrder += `👤 *Cliente:* ${pickupForm.name}\n`
+      messageOrder += `💳 *Pago:* ${pickupForm.paymentMethod}\n\n`
+      messageOrder += '¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar.\n\n'
+    }
+
+    if (option === 'delivery') {
+      messageOrder += `📍 *Dirección:* ${deliveryForm.address}\n`
+
+      if (deliveryForm.reference) messageOrder += `🗺️ *Referencia:* ${deliveryForm.reference}\n`
+
+      messageOrder += `👤 *Recibe:* ${deliveryForm.receiverName}\n`
+      messageOrder += `📞 *Teléfono:* ${deliveryForm.receiverPhone}\n`
+      messageOrder += `💳 *Pago:* ${deliveryForm.paymentMethod}\n\n`
+
+      messageOrder += '¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar.'
+    }
 
     const encodedMessage = encodeURIComponent(messageOrder)
 
     if (!isSafari) {
       window.open(`https://wa.me/+521${phoneNumber}?text=${encodedMessage}`, '_blank')
+      setDeliveryType(null)
+      setPickupForm({ name: '', paymentMethod: '' })
+      setDeliveryForm({
+        address: '',
+        reference: '',
+        receiverName: '',
+        receiverPhone: '',
+        paymentMethod: ''
+      })
+
       closeSideCart()
     } else {
       setShowSafariModal(true)
       setPendingMessage(`https://wa.me/+521${phoneNumber}?text=${encodedMessage}`)
     }
+  }
+
+  const handleSendOrder = () => {
+    if (deliveryType === 'pickup') {
+      if (!pickupForm.name || !pickupForm.paymentMethod) {
+        toast.error('Completa todos los campos')
+        return
+      }
+      generateAndSendWhatsApp('pickup')
+    }
+
+    if (deliveryType === 'delivery') {
+      const { address, receiverName, receiverPhone, paymentMethod } = deliveryForm
+
+      if (!address || !receiverName || !receiverPhone || !paymentMethod) {
+        toast.error('Faltan datos para el envío')
+        return
+      }
+
+      generateAndSendWhatsApp('delivery')
+    }
+
+    setShowDeliveryModal(false)
+    closeSideCart()
   }
 
   const handleWhatsAppCheckout = () => {
@@ -178,7 +257,13 @@ export function SidebarCart() {
               : (
                 <ul className="space-y-4">
                   {cart.map((item) => {
-                    const hasOptions = item.product.options && item.product.options.length > 0
+                    const sizeOption = item.product.options?.find(option => option.type === 'size')
+
+                    const hasLimitedIngredientOption = item.product.options?.some(option => option.type === 'limited_ingredient')
+
+                    const hasIngredientOnly = item.product.options?.some(option => option.type === 'ingredient') &&
+                      !item.product.options?.some(option => option.type === 'size')
+
                     return (
                       <motion.li
                         key={item.cartItemId}
@@ -197,98 +282,96 @@ export function SidebarCart() {
                           />
                         </div>
 
-                        {
-                          hasOptions
+                        <div className="flex-1">
+                          <h3 className="font-medium text-sm">{item.product.name}</h3>
+
+                          {/* SIZE */}
+                          {sizeOption && (
+                            <div className="flex items-center mt-1">
+                              <span className="mr-2 text-sm font-medium">{sizeOption.name}</span>
+                              <button
+                                onClick={() => { updateQuantity(item.cartItemId, Math.max(1, item.quantity - 1)) }}
+                                className="text-muted-foreground hover:text-primary w-5 h-5 flex items-center justify-center"
+                              >
+                                -
+                              </button>
+                              <span className="mx-2">{item.quantity}</span>
+                              <button
+                                onClick={() => { updateQuantity(item.cartItemId, item.quantity + 1) }}
+                                className="text-muted-foreground hover:text-primary w-5 h-5 flex items-center justify-center"
+                              >
+                                +
+                              </button>
+                            </div>
+                          )}
+
+                          {/* INGREDIENTS / LIMITED INGREDIENTS */}
+                          {(hasLimitedIngredientOption || hasIngredientOnly) && (
+                            <div className="flex items-center mt-1">
+                              <button
+                                onClick={() => { updateQuantity(item.cartItemId, Math.max(1, item.quantity - 1)) }}
+                                className="text-muted-foreground hover:text-primary w-6 h-6 flex items-center justify-center"
+                              >
+                                -
+                              </button>
+                              <span className="mx-2 w-6 text-center text-sm">{item.quantity}</span>
+                              <button
+                                onClick={() => { updateQuantity(item.cartItemId, item.quantity + 1) }}
+                                className="text-muted-foreground hover:text-primary w-6 h-6 flex items-center justify-center"
+                              >
+                                +
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Lista de opciones */}
+                          <div className="flex flex-col mt-1">
+                            {item.product.options?.map(option => (
+                              option.type !== 'size' && (
+                                <div key={option.id} className="flex gap-2 items-center text-xs">
+                                  <span>{option.name}</span>
+                                </div>
+                              )
+                            ))}
+                          </div>
+
+                          {/* NO OPTIONS → simple control */}
+                          {!item.product.options || item.product.options.length === 0
                             ? (
-                              <>
-                                {/* Products details with options */}
-                                <div className="flex-1">
-                                  <h3 className="font-medium text-sm">{item.product.name}</h3>
-                                  <div className="flex items-center mt-1">
-                                    <div className="flex flex-col">
-                                      {
-                                        item.product.options?.map((option) => (
-                                          <div
-                                            key={option.id}
-                                            className="flex gap-4 items-center mr-2 px-2 py-1 rounded text-xs"
-                                          >
+                              <div className="flex items-center mt-1">
+                                <button
+                                  onClick={() => { updateQuantity(item.cartItemId, Math.max(1, item.quantity - 1)) }}
+                                  className="text-muted-foreground hover:text-primary w-6 h-6 flex items-center justify-center"
+                                >
+                                  -
+                                </button>
+                                <span className="mx-2 w-6 text-center text-sm">{item.quantity}</span>
+                                <button
+                                  onClick={() => { updateQuantity(item.cartItemId, item.quantity + 1) }}
+                                  className="text-muted-foreground hover:text-primary w-6 h-6 flex items-center justify-center"
+                                >
+                                  +
+                                </button>
+                              </div>)
+                            : null}
+                        </div>
 
-                                            <span className="font-medium">{option.name}</span>
-                                            {
-                                              option.type === 'size' && (
-                                                <div className="flex items-center justify-around gap-2">
-                                                  <button
-                                                    onClick={() => { updateQuantity(item.cartItemId, Math.max(1, item.quantity - 1)) }}
-                                                    className="text-muted-foreground  hover:text-primary w-5 h-5 flex items-center justify-center"
-                                                  >
-                                                    -
-                                                  </button>
-                                                  <span className="ml-1 text-muted-foreground">{item.quantity}</span>
-                                                  <button
-                                                    onClick={() => { updateQuantity(item.cartItemId, Math.max(1, item.quantity + 1)) }}
-                                                    className="text-muted-foreground  hover:text-primary w-5 h-5 flex items-center justify-center"
-                                                  >
-                                                    +
-                                                  </button>
-                                                </div>
-                                              )
-                                            }
-                                          </div>
-                                        ))
-                                      }
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* Price and remove button */}
-                                <div className="flex flex-col items-end">
-                                  <span className="font-medium text-sm">
-                                    ${getCartItemTotal(item.cartItemId).toFixed(2)}
-                                  </span>
-                                  <button
-                                    onClick={() => { handleRemoveItem(item.cartItemId, item.product.name) }}
-                                    className="text-destructive/70 hover:text-destructive mt-1"
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </button>
-                                </div>
-                              </>)
-                            : (
-                              <>
-                                {/* Product details */}
-                                <div className="flex-1">
-                                  <h3 className="font-medium text-sm">{item.product.name}</h3>
-                                  <div className="flex items-center mt-1">
-                                    <button
-                                      onClick={() => { updateQuantity(item.product.id, Math.max(1, item.quantity - 1)) }}
-                                      className="text-muted-foreground  hover:text-primary w-6 h-6 flex items-center justify-center"
-                                    >
-                                      -
-                                    </button>
-                                    <span className="mx-2 w-6 text-center text-sm">{item.quantity}</span>
-                                    <button
-                                      onClick={() => { updateQuantity(item.product.id, item.quantity + 1) }}
-                                      className="text-muted-foreground hover:text-primary w-6 h-6 flex items-center justify-center"
-                                    >
-                                      +
-                                    </button>
-                                  </div>
-                                </div>
-
-                                {/* Price and remove button */}
-                                <div className="flex flex-col items-end">
-                                  <span className="font-medium text-sm">
-                                    {(item.product.price) === 0 ? 'Pendiente' : `$${((item.product.price) * item.quantity).toFixed(2)}`}
-                                  </span>
-                                  <button
-                                    onClick={() => { handleRemoveItem(item.product.id, item.product.name) }}
-                                    className="text-destructive/70 hover:text-destructive mt-1"
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </button>
-                                </div>
-                              </>)
-                        }
+                        {/* Price and delete */}
+                        <div className="flex flex-col items-end">
+                          <span className="font-medium text-sm">
+                            {
+                              getCartItemTotal(item.cartItemId) === 0
+                                ? 'Pendiente'
+                                : `$${getCartItemTotal(item.cartItemId).toFixed(2)}`
+                            }
+                          </span>
+                          <button
+                            onClick={() => { handleRemoveItem(item.cartItemId, item.product.name) }}
+                            className="text-destructive/70 hover:text-destructive mt-1"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       </motion.li>
                     )
                   })}
@@ -353,6 +436,15 @@ export function SidebarCart() {
                   if (pendingMessage) window.open(pendingMessage, '_blank')
                   setShowSafariModal(false)
                   setPendingMessage(null)
+                  setDeliveryType(null)
+                  setPickupForm({ name: '', paymentMethod: '' })
+                  setDeliveryForm({
+                    address: '',
+                    reference: '',
+                    receiverName: '',
+                    receiverPhone: '',
+                    paymentMethod: ''
+                  })
                   closeSideCart()
                 }}
               >
@@ -371,48 +463,103 @@ export function SidebarCart() {
       )}
 
       {/* Delivery Modal */}
-      {showDeliveryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-muted p-6 rounded-2xl shadow-xl max-w-sm w-full text-center space-y-4">
-            <h3 className="text-lg font-semibold">¿Cómo será tu pedido?</h3>
-            <p className="text-sm text-muted-foreground">Selecciona una opción para continuar</p>
-            <div className="flex flex-col gap-2">
-              {!tableNumber && (
-                <p className="text-xs text-muted-foreground">
-                  Escanea el código QR que se encuentra en tu mesa.
-                </p>
-              )}
-              <Button
-                disabled={!tableNumber}
-                onClick={() => {
-                  generateAndSendWhatsApp('table')
-                  setShowDeliveryModal(false)
-                }}
-                className="bg-sidebar-accent-foreground hover:bg-sidebar-accent-foreground/90 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {tableNumber ? `Consumir en mesa (Mesa ${tableNumber})` : 'Consumir en mesa'}
-              </Button>
+      <Dialog open={showDeliveryModal} onOpenChange={setShowDeliveryModal}>
+        <DialogContent className="max-w-sm bg-muted rounded-lg">
+          <DialogHeader>
+            <DialogTitle>Completar pedido</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Por favor, proporciona los datos necesarios para procesar tu pedido.
+            </DialogDescription>
+          </DialogHeader>
 
+          {!deliveryType && (
+            <div className="flex flex-col gap-2">
               <Button
-                onClick={() => {
-                  generateAndSendWhatsApp('delivery')
-                  setShowDeliveryModal(false)
-                }}
-                className="bg-primary hover:bg-primary/90"
+                onClick={() => { setDeliveryType('pickup') }}
+              >
+                Recoger en sucursal
+              </Button>
+              <Button
+                onClick={() => { setDeliveryType('delivery') }}
+                className="bg-green-600 hover:bg-green-700"
               >
                 A domicilio
               </Button>
+            </div>
+          )}
+
+          {deliveryType === 'pickup' && (
+            <div className="space-y-4 mt-4">
+              <Input
+                placeholder="Nombre completo"
+                value={pickupForm.name}
+                onChange={(e) => { setPickupForm({ ...pickupForm, name: e.target.value }) }}
+                className="w-full p-2 rounded border text-muted-foreground text-sm"
+              />
+              <Select
+                value={pickupForm.paymentMethod}
+                onValueChange={(value) => { setPickupForm({ ...pickupForm, paymentMethod: value }) }}
+              >
+                <SelectTrigger className='w-full p-2 rounded border text-muted-foreground text-sm'>
+                  <SelectValue placeholder="Forma de pago" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="efectivo">Efectivo</SelectItem>
+                  <SelectItem value="transferencia">Transferencia</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {deliveryType === 'delivery' && (
+            <div className="space-y-3 mt-4">
+              <Input placeholder="Nombre de quien recibe" value={deliveryForm.receiverName} onChange={(e) => { setDeliveryForm({ ...deliveryForm, receiverName: e.target.value }) }} className="w-full p-2 rounded border text-sm" />
+              <Input placeholder="Dirección completa" value={deliveryForm.address} onChange={(e) => { setDeliveryForm({ ...deliveryForm, address: e.target.value }) }} className="w-full p-2 rounded border text-sm" />
+              <Input placeholder="Referencia del domicilio" value={deliveryForm.reference} onChange={(e) => { setDeliveryForm({ ...deliveryForm, reference: e.target.value }) }} className="w-full p-2 rounded border text-sm" />
+              <Input placeholder="Teléfono de contacto" value={deliveryForm.receiverPhone} onChange={(e) => { setDeliveryForm({ ...deliveryForm, receiverPhone: e.target.value }) }} className="w-full p-2 rounded border text-sm" />
+              <Select
+                value={deliveryForm.paymentMethod}
+                onValueChange={(value) => { setDeliveryForm({ ...deliveryForm, paymentMethod: value }) }}
+              >
+                <SelectTrigger className='w-full p-2 rounded border text-muted-foreground text-sm'>
+                  <SelectValue placeholder="Forma de pago" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="efectivo">Efectivo</SelectItem>
+                  <SelectItem value="transferencia">Transferencia</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {(deliveryType === 'pickup' || deliveryType === 'delivery') && (
+            <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:justify-end mt-4">
               <Button
-                variant="outline"
-                onClick={() => { setShowDeliveryModal(false) }}
-                className="w-full text-destructive border-destructive bg-background hover:bg-destructive/10 hover:text-black dark:hover:text-destructive"
+                variant="destructive"
+                onClick={() => {
+                  setShowDeliveryModal(false)
+                  setTimeout(() => {
+                    setDeliveryType(null)
+                    setPickupForm({ name: '', paymentMethod: '' })
+                    setDeliveryForm({
+                      address: '',
+                      reference: '',
+                      receiverName: '',
+                      receiverPhone: '',
+                      paymentMethod: ''
+                    })
+                  }, 1000)
+                }}
               >
                 Cancelar
               </Button>
-            </div>
-          </div>
-        </div>
-      )}
+              <Button onClick={handleSendOrder} className="bg-green-600 hover:bg-green-700">
+                Enviar pedido
+              </Button>
+            </DialogFooter>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

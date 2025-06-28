@@ -12,7 +12,7 @@ export async function getCategories(): Promise<Category[]> {
         }
       },
       orderBy: {
-        name: 'asc'
+        name: 'desc'
       }
     })
 

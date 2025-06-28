@@ -2,6 +2,7 @@ import { Clock, Facebook, MapPin, Phone, Sandwich } from 'lucide-react'
 import Link from 'next/link'
 import { FaWhatsapp } from 'react-icons/fa'
 import { getBranches } from '@/actions/branches/get-branches'
+import { formatPhoneNumber } from '@/lib/utils'
 
 export async function Footer() {
   // const googleMapsUrl = 'https://maps.app.goo.gl/qAFDqDNZvYqwkaDG7'
@@ -23,9 +24,11 @@ export async function Footer() {
               <h3 className="text-xl font-bold mb-2">{branch.name}</h3>
               <div className="flex items-start gap-2 mb-2">
                 <MapPin className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-300 text-sm whitespace-pre-line">
-                  {branch.address}
-                </span>
+                <Link href={branch.urlMap || '#'} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors">
+                  <span className="text-gray-300 text-sm whitespace-pre-line">
+                    {branch.address}
+                  </span>
+                </Link>
               </div>
               {branch.hours && (
                 <div className="flex items-start gap-2 mb-2">
@@ -45,7 +48,7 @@ export async function Footer() {
                     rel="noopener noreferrer"
                     className="text-gray-300 hover:text-green-400 transition-colors text-sm"
                   >
-                    {branch.phone}
+                    {formatPhoneNumber(branch.phone)}
                   </Link>
                 </div>
               )}

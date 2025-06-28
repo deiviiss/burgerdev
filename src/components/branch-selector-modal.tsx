@@ -5,6 +5,7 @@ import { X, MapPin, Clock, Phone, Navigation } from 'lucide-react'
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { type Branch } from '@/lib/types'
+import { formatPhoneNumber } from '@/lib/utils'
 
 interface BranchSelectorModalProps {
   isOpen: boolean
@@ -118,7 +119,7 @@ export default function BranchSelectorModal({
                         {branch.phone && (
                           <div className="flex items-center gap-2">
                             <Phone className="h-3 w-3 flex-shrink-0" />
-                            <span>{branch.phone}</span>
+                            <span>{formatPhoneNumber(branch.phone)}</span>
                           </div>
                         )}
                       </div>

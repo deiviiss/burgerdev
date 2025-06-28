@@ -581,7 +581,7 @@ export default function ProductsTab() {
                           {/* select option type */}
                           <Select
                             value={newOption.type}
-                            onValueChange={(value) => { setNewOption({ ...newOption, type: value as 'size' | 'ingredient' | 'variable' }) }}
+                            onValueChange={(value) => { setNewOption({ ...newOption, type: value as 'size' | 'ingredient' | 'variable' | 'note' | 'limited_ingredient' }) }}
                             disabled={isSubmitting}
                           >
                             <SelectTrigger className="w-1/2">
@@ -600,6 +600,9 @@ export default function ProductsTab() {
                               </SelectItem>
                               <SelectItem value={'note'}>
                                 Nota
+                              </SelectItem>
+                              <SelectItem value={'limited_ingredient'}>
+                                Ingrediente limitado
                               </SelectItem>
                             </SelectContent>
                           </Select>
