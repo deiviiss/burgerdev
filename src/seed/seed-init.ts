@@ -16,7 +16,14 @@ const initialBranches: Branch[] = [
     phoneBot: '9903715312',
     phoneUser: '9811250049',
     hours: '9:00 AM - 10:00 PM',
-    isOpen: true
+    isOpen: true,
+    social: {
+      facebook: 'https://www.facebook.com/profile.php?id=61573792161468&locale=es_LA',
+      whatsapp: 'https://wa.me/+5219811250049',
+      instagram: 'https://www.instagram.com/mitiendaenlinea.shop'
+    },
+    dayOff: 'Viernes',
+    slogan: 'Lo bueno se comparte... y se pide por WhatsApp'
   },
   {
     id: randomUUID(),
@@ -28,7 +35,14 @@ const initialBranches: Branch[] = [
     phoneBot: '9903715312',
     phoneUser: '9811250049',
     hours: '10:00 AM - 11:00 PM',
-    isOpen: true
+    isOpen: true,
+    social: {
+      facebook: 'https://www.facebook.com/profile.php?id=61573792161468&locale=es_LA',
+      whatsapp: 'https://wa.me/+5219811250049',
+      instagram: 'https://www.instagram.com/mitiendaenlinea.shop'
+    },
+    dayOff: 'Domingos',
+    slogan: 'Lo bueno se comparte... y se pide por WhatsApp'
   }
 ]
 
