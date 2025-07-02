@@ -102,6 +102,9 @@ export interface Branch {
   hours: string | null
   isOpen: boolean
   products?: Product[]
+  social?: Record<string, string | null>
+  dayOff?: string | null
+  slogan?: string | null
 }
 
 export interface DeliveryForm {

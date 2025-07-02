@@ -73,6 +73,9 @@ model Branch {
   hours     String?
   isOpen    Boolean   @default(true)
   products  Product[] @relation("ProductBranches")
+  social    Json?
+  dayOff    String?
+  slogan    String?
 }
 
 model Promotion {
