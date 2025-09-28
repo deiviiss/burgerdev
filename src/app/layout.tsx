@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Quicksand } from 'next/font/google'
 import { Toaster } from 'sonner'
+import { LogVisit } from '@/components/analitycs/log-visit'
 import { ToogleDarkMode } from '@/components/dark-mode/toogle-dark-mode/ToogleDarkMode'
 import { Providers } from '@/components/providers/Providers'
 import ScrollToTop from '@/components/scroll-to-top/ScrollToTop'
@@ -39,6 +40,7 @@ export default function RootLayout({
     <html lang="es" className="scroll-smooth">
       <body className={inter.className}>
         <Providers>
+          <LogVisit />
           {children}
           <ToogleDarkMode />
           <ScrollToTop />

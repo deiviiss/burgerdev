@@ -17,6 +17,7 @@ import {
   DialogDescription,
   DialogFooter
 } from '@/components/ui/dialog'
+import { logEvent } from '@/lib/event-logger'
 import { cn, getProductTotal } from '@/lib/utils'
 import { useUiStore, useCartStore, useBranchStore } from '@/store'
 
@@ -88,6 +89,10 @@ export function SidebarCart() {
       toast.error(message || 'No se pudo crear el pedido')
       return
     }
+
+    logEvent({
+      type: 'order_completed' // Event type for order completion
+    })
 
     const phoneNumber = selectedBranch.phone
     let messageOrder = '🛒 *Nuevo Pedido*\n\n'
@@ -164,10 +169,21 @@ export function SidebarCart() {
 
   const handleSendOrder = () => {
     if (deliveryType === 'pickup') {
-      if (!pickupForm.name || !pickupForm.paymentMethod) {
-        toast.error('Completa todos los campos')
+      const { name, paymentMethod } = pickupForm
+      if (!name || !paymentMethod) {
+        toast.error('Faltan datos para el envío')
         return
       }
+
+      logEvent({
+        type: 'form_pickup_completed',
+        metadata: {
+          method: 'pickup',
+          name,
+          payment: paymentMethod
+        }
+      })
+
       generateAndSendWhatsApp('pickup')
     }
 
@@ -178,6 +194,17 @@ export function SidebarCart() {
         toast.error('Faltan datos para el envío')
         return
       }
+
+      logEvent({
+        type: 'form_delivery_completed',
+        metadata: {
+          method: 'delivery',
+          address,
+          receiverName,
+          receiverPhone,
+          payment: paymentMethod
+        }
+      })
 
       generateAndSendWhatsApp('delivery')
     }

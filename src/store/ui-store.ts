@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { logEvent } from '@/lib/event-logger'
 
 interface UIState {
   // Sidebar de carrito
@@ -17,7 +18,12 @@ interface UIState {
 export const useUiStore = create<UIState>((set) => ({
   // Estado inicial del sidebar de carrito
   isSideCartOpen: false,
-  openSideCart: () => { set({ isSideCartOpen: true }) },
+  openSideCart: () => {
+    logEvent({
+      type: 'view_resume'
+    })
+    set({ isSideCartOpen: true })
+  },
   closeSideCart: () => { set({ isSideCartOpen: false }) },
   toggleSideCart: () => { set((state) => ({ isSideCartOpen: !state.isSideCartOpen })) },
 

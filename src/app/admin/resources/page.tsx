@@ -27,14 +27,14 @@ const itemVariants = {
   }
 }
 
-export default function ContractPage() {
+export default function ResourcesPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         <section className="py-6 md:py-8 lg:py-10 flex justify-center">
           <div className="container px-4 md:px-6">
             <motion.div
-              className="mx-auto max-w-3xl space-y-8"
+              className="mx-auto max-w-7xl space-y-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
@@ -152,7 +152,7 @@ export default function ContractPage() {
                     </motion.div>
                   </motion.div>
 
-                  <motion.div
+                  {/* <motion.div
                     className="flex items-center justify-between border-b pb-4"
                     variants={itemVariants}
                     whileHover={{ x: 5 }}
@@ -193,7 +193,7 @@ export default function ContractPage() {
                         </a>
                       </Button>
                     </motion.div>
-                  </motion.div>
+                  </motion.div> */}
                 </div>
               </motion.div>
 
