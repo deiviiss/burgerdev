@@ -134,13 +134,13 @@ export function SidebarCart() {
     messageOrder += `*Tipo de pedido:* ${option === 'pickup' ? 'Para pasar a recoger' : 'Domicilio'}\n\n`
 
     if (option === 'pickup') {
-      messageOrder += `👤 *Cliente:* ${pickupForm.name}\n`
-      messageOrder += `💳 *Pago:* ${pickupForm.paymentMethod}\n\n`
+      messageOrder += `👤 *Cliente:* ${capitalizeWords(pickupForm.name)}\n`
+      messageOrder += `💳 *Pago:* ${capitalizeWords(pickupForm.paymentMethod)}\n\n`
       messageOrder += '¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar.\n\n'
     }
 
     if (option === 'delivery') {
-      messageOrder += `📍 *Dirección:* ${deliveryForm.address}\n`
+      messageOrder += `📍 *Dirección:* ${capitalizeWords(deliveryForm.address)}\n`
 
       if (deliveryForm.reference) messageOrder += `🗺️ *Referencia:* ${deliveryForm.reference}\n`
 
@@ -148,9 +148,9 @@ export function SidebarCart() {
         ? `📍 *Ubicación:* https://www.google.com/maps?q=${deliveryForm.coordinates.lat},${deliveryForm.coordinates.lng}\n\n`
         : ''
 
-      messageOrder += `👤 *Recibe:* ${deliveryForm.receiverName}\n`
+      messageOrder += `👤 *Recibe:* ${capitalizeWords(deliveryForm.receiverName)}\n`
       messageOrder += `📞 *Teléfono:* ${deliveryForm.receiverPhone}\n`
-      messageOrder += `💳 *Pago:* ${deliveryForm.paymentMethod}\n\n`
+      messageOrder += `💳 *Pago:* ${capitalizeWords(deliveryForm.paymentMethod)}\n\n`
 
       messageOrder += '¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar.'
     }
@@ -565,7 +565,7 @@ export function SidebarCart() {
                 onChange={(e) => {
                   setPickupForm({
                     ...pickupForm,
-                    name: capitalizeWords(e.target.value)
+                    name: e.target.value
                   })
                 }}
                 className="w-full p-2 rounded border text-muted-foreground text-sm"
@@ -590,7 +590,7 @@ export function SidebarCart() {
               <Input placeholder="Nombre de quien recibe" value={deliveryForm.receiverName} onChange={(e) => {
                 setDeliveryForm({
                   ...deliveryForm,
-                  receiverName: capitalizeWords(e.target.value)
+                  receiverName: e.target.value
                 })
               }} className="w-full p-2 rounded border text-sm" />
 
@@ -632,13 +632,13 @@ export function SidebarCart() {
               <Input placeholder="Dirección completa" value={deliveryForm.address} onChange={(e) => {
                 setDeliveryForm({
                   ...deliveryForm,
-                  address: capitalizeWords(e.target.value)
+                  address: e.target.value
                 })
               }} className="w-full p-2 rounded border text-sm" />
               <Input placeholder="Referencia del domicilio" value={deliveryForm.reference} onChange={(e) => {
                 setDeliveryForm({
                   ...deliveryForm,
-                  reference: capitalizeWords(e.target.value)
+                  reference: e.target.value
                 })
               }} className="w-full p-2 rounded border text-sm" />
               <Input placeholder="Teléfono de contacto" value={deliveryForm.receiverPhone} onChange={(e) => { setDeliveryForm({ ...deliveryForm, receiverPhone: e.target.value }) }} className="w-full p-2 rounded border text-sm" />
