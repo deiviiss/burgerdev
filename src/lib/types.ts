@@ -119,3 +119,17 @@ export interface PickupForm {
   name: string
   paymentMethod: string
 }
+
+// interface EventLog {
+export interface EventLog {
+  id: string
+  createdAt: Date
+  type: string
+  productId?: string | null
+  product?: Product | null
+  promotionId?: string | null
+  promotion?: Promotion | null
+  categoryId?: string | null
+  category?: Category | null
+  metadata: Record<string, unknown>
+}

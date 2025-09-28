@@ -70,7 +70,7 @@ export default function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full" autoComplete="off">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -125,6 +125,7 @@ export default function LoginForm() {
                         placeholder='Contraseña'
                         {...field}
                         value={field.value}
+                        autoComplete="new-password"
                       />
                     </FormControl>
                     <button

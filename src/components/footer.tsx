@@ -79,6 +79,11 @@ export async function Footer() {
                   Política de Privacidad
                 </Link>
               </li>
+              <li>
+                <Link href="/auth/login" className="text-gray-300 hover:text-white transition-colors">
+                  Administrador
+                </Link>
+              </li>
             </ul>
           </div>
 

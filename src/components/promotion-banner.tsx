@@ -40,13 +40,12 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
       image: promotion.image,
       categoryId: promotion.categoryId,
       isAvailable: true,
-      isPromotion: true,
       createdAt: new Date()
     }
 
     addToCart(promoProduct)
     setIsLoading(false)
-    toast.success(`${promoProduct.name} agregado al carrito`, {
+    toast.success(`${promoProduct.name} agregado al carrito :)`, {
       position: 'bottom-right'
     })
   }

@@ -1,5 +1,7 @@
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { RiCalendarEventFill } from 'react-icons/ri'
+import { TbDashboard } from 'react-icons/tb'
 import { Button } from '@/components/ui/button'
 
 export default function AdminHeader() {
@@ -15,6 +17,21 @@ export default function AdminHeader() {
         </Link>
       </div>
       <p className="text-muted-foreground">Gestiona tus productos, categorías y promociones</p>
+
+      <div className="flex w-full justify-end gap-2 mt-6">
+        <Link href="/admin/dashboard" aria-disabled>
+          <Button variant="secondary" size="sm" className="flex items-center">
+            <TbDashboard className='w-3 h-3' />
+            Dashboard
+          </Button>
+        </Link>
+        <Link href="/admin/events">
+          <Button variant="secondary" size="sm" className="flex items-center">
+            <RiCalendarEventFill className='w-3 h-3' />
+            Eventos
+          </Button>
+        </Link>
+      </div>
     </div>
   )
 }

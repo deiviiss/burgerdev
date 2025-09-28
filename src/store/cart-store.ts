@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { logEvent } from '@/lib/event-logger'
 import type { Product } from '@/lib/types'
 import { getProductTotal } from '@/lib/utils'
 
@@ -39,6 +40,17 @@ export const useCartStore = create<CartState>()(
         const cart = get().cart
 
         const existingItemIndex = cart.findIndex(item => item.cartItemId === cartItemId)
+
+        // Always log event when adding (even if it already exists in the cart)
+        logEvent({
+          type: 'add_to_cart',
+          productId: product.id,
+          categoryId: product.categoryId,
+          metadata: {
+            options: options.map(o => o.name),
+            cartItemId
+          }
+        })
 
         if (existingItemIndex !== -1) {
           // Product already exists in the cart

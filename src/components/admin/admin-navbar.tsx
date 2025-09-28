@@ -3,11 +3,15 @@
 import { motion } from 'framer-motion'
 import { LucideFolderDown, Sandwich } from 'lucide-react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { ButtonLogout } from '@/components/auth/ButtonLogout'
 import { Button } from '@/components/ui/button'
 
 export function NavbarAdmin() {
   const companyName = process.env.NEXT_PUBLIC_COMPANY_NAME
+
+  const pathname = usePathname()
+  const isResourcesPage = pathname === '/admin/resources'
 
   return (
     <header className="bg-card shadow-md sticky top-0 z-40">
@@ -28,12 +32,16 @@ export function NavbarAdmin() {
 
           {/* Navigation buttons */}
           <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="sm" asChild >
-              <Link href="/admin/resources">
-                <LucideFolderDown className="h-5 w-5" />
-                <span className="hidden sm:inline">Recursos</span>
-              </Link>
-            </Button>
+            {
+              !isResourcesPage && (
+                <Button variant="ghost" size="sm" asChild >
+                  <Link href="/admin/resources">
+                    <LucideFolderDown className="h-5 w-5" />
+                    <span className="hidden sm:inline">Recursos</span>
+                  </Link>
+                </Button>
+              )
+            }
 
             <ButtonLogout name="Salir" />
           </div>

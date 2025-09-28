@@ -40,6 +40,7 @@ model Product {
   createdAt   DateTime        @default(now())
   orderItems  OrderItem[]
   branches    Branch[]        @relation("ProductBranches")
+  eventLogs   EventLog[]
 }
 
 enum ProductOptionType {
@@ -91,6 +92,7 @@ model Promotion {
   categoryId         String
   createdAt          DateTime    @default(now())
   orderItems         OrderItem[]
+  EventLog           EventLog[]
 }
 
 model User {
@@ -127,4 +129,17 @@ model OrderItem {
   promotionId String?
   quantity    Int
   unitPrice   Float
+}
+
+// Model to log user events ("God's eyes")
+model EventLog {
+  id          String     @id @default(uuid()) // Unique ID
+  type        String // Event type (e.g., 'view_product', 'add_to_cart', 'click_whatsapp')
+  product     Product?   @relation(fields: [productId], references: [id])
+  productId   String? // ID of the related product (optional)
+  promotionId String? // ID of the related promotion (optional)
+  promotion   Promotion? @relation(fields: [promotionId], references: [id])
+  categoryId  String? // ID of the related category (optional)
+  createdAt   DateTime   @default(now()) // Date and time of the event
+  metadata    Json? // Extra details (user-agent, referrer, etc.)
 }

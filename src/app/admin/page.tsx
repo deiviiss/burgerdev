@@ -5,7 +5,7 @@ import AdminTabs from '@/components/admin/admin-tabs'
 
 export default function AdminPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="max-w-7xl container mx-auto px-4 py-8">
       <AdminHeader />
       <div className="bg-muted rounded-lg shadow-md md:p-6">
         <Suspense fallback={<Loading />}>
