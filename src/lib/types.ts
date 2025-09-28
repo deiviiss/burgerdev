@@ -3,7 +3,7 @@ export interface ProductOption {
   productId: string
   name: string
   price: number
-  type: 'size' | 'ingredient' | 'variable' | 'note' | 'limited_ingredient'
+  type: 'size' | 'ingredient' | 'variable' | 'note' | 'without_ingredient' | 'limited_ingredient'
   quantity: number
   isAvailable: boolean
 }
