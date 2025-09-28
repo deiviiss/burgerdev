@@ -29,3 +29,19 @@ export function formatPhoneNumber(phoneNumber: string): string {
   const formattedPhoneNumber = phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3')
   return formattedPhoneNumber
 }
+
+// Capitalize first letter
+export function capitalizeWords(text: string): string {
+  const lowerCaseWords = ['entre', 'de', 'del', 'la', 'y', 'en', 'el', 'los', 'las', 'al', 'a']
+
+  return text
+    .toLowerCase()
+    .split(' ')
+    .map((word, index) => {
+      if (lowerCaseWords.includes(word) && index !== 0) {
+        return word
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1)
+    })
+    .join(' ')
+}
