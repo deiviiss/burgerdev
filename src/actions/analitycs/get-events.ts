@@ -8,6 +8,7 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
   add_to_cart: 'Agregó al carrito',
   order_completed: 'Pedido completado',
   form_delivery_completed: 'Formulario de entrega completado',
+  form_pickup_completed: 'Formulario para recoger completado',
   view_resume: 'Vista de resumen',
   click_whatsapp: 'Click en WhatsApp',
   view_product: 'Vista de producto'
