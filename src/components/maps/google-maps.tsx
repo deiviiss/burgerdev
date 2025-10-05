@@ -155,8 +155,6 @@ export const GoogleMaps = ({ isOpen, onLocationChange, moveToLocation, initialLo
   }, [isOpen])
 
   return (
-    <form autoComplete="off">
-      <div ref={mapRef} className="w-full h-full" />
-    </form>
+    <div ref={mapRef} className="w-full h-full" />
   )
 }

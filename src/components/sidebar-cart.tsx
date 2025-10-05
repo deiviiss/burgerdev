@@ -555,165 +555,168 @@ export function SidebarCart() {
             </div>
           )}
 
-          {deliveryType === 'pickup' && (
-            <div className="space-y-4 mt-4">
-              <Input
-                placeholder="Nombre completo"
-                value={pickupForm.name}
-                onChange={(e) => {
-                  setPickupForm({
-                    ...pickupForm,
-                    name: e.target.value
-                  })
-                }}
-                className="w-full p-2 rounded border text-muted-foreground text-sm"
-                autoComplete='off'
-              />
-              <Select
-                value={pickupForm.paymentMethod}
-                onValueChange={(value) => { setPickupForm({ ...pickupForm, paymentMethod: value }) }}
-              >
-                <SelectTrigger className='w-full p-2 rounded border text-muted-foreground text-sm'>
-                  <SelectValue placeholder="Forma de pago" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="efectivo">Efectivo</SelectItem>
-                  <SelectItem value="transferencia">Transferencia</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+          <form autoComplete='off'>
+            {deliveryType === 'pickup' && (
+              <div className="space-y-4 mt-4">
+                <Input
+                  placeholder="Nombre completo"
+                  value={pickupForm.name}
+                  onChange={(e) => {
+                    setPickupForm({
+                      ...pickupForm,
+                      name: e.target.value
+                    })
+                  }}
+                  className="w-full p-2 rounded border text-muted-foreground text-sm"
+                  autoComplete='off'
+                />
+                <Select
+                  value={pickupForm.paymentMethod}
+                  onValueChange={(value) => { setPickupForm({ ...pickupForm, paymentMethod: value }) }}
+                >
+                  <SelectTrigger className='w-full p-2 rounded border text-muted-foreground text-sm'>
+                    <SelectValue placeholder="Forma de pago" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="efectivo">Efectivo</SelectItem>
+                    <SelectItem value="transferencia">Transferencia</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
-          {deliveryType === 'delivery' && (
-            <div className="space-y-3 mt-4">
-              <Input
-                placeholder="Nombre de quien recibe"
-                value={deliveryForm.receiverName}
-                onChange={(e) => {
-                  setDeliveryForm({
-                    ...deliveryForm,
-                    receiverName: e.target.value
-                  })
-                }}
-                className="w-full p-2 rounded border text-sm"
-                autoComplete='nope'
-              />
+            {deliveryType === 'delivery' && (
+              <div className="space-y-3 mt-4">
+                <Input
+                  placeholder="Nombre de quien recibe"
+                  value={deliveryForm.receiverName}
+                  onChange={(e) => {
+                    setDeliveryForm({
+                      ...deliveryForm,
+                      receiverName: e.target.value
+                    })
+                  }}
+                  className="w-full p-2 rounded border text-sm"
+                  autoComplete='nope'
+                />
 
-              <div className="border rounded-md py-4 px-2">
-                <div className='flex items-center gap-2 justify-between'>
-                  <h2 className="font-normal text-sm mb-1">Ubicación</h2>
-                  <Badge className="text-[10px]">
-                    Recomendado
-                  </Badge></div>
-                <p className="text-xs text-muted-foreground mb-3">El envío llegará más rápido</p>
+                <div className="border rounded-md py-4 px-2">
+                  <div className='flex items-center gap-2 justify-between'>
+                    <h2 className="font-normal text-sm mb-1">Ubicación</h2>
+                    <Badge className="text-[10px]">
+                      Recomendado
+                    </Badge></div>
+                  <p className="text-xs text-muted-foreground mb-3">El envío llegará más rápido</p>
 
-                <div className="flex gap-2 justify-between">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => { setShowLocationPicker(true) }}
-                    className="w-full justify-start gap-2 text-sm dark:hover:border-primary"
-                  >
-                    <MapPin className="h-4 w-4" />
-                    {hasLocation ? 'Cambiar ubicación' : 'Compartir ubicación 😊'}
-                  </Button>
-
-                  {
-                    hasLocation &&
+                  <div className="flex gap-2 justify-between">
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => {
-                        setDeliveryForm({ ...deliveryForm, address: '', coordinates: { lat: 0, lng: 0 } })
-                        toast.success('Ubicación borrada', {
-                          duration: 1200
-                        })
-                      }}
+                      onClick={() => { setShowLocationPicker(true) }}
+                      className="w-full justify-start gap-2 text-sm dark:hover:border-primary"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <MapPin className="h-4 w-4" />
+                      {hasLocation ? 'Cambiar ubicación' : 'Compartir ubicación 😊'}
                     </Button>
-                  }
+
+                    {
+                      hasLocation &&
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          setDeliveryForm({ ...deliveryForm, address: '', coordinates: { lat: 0, lng: 0 } })
+                          toast.success('Ubicación borrada', {
+                            duration: 1200
+                          })
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    }
+                  </div>
                 </div>
-              </div>
 
-              <Input
-                placeholder="Dirección completa"
-                value={deliveryForm.address}
-                onChange={(e) => {
-                  setDeliveryForm({
-                    ...deliveryForm,
-                    address: e.target.value
-                  })
-                }}
-                className="w-full p-2 rounded border text-sm"
-                autoComplete='nope'
-              />
-              <Input
-                placeholder="Referencia del domicilio"
-                value={deliveryForm.reference}
-                onChange={(e) => {
-                  setDeliveryForm({
-                    ...deliveryForm,
-                    reference: e.target.value
-                  })
-                }}
-                className="w-full p-2 rounded border text-sm"
-                autoComplete='nope'
-              />
-              <Input
-                placeholder="Teléfono de contacto"
-                value={deliveryForm.receiverPhone}
-                onChange={(e) => {
-                  setDeliveryForm({
-                    ...deliveryForm,
-                    receiverPhone: e.target.value
-                  })
-                }}
-                className="w-full p-2 rounded border text-sm"
-                autoComplete="nope"
-              />
-              <Select
-                value={deliveryForm.paymentMethod}
-                onValueChange={(value) => { setDeliveryForm({ ...deliveryForm, paymentMethod: value }) }}
-              >
-                <SelectTrigger className='w-full p-2 rounded border text-muted-foreground text-sm'>
-                  <SelectValue placeholder="Forma de pago" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="efectivo">Efectivo</SelectItem>
-                  <SelectItem value="transferencia">Transferencia</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {(deliveryType === 'pickup' || deliveryType === 'delivery') && (
-            <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:justify-end mt-4">
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  setShowDeliveryModal(false)
-                  setTimeout(() => {
-                    setDeliveryType(null)
-                    setPickupForm({ name: '', paymentMethod: '' })
+                <Input
+                  placeholder="Dirección completa"
+                  value={deliveryForm.address}
+                  onChange={(e) => {
                     setDeliveryForm({
-                      address: '',
-                      reference: '',
-                      receiverName: '',
-                      receiverPhone: '',
-                      paymentMethod: '',
-                      coordinates: { lat: 0, lng: 0 }
+                      ...deliveryForm,
+                      address: e.target.value
                     })
-                  }, 1000)
-                }}
-              >
-                Cancelar
-              </Button>
-              <Button onClick={handleSendOrder} className="bg-green-600 hover:bg-green-700">
-                Enviar pedido
-              </Button>
-            </DialogFooter>
-          )}
+                  }}
+                  className="w-full p-2 rounded border text-sm"
+                  autoComplete='nope'
+                />
+                <Input
+                  placeholder="Referencia del domicilio"
+                  value={deliveryForm.reference}
+                  onChange={(e) => {
+                    setDeliveryForm({
+                      ...deliveryForm,
+                      reference: e.target.value
+                    })
+                  }}
+                  className="w-full p-2 rounded border text-sm"
+                  autoComplete='nope'
+                />
+                <Input
+                  placeholder="Teléfono de contacto"
+                  value={deliveryForm.receiverPhone}
+                  onChange={(e) => {
+                    setDeliveryForm({
+                      ...deliveryForm,
+                      receiverPhone: e.target.value
+                    })
+                  }}
+                  className="w-full p-2 rounded border text-sm"
+                  autoComplete="nope"
+                />
+                <Select
+                  value={deliveryForm.paymentMethod}
+                  onValueChange={(value) => { setDeliveryForm({ ...deliveryForm, paymentMethod: value }) }}
+                >
+                  <SelectTrigger className='w-full p-2 rounded border text-muted-foreground text-sm'>
+                    <SelectValue placeholder="Forma de pago" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="efectivo">Efectivo</SelectItem>
+                    <SelectItem value="transferencia">Transferencia</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {(deliveryType === 'pickup' || deliveryType === 'delivery') && (
+              <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:justify-end mt-4">
+                <Button
+                  variant="destructive"
+                  type='button'
+                  onClick={() => {
+                    setShowDeliveryModal(false)
+                    setTimeout(() => {
+                      setDeliveryType(null)
+                      setPickupForm({ name: '', paymentMethod: '' })
+                      setDeliveryForm({
+                        address: '',
+                        reference: '',
+                        receiverName: '',
+                        receiverPhone: '',
+                        paymentMethod: '',
+                        coordinates: { lat: 0, lng: 0 }
+                      })
+                    }, 1000)
+                  }}
+                >
+                  Cancelar
+                </Button>
+                <Button type='button' onClick={handleSendOrder} className="bg-green-600 hover:bg-green-700">
+                  Enviar pedido
+                </Button>
+              </DialogFooter>
+            )}
+          </form>
         </DialogContent>
       </Dialog>
 
