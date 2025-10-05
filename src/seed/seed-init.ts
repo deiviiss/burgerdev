@@ -48,14 +48,54 @@ const initialBranches: Branch[] = [
 
 // Category data
 const initialCategories: Category[] = [
-  { id: randomUUID(), name: 'Hamburguesas', image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp' },
-  { id: randomUUID(), name: 'Hot Dogs', image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp' },
-  { id: randomUUID(), name: 'Tortas', image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp' },
-  { id: randomUUID(), name: 'Papas Fritas', image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp' },
-  { id: randomUUID(), name: 'Snacks', image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp' },
-  { id: randomUUID(), name: 'Bebidas', image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp' },
-  { id: randomUUID(), name: 'Postres', image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp' },
-  { id: randomUUID(), name: 'Promociones', image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp' }
+  {
+    id: randomUUID(),
+    name: 'Hamburguesas',
+    description: 'Deliciosas hamburguesas gourmet preparadas con ingredientes frescos y de alta calidad.',
+    image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp'
+  },
+  {
+    id: randomUUID(),
+    name: 'Hot Dogs',
+    description: 'Hot dogs clásicos y especiales con una variedad de toppings para todos los gustos.',
+    image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp'
+  },
+  {
+    id: randomUUID(),
+    name: 'Tortas',
+    description: 'Tortas mexicanas tradicionales y creativas, perfectas para cualquier ocasión.',
+    image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp'
+  },
+  {
+    id: randomUUID(),
+    name: 'Papas Fritas',
+    description: 'Papas fritas crujientes, disponibles en porciones individuales o para compartir.',
+    image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp'
+  },
+  {
+    id: randomUUID(),
+    name: 'Snacks',
+    description: 'Variedad de snacks para acompañar tu comida o disfrutar como botana.',
+    image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp'
+  },
+  {
+    id: randomUUID(),
+    name: 'Bebidas',
+    description: 'Refrescos, jugos y bebidas alcohólicas para complementar tu comida.',
+    image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp'
+  },
+  {
+    id: randomUUID(),
+    name: 'Postres',
+    description: 'Dulces y postres irresistibles para cerrar con broche de oro tu comida.',
+    image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp'
+  },
+  {
+    id: randomUUID(),
+    name: 'Promociones',
+    description: 'Ofertas especiales y combos para disfrutar más por menos.',
+    image: 'https://res.cloudinary.com/djq34ckkj/image/upload/v1749682954/placeholder_ugdi4t.webp'
+  }
 ]
 
 // Stores the category IDs for use in product and promotion data

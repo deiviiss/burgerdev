@@ -39,37 +39,44 @@ export default async function EventsPage({ searchParams = {} }: { searchParams?:
           </Button>
         </Link>
       </div>
-      <table className="w-full text-sm border">
-        <thead>
-          <tr className="bg-primary">
-            <th className="p-2 border">Fecha</th>
-            <th className="p-2 border">Tipo</th>
-            <th className="p-2 border">Producto</th>
-          </tr>
-        </thead>
-        <tbody>
-          {events.map((e) => {
-            return (
-              <tr key={e.id}>
-                <td className="p-2 border">{new Date(e.createdAt).toLocaleString()}</td>
-                <td className="p-2 border">{e.type}</td>
-                <td className="p-2 border">{e.product?.name || e.promotion?.name || ''}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-      <div className="flex gap-2 mt-4 justify-center">
-        {Array.from({ length: totalPages }, (_, i) => (
-          <Link
-            key={i}
-            href={`/admin/events?page=${i + 1}`}
-            className={`px-3 py-1 rounded ${page === i + 1 ? 'bg-primary' : 'bg-secondary'}`}
-          >
-            {i + 1}
-          </Link>
-        ))}
-      </div>
+      {
+        events.length === 0
+          ? (
+            <p className="text-center text-muted-foreground">No hay eventos registrados.</p>)
+          : (<>
+            <table className="w-full text-sm border">
+              <thead>
+                <tr className="bg-primary">
+                  <th className="p-2 border">Fecha</th>
+                  <th className="p-2 border">Tipo</th>
+                  <th className="p-2 border">Producto</th>
+                </tr>
+              </thead>
+              <tbody>
+                {events.map((e) => {
+                  return (
+                    <tr key={e.id}>
+                      <td className="p-2 border">{new Date(e.createdAt).toLocaleString()}</td>
+                      <td className="p-2 border">{e.type}</td>
+                      <td className="p-2 border">{e.product?.name || e.promotion?.name || ''}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+            <div className="flex gap-2 mt-4 justify-center">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <Link
+                  key={i}
+                  href={`/admin/events?page=${i + 1}`}
+                  className={`px-3 py-1 rounded ${page === i + 1 ? 'bg-primary' : 'bg-secondary'}`}
+                >
+                  {i + 1}
+                </Link>
+              ))}
+            </div>
+          </>)
+      }
     </main >
   )
 }
