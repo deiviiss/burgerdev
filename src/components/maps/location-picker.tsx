@@ -33,7 +33,9 @@ export function LocationPicker({ isOpen, onClose, onConfirmLocation, initialAddr
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      toast.error('Geolocalización no disponible')
+      toast.error('Geolocalización no disponible', {
+        duration: 1200
+      })
       return
     }
 
@@ -48,7 +50,9 @@ export function LocationPicker({ isOpen, onClose, onConfirmLocation, initialAddr
       (error) => {
         console.error('Geolocation error:', error)
         setIsLoading(false)
-        toast.error('No se pudo obtener la ubicación actual')
+        toast.error('No se pudo obtener la ubicación actual', {
+          duration: 1200
+        })
       },
       {
         enableHighAccuracy: true,
@@ -62,16 +66,22 @@ export function LocationPicker({ isOpen, onClose, onConfirmLocation, initialAddr
     setSelectedLocation({ address, lat, lng })
     // Clear the trigger after processing
     setMoveToLocation(null)
-    toast.success('Ubicación encontrada')
+    toast.success('Ubicación encontrada', {
+      duration: 1200
+    })
   }
 
   const handleSave = () => {
     if (selectedLocation) {
       onConfirmLocation(selectedLocation.address, selectedLocation.lat, selectedLocation.lng)
-      toast.success('Ubicación guardada')
+      toast.success('Ubicación guardada', {
+        duration: 1200
+      })
       onClose()
     } else {
-      toast.error('Selecciona una ubicación en el mapa')
+      toast.error('Selecciona una ubicación en el mapa', {
+        duration: 1200
+      })
     }
   }
 

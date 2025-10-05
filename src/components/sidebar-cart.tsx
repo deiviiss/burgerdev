@@ -234,9 +234,7 @@ export function SidebarCart() {
 
   const handleClearCart = () => {
     clearCart()
-    toast.error('Carrito vaciado', {
-      position: 'bottom-right'
-    })
+    toast.error('Carrito vaciado')
   }
 
   const handleConfirmLocation = (address: string, lat: number, lng: number) => {
@@ -569,6 +567,7 @@ export function SidebarCart() {
                   })
                 }}
                 className="w-full p-2 rounded border text-muted-foreground text-sm"
+                autoComplete='off'
               />
               <Select
                 value={pickupForm.paymentMethod}
@@ -587,12 +586,18 @@ export function SidebarCart() {
 
           {deliveryType === 'delivery' && (
             <div className="space-y-3 mt-4">
-              <Input placeholder="Nombre de quien recibe" value={deliveryForm.receiverName} onChange={(e) => {
-                setDeliveryForm({
-                  ...deliveryForm,
-                  receiverName: e.target.value
-                })
-              }} className="w-full p-2 rounded border text-sm" />
+              <Input
+                placeholder="Nombre de quien recibe"
+                value={deliveryForm.receiverName}
+                onChange={(e) => {
+                  setDeliveryForm({
+                    ...deliveryForm,
+                    receiverName: e.target.value
+                  })
+                }}
+                className="w-full p-2 rounded border text-sm"
+                autoComplete='nope'
+              />
 
               <div className="border rounded-md py-4 px-2">
                 <div className='flex items-center gap-2 justify-between'>
@@ -620,7 +625,9 @@ export function SidebarCart() {
                       variant="outline"
                       onClick={() => {
                         setDeliveryForm({ ...deliveryForm, address: '', coordinates: { lat: 0, lng: 0 } })
-                        toast.success('Ubicación borrada')
+                        toast.success('Ubicación borrada', {
+                          duration: 1200
+                        })
                       }}
                     >
                       <Trash2 className="h-4 w-4" />
@@ -629,19 +636,42 @@ export function SidebarCart() {
                 </div>
               </div>
 
-              <Input placeholder="Dirección completa" value={deliveryForm.address} onChange={(e) => {
-                setDeliveryForm({
-                  ...deliveryForm,
-                  address: e.target.value
-                })
-              }} className="w-full p-2 rounded border text-sm" />
-              <Input placeholder="Referencia del domicilio" value={deliveryForm.reference} onChange={(e) => {
-                setDeliveryForm({
-                  ...deliveryForm,
-                  reference: e.target.value
-                })
-              }} className="w-full p-2 rounded border text-sm" />
-              <Input placeholder="Teléfono de contacto" value={deliveryForm.receiverPhone} onChange={(e) => { setDeliveryForm({ ...deliveryForm, receiverPhone: e.target.value }) }} className="w-full p-2 rounded border text-sm" />
+              <Input
+                placeholder="Dirección completa"
+                value={deliveryForm.address}
+                onChange={(e) => {
+                  setDeliveryForm({
+                    ...deliveryForm,
+                    address: e.target.value
+                  })
+                }}
+                className="w-full p-2 rounded border text-sm"
+                autoComplete='nope'
+              />
+              <Input
+                placeholder="Referencia del domicilio"
+                value={deliveryForm.reference}
+                onChange={(e) => {
+                  setDeliveryForm({
+                    ...deliveryForm,
+                    reference: e.target.value
+                  })
+                }}
+                className="w-full p-2 rounded border text-sm"
+                autoComplete='nope'
+              />
+              <Input
+                placeholder="Teléfono de contacto"
+                value={deliveryForm.receiverPhone}
+                onChange={(e) => {
+                  setDeliveryForm({
+                    ...deliveryForm,
+                    receiverPhone: e.target.value
+                  })
+                }}
+                className="w-full p-2 rounded border text-sm"
+                autoComplete="nope"
+              />
               <Select
                 value={deliveryForm.paymentMethod}
                 onValueChange={(value) => { setDeliveryForm({ ...deliveryForm, paymentMethod: value }) }}
