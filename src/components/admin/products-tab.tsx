@@ -360,7 +360,7 @@ export default function ProductsTab() {
                                     <div className="flex items-center justify-between mb-4">
                                       <div className="flex items-center gap-2">
                                         <BsCash className="h-4 w-4 text-green-600" />
-                                        <span className="text-lg font-bold">{product.price > 0 ? product.price.toFixed(2) : 'Precio en opciones'}</span>
+                                        <span className="text-lg font-bold">{product.price > 0 ? product.price.toFixed(2) : 'Precio con opciones'}</span>
                                       </div>
                                     </div>
 

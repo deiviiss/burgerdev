@@ -25,6 +25,7 @@ export interface Product {
 export interface Category {
   id: string
   name: string
+  description: string | null
   image: string | null
 }
 

@@ -9,12 +9,14 @@ interface ProductOptionsMultipleProps {
   options: ProductOption[]
   selectedOptionIds: string[]
   setSelectedOptionIds: React.Dispatch<React.SetStateAction<string[]>>
+  title: string
 }
 
 export const ProductOptionsMultiple = ({
   options,
   selectedOptionIds,
-  setSelectedOptionIds
+  setSelectedOptionIds,
+  title
 }: ProductOptionsMultipleProps) => {
   const handleOptionToggle = (optionId: string) => {
     setSelectedOptionIds((prev) => {
@@ -29,7 +31,7 @@ export const ProductOptionsMultiple = ({
   return (
     <div className="space-y-4">
       <div>
-        <h4 className="font-medium mb-3">Selecciona los ingredientes que desees:</h4>
+        <h4 className="font-medium mb-3">{title}</h4>
         <div className="space-y-1">
           {options?.map((option) => (
             <motion.div
@@ -56,7 +58,7 @@ export const ProductOptionsMultiple = ({
                 <div className="flex justify-between items-center">
                   <span className="font-medium">{option.name}</span>
                   <span className="text-muted-foreground">
-                    {option.price > 0 ? `+$${option.price.toFixed(2)}` : 'Incluido'}
+                    {option.price > 0 ? `+$${option.price.toFixed(2)}` : ''}
                   </span>
                 </div>
               </Label>

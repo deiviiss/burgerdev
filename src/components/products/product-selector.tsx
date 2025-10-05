@@ -16,7 +16,7 @@ const ProductSelector = ({
     <div className="space-y-4">
       {/* Options Select */}
       <div>
-        <h4 className="font-medium mb-2">Selecciona un tamaño:</h4>
+        {/* <h4 className="font-medium mb-2">Selecciona un tamaño:</h4> */}
         <Select value={selectedOptionId} onValueChange={setSelectedOptionId}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Elige una opción..." />
@@ -27,7 +27,7 @@ const ProductSelector = ({
                 <div className="flex justify-between items-center w-full">
                   <span>{option.name}</span>
                   <span className="text-muted-foreground ml-4">
-                    {option.price > 0 ? `$${option.price.toFixed(2)}` : 'Incluido'}
+                    {option.price > 0 ? `$${option.price.toFixed(2)}` : ''}
                   </span>
                 </div>
               </SelectItem>

@@ -39,7 +39,7 @@ export function ProductList({ products, categories }: ProductListProps) {
         return (
           <section key={category.id} id={`category-${category.id}`} className="scroll-mt-20">
             <motion.h2
-              className="text-2xl font-bold mb-6 pb-2 border-b-2 border-primary"
+              className="text-2xl font-bold mb-2 pb-2 border-b-2 border-primary"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -47,6 +47,15 @@ export function ProductList({ products, categories }: ProductListProps) {
             >
               {category.name}
             </motion.h2>
+            <motion.p
+              className="text-sm uppercase mb-6 mt-3 pb-2 border-muted-foreground border-b-[1px] text-primary/85 font-medium"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              {category.description}
+            </motion.p>
             <motion.div
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
               variants={staggerContainer}
