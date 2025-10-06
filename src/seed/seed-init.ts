@@ -354,11 +354,11 @@ const initialProducts: Product[] = [
 
 // ProductOption data
 const initialProductOptions: ProductOption[] = [
-  // Hamburger with cheese (ingredients)
+  // Hamburger with cheese (ingredients extra)
   {
     id: randomUUID(),
     productId: initialProducts.find(p => p.name === 'Hamburguesa con Queso')!.id,
-    name: 'Queso extra',
+    name: 'Queso',
     price: 25,
     quantity: 0,
     isAvailable: true,
@@ -367,8 +367,8 @@ const initialProductOptions: ProductOption[] = [
   {
     id: randomUUID(),
     productId: initialProducts.find(p => p.name === 'Hamburguesa con Queso')!.id,
-    name: 'Cebolla',
-    price: 0,
+    name: 'Tocino',
+    price: 15,
     quantity: 0,
     isAvailable: true,
     type: 'ingredient'
@@ -377,25 +377,55 @@ const initialProductOptions: ProductOption[] = [
     id: randomUUID(),
     productId: initialProducts.find(p => p.name === 'Hamburguesa con Queso')!.id,
     name: 'Tomate',
-    price: 0,
+    price: 5,
     quantity: 0,
     isAvailable: true,
     type: 'ingredient'
   },
-  {
-    id: randomUUID(),
-    productId: initialProducts.find(p => p.name === 'Hamburguesa con Queso')!.id,
-    name: 'Lechuga',
-    price: 0,
-    quantity: 0,
-    isAvailable: true,
-    type: 'ingredient'
-  },
-  // Double hamburger (ingredients)
+
+  // Double hamburger (without ingredients)
   {
     id: randomUUID(),
     productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
-    name: 'Queso extra',
+    name: 'Sin queso',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'without_ingredient'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Sin cebolla',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'without_ingredient'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Sin tomate',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'without_ingredient'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Sin lechuga',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'without_ingredient'
+  },
+
+  // Double hamburger (ingredients extra)
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Queso',
     price: 25,
     quantity: 0,
     isAvailable: true,
@@ -404,8 +434,8 @@ const initialProductOptions: ProductOption[] = [
   {
     id: randomUUID(),
     productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
-    name: 'Cebolla',
-    price: 0,
+    name: 'Tocino',
+    price: 15,
     quantity: 0,
     isAvailable: true,
     type: 'ingredient'
@@ -413,17 +443,8 @@ const initialProductOptions: ProductOption[] = [
   {
     id: randomUUID(),
     productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
-    name: 'Tomate',
-    price: 0,
-    quantity: 0,
-    isAvailable: true,
-    type: 'ingredient'
-  },
-  {
-    id: randomUUID(),
-    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
-    name: 'Lechuga',
-    price: 0,
+    name: 'Tomate extra',
+    price: 5,
     quantity: 0,
     isAvailable: true,
     type: 'ingredient'
@@ -456,7 +477,45 @@ const initialProductOptions: ProductOption[] = [
     quantity: 0,
     isAvailable: true,
     type: 'limited_ingredient'
+  },
 
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Chicas',
+    price: 25,
+    quantity: 0,
+    isAvailable: true,
+    type: 'size'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Medianas',
+    price: 45,
+    quantity: 0,
+    isAvailable: true,
+    type: 'size'
+  },
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Grandes',
+    price: 65,
+    quantity: 0,
+    isAvailable: true,
+    type: 'size'
+  },
+
+  // Double hamburger (note)
+  {
+    id: randomUUID(),
+    productId: initialProducts.find(p => p.name === 'Hamburguesa Doble')!.id,
+    name: 'Notas',
+    price: 0,
+    quantity: 0,
+    isAvailable: true,
+    type: 'note'
   },
 
   // Hawaiian hamburger (limited ingredients)
