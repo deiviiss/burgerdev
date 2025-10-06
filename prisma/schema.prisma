@@ -50,6 +50,7 @@ enum ProductOptionType {
   variable
   note
   limited_ingredient
+  without_ingredient
 }
 
 model ProductOption {

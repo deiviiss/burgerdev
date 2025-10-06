@@ -161,50 +161,51 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                   </div>
                 </div>
 
-                {/* Options for variable price */}
-                {
-                  product.groupedOptions?.variable &&
-                  <>
-                    <Alert className="mb-6 border-orange-200 bg-orange-50">
-                      <Info className="h-4 w-4 text-primary" />
-                      <AlertDescription className="text-orange-800">
-                        <div className="space-y-2">
-                          <p className="font-medium">💰 Precio variable según tamaño</p>
-                          <p className="text-sm">
-                            El precio de este producto varía dependiendo del tamaño y disponibilidad del día.
-                          </p>
-                        </div>
-                      </AlertDescription>
-                    </Alert>
+                <div className="flex flex-col gap-5">
 
-                    {/* How it works */}
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                      <div className="flex items-start gap-3">
-                        <MessageCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <div className="space-y-2">
-                          <h4 className="font-medium text-blue-900">¿Cómo funciona?</h4>
-                          <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-                            <li>Agrega el producto a tu carrito</li>
-                            <li>Realiza tu pedido por WhatsApp</li>
-                            <li>Te confirmaremos precio y disponibilidad</li>
-                          </ol>
+                  {/* Options for variable price */}
+                  {
+                    product.groupedOptions?.variable &&
+                    <>
+                      <Alert className="mb-6 border-orange-200 bg-orange-50">
+                        <Info className="h-4 w-4 text-primary" />
+                        <AlertDescription className="text-orange-800">
+                          <div className="space-y-2">
+                            <p className="font-medium">💰 Precio variable según tamaño</p>
+                            <p className="text-sm">
+                              El precio de este producto varía dependiendo del tamaño y disponibilidad del día.
+                            </p>
+                          </div>
+                        </AlertDescription>
+                      </Alert>
+
+                      {/* How it works */}
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <div className="flex items-start gap-3">
+                          <MessageCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                          <div className="space-y-2">
+                            <h4 className="font-medium text-blue-900">¿Cómo funciona?</h4>
+                            <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                              <li>Agrega el producto a tu carrito</li>
+                              <li>Realiza tu pedido por WhatsApp</li>
+                              <li>Te confirmaremos precio y disponibilidad</li>
+                            </ol>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </>
-                }
+                    </>
+                  }
 
-                {/* Options Selector for sizes */}
-                {
-                  product.groupedOptions?.size &&
-                  <ProductSelector
-                    options={product.groupedOptions?.size}
-                    selectedOptionId={selectedOptionId}
-                    setSelectedOptionId={setSelectedOptionId}
-                  />
-                }
+                  {/* Options Selector for sizes */}
+                  {
+                    product.groupedOptions?.size &&
+                    <ProductSelector
+                      options={product.groupedOptions?.size}
+                      selectedOptionId={selectedOptionId}
+                      setSelectedOptionId={setSelectedOptionId}
+                    />
+                  }
 
-                <div className="flex flex-col gap-5">
                   {/* Product limited Options */}
                   {
                     hasLimitedIngredientOptions && (
@@ -292,7 +293,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                         <Textarea
                           value={specialNote}
                           onChange={(e) => { setSpecialNote(e.target.value) }}
-                          placeholder="Ej: sin cebolla, con doble queso, bien cocido, etc."
+                          placeholder="Ej: poca cebolla, bien cocido, etc."
                           className="min-h-[80px] resize-none border-primary focus:border-secondary focus:ring-secondary"
                           maxLength={200}
                         />
