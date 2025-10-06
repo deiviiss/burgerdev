@@ -37,7 +37,7 @@ export function ProductList({ products, categories }: ProductListProps) {
         if (categoryProducts.length === 0) return null
 
         return (
-          <section key={category.id} id={`category-${category.id}`} className="scroll-mt-20">
+          <section key={category.id} id={`category-${category.id}`} className="scroll-mt-[90px]">
             <motion.h2
               className="text-2xl font-bold mb-2 pb-2 border-b-2 border-primary"
               initial={{ opacity: 0, x: -20 }}
