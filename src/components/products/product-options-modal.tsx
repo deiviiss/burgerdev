@@ -73,6 +73,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
     onClose()
     setSelectedOptionId('')
     setSelectedExtraIds([])
+    setSelectedWithoutIds([])
     setSelectedLimitedOptionIds([])
     setQuantity(1)
   }
@@ -81,6 +82,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
     onClose()
     setSelectedOptionId('')
     setSelectedExtraIds([])
+    setSelectedWithoutIds([])
     setSelectedLimitedOptionIds([])
     setQuantity(1)
   }
@@ -203,6 +205,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                       options={product.groupedOptions?.size}
                       selectedOptionId={selectedOptionId}
                       setSelectedOptionId={setSelectedOptionId}
+                      title='Selecciona un tamaño:'
                     />
                   }
 

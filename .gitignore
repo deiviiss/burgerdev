@@ -31,3 +31,6 @@ diff.txt
 
 # Postgres
 /postgres
+
+# Excalidraw
+*.excalidraw

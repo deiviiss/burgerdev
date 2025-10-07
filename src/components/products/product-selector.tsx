@@ -5,18 +5,20 @@ interface ProductSelectorProps {
   options: ProductOption[]
   selectedOptionId: string
   setSelectedOptionId: React.Dispatch<React.SetStateAction<string>>
+  title: string
 }
 
 const ProductSelector = ({
   options,
   selectedOptionId,
-  setSelectedOptionId
+  setSelectedOptionId,
+  title
 }: ProductSelectorProps) => {
   return (
     <div className="space-y-4">
       {/* Options Select */}
       <div>
-        {/* <h4 className="font-medium mb-2">Selecciona un tamaño:</h4> */}
+        <h4 className="font-medium mb-2">{title}</h4>
         <Select value={selectedOptionId} onValueChange={setSelectedOptionId}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Elige una opción..." />
