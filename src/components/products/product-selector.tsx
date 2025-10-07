@@ -5,7 +5,6 @@ interface ProductSelectorProps {
   options: ProductOption[]
   selectedOptionId: string
   setSelectedOptionId: React.Dispatch<React.SetStateAction<string>>
-  isOpen: boolean
   title: string
 }
 

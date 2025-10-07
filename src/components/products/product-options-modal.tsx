@@ -205,7 +205,6 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                       options={product.groupedOptions?.size}
                       selectedOptionId={selectedOptionId}
                       setSelectedOptionId={setSelectedOptionId}
-                      isOpen={isOpen}
                       title='Selecciona un tamaño:'
                     />
                   }
