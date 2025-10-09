@@ -33,7 +33,6 @@ export default function ProductsTab() {
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [searchTerm, setSearchTerm] = useState('')
-
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -49,8 +48,10 @@ export default function ProductsTab() {
         : newOption.type === 'variable'
           ? 'Precio a confirmar por WhatsApp'
           : newOption.type === 'note'
-            ? 'Sin cebolla, sin tomate, sin lechuga...'
-            : 'Escribe una opción...'
+            ? 'poca cebolla, bien cocido, etc...'
+            : newOption.type === 'without_ingredient'
+              ? 'Ej: Sin cebolla, Sin tomate...'
+              : 'Escribe una opción...'
 
   const [showDeleteOptionsModal, setShowDeleteOptionsModal] = useState(false)
   const [optionToDeleteIndex, setOptionToDeleteIndex] = useState<number | null>(null)
@@ -581,7 +582,7 @@ export default function ProductsTab() {
                           {/* select option type */}
                           <Select
                             value={newOption.type}
-                            onValueChange={(value) => { setNewOption({ ...newOption, type: value as 'size' | 'ingredient' | 'variable' | 'note' | 'limited_ingredient' }) }}
+                            onValueChange={(value) => { setNewOption({ ...newOption, type: value as 'size' | 'ingredient' | 'variable' | 'note' | 'limited_ingredient' | 'without_ingredient' }) }}
                             disabled={isSubmitting}
                           >
                             <SelectTrigger className="w-1/2">
@@ -589,20 +590,23 @@ export default function ProductsTab() {
                             </SelectTrigger>
                             <SelectContent>
 
-                              <SelectItem value={'size'}>
-                                Tamaño
-                              </SelectItem>
                               <SelectItem value={'ingredient'}>
                                 Ingrediente
                               </SelectItem>
-                              <SelectItem value={'variable'}>
-                                Variable
+                              <SelectItem value={'limited_ingredient'}>
+                                Ingrediente limitado
                               </SelectItem>
                               <SelectItem value={'note'}>
                                 Nota
                               </SelectItem>
-                              <SelectItem value={'limited_ingredient'}>
-                                Ingrediente limitado
+                              <SelectItem value={'size'}>
+                                Tamaño
+                              </SelectItem>
+                              <SelectItem value={'variable'}>
+                                Variable
+                              </SelectItem>
+                              <SelectItem value={'without_ingredient'}>
+                                Sin ingrediente
                               </SelectItem>
                             </SelectContent>
                           </Select>
