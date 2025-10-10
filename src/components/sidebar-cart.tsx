@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ShoppingBag, Trash2, MessageCircle, MapPin } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { createUpdateOrder } from '@/actions/orders/create-order'
@@ -462,8 +463,11 @@ export function SidebarCart() {
                 <p className="text-xs text-muted-foreground">
                   *No incluye envío
                 </p>
-                <p className="text-xs text-muted-foreground mb-2">
+                <p className="text-xs text-muted-foreground">
                   **El precio final se confirmará por WhatsApp
+                </p>
+                <p className="text-xs text-muted-foreground  mb-2">
+                  **Al hacer clic en &quot;Hacer pedido&quot; aceptas nuestros <Link href={'/conditions'} className='hover:underline' target='_blank'>T&C</Link>
                 </p>
               </div>
 
