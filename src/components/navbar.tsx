@@ -66,7 +66,7 @@ export function Navbar() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex items-top pt-4 md:items-center md:p-0 gap-1"
+            className="flex pt-4 items-center md:p-0 gap-1"
           >
             <Link href="/" >
               <Image
