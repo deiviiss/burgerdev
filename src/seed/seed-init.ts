@@ -664,7 +664,8 @@ const seed = async () => {
     prisma.promotion.deleteMany(),
     prisma.category.deleteMany(),
     prisma.branch.deleteMany(),
-    prisma.user.deleteMany()
+    prisma.user.deleteMany(),
+    prisma.eventLog.deleteMany()
   ])
 
   console.log('⏳ Insertando categorías...')
