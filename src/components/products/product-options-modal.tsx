@@ -246,10 +246,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
 
                   {/* Quantity Selector */}
                   {showQuantitySelector && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2 }}
+                    <div
                       className="space-y-2"
                     >
                       <h4 className="font-medium">Cantidad:</h4>
@@ -278,15 +275,12 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                           <Plus className="h-4 w-4" />
                         </Button>
                       </div>
-                    </motion.div>
+                    </div>
                   )}
 
                   {/* Special Instructions Section */}
                   {hasNoteOptions && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2, delay: 0.1 }}
+                    <div
                       className="space-y-3"
                     >
                       <div className="flex items-center gap-2">
@@ -308,7 +302,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
                           <span className="text-xs text-primary">{specialNote.length}/200</span>
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   )}
                 </div>
               </div>
