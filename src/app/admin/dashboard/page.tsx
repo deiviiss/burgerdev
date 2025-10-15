@@ -35,7 +35,7 @@ export default async function DashboardPage() {
       </div>
 
       <p className="text-muted-foreground mb-8">
-        Métricas y estadísticas de tu negocio
+        Métricas y estadísticas de tu negocio (últimos 7 días)
       </p>
 
       <Suspense fallback={<div>Cargando métricas...</div>}>

@@ -4,7 +4,9 @@ import { prisma } from '@/lib/prisma'
 
 export async function getStats() {
   const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const sevenDaysAgo = new Date(today)
+  sevenDaysAgo.setDate(today.getDate() - 7)
+  sevenDaysAgo.setHours(0, 0, 0, 0)
 
   try {
     // Get all events for calculations
@@ -14,7 +16,7 @@ export async function getStats() {
       },
       where: {
         createdAt: {
-          gte: today
+          gte: sevenDaysAgo
         }
       }
     })
