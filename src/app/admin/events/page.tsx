@@ -64,16 +64,88 @@ export default async function EventsPage({ searchParams = {} }: { searchParams?:
                 })}
               </tbody>
             </table>
-            <div className="flex gap-2 mt-4 justify-center">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <Link
-                  key={i}
-                  href={`/admin/events?page=${i + 1}`}
-                  className={`px-3 py-1 rounded ${page === i + 1 ? 'bg-primary' : 'bg-secondary'}`}
-                >
-                  {i + 1}
+            <div className="flex items-center gap-2 mt-4 justify-center flex-wrap">
+              {/* Previous button */}
+              {page > 1 && (
+                <Link href={`/admin/events?page=${page - 1}`}>
+                  <Button variant="outline" size="sm">Anterior</Button>
                 </Link>
-              ))}
+              )}
+
+              {/* First page and ellipsis */}
+              {(() => {
+                const showPages = 5
+                const halfShow = Math.floor(showPages / 2)
+                let startPage = Math.max(1, page - halfShow)
+                const endPage = Math.min(totalPages, startPage + showPages - 1)
+
+                if (endPage - startPage + 1 < showPages) {
+                  startPage = Math.max(1, endPage - showPages + 1)
+                }
+
+                const pages = []
+
+                if (startPage > 1) {
+                  pages.push(
+                    <Link key={1} href={'/admin/events?page=1'}>
+                      <Button
+                        variant={page === 1 ? 'default' : 'outline'}
+                        size="sm"
+                        className="min-w-[40px]"
+                      >
+                        1
+                      </Button>
+                    </Link>
+                  )
+                  if (startPage > 2) {
+                    pages.push(
+                      <span key="ellipsis1" className="px-2 text-muted-foreground">...</span>
+                    )
+                  }
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                  pages.push(
+                    <Link key={i} href={`/admin/events?page=${i}`}>
+                      <Button
+                        variant={page === i ? 'default' : 'outline'}
+                        size="sm"
+                        className="min-w-[40px]"
+                      >
+                        {i}
+                      </Button>
+                    </Link>
+                  )
+                }
+
+                if (endPage < totalPages) {
+                  if (endPage < totalPages - 1) {
+                    pages.push(
+                      <span key="ellipsis2" className="px-2 text-muted-foreground">...</span>
+                    )
+                  }
+                  pages.push(
+                    <Link key={totalPages} href={`/admin/events?page=${totalPages}`}>
+                      <Button
+                        variant={page === totalPages ? 'default' : 'outline'}
+                        size="sm"
+                        className="min-w-[40px]"
+                      >
+                        {totalPages}
+                      </Button>
+                    </Link>
+                  )
+                }
+
+                return pages
+              })()}
+
+              {/* Next button */}
+              {page < totalPages && (
+                <Link href={`/admin/events?page=${page + 1}`}>
+                  <Button variant="outline" size="sm">Siguiente</Button>
+                </Link>
+              )}
             </div>
           </>)
       }
