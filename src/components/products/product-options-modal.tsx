@@ -69,8 +69,8 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
     const quantityText = quantity === 1 ? '' : ` (${quantity} unidades)`
     toast.success(`${product.name} ${quantityText} agregado al carrito`)
 
-    setSpecialNote('')
     onClose()
+    setSpecialNote('')
     setSelectedOptionId('')
     setSelectedExtraIds([])
     setSelectedWithoutIds([])
@@ -80,6 +80,7 @@ export default function ProductOptionsModal({ product, isOpen, onClose }: Produc
 
   const handleClose = () => {
     onClose()
+    setSpecialNote('')
     setSelectedOptionId('')
     setSelectedExtraIds([])
     setSelectedWithoutIds([])
