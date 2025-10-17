@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { type ProductOption } from '@/lib/types'
@@ -35,18 +34,15 @@ export const ProductOptionsLimited = ({
   return (
     <div className="space-y-4">
       <div>
-        <h4 className="font-medium mb-3">Elige hasta 2 ingredientes:</h4>
+        <h4 className="font-medium mb-3">Elige hasta {maxSelected} ingredientes:</h4>
         <div className="space-y-1">
           {options?.map((option) => {
             const isSelected = selectedOptionIds.includes(option.id || '')
             const isDisabled = !option.isAvailable || (!isSelected && isMaxReached)
 
             return (
-              <motion.div
+              <div
                 key={option.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
                 className={`flex items-center space-x-3 p-3 rounded-lg border transition-colors ${selectedOptionIds.includes(option.id || '')
                   ? 'bg-primary/5 border-primary'
                   : 'bg-muted/30 border-border hover:bg-muted/50'
@@ -75,7 +71,7 @@ export const ProductOptionsLimited = ({
                     No disponible
                   </span>
                 )}
-              </motion.div>
+              </div>
             )
           })}
         </div>
