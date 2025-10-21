@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { type ProductOption } from '@/lib/types'
@@ -34,11 +33,8 @@ export const ProductOptionsMultiple = ({
         <h4 className="font-medium mb-3">{title}</h4>
         <div className="space-y-1">
           {options?.map((option) => (
-            <motion.div
+            <div
               key={option.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2 }}
               className={`flex items-center space-x-3 p-3 rounded-lg border transition-colors ${selectedOptionIds.includes(option.id || '')
                 ? 'bg-primary/5 border-primary'
                 : 'bg-muted/30 border-border hover:bg-muted/50'
@@ -67,7 +63,7 @@ export const ProductOptionsMultiple = ({
                   No disponible
                 </span>
               )}
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
