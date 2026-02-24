@@ -33,9 +33,7 @@ export function LocationPicker({ isOpen, onClose, onConfirmLocation, initialAddr
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      toast.error('Geolocalización no disponible', {
-        duration: 1200
-      })
+      toast.error('Geolocalización no disponible', { position: 'top-right' })
       return
     }
 
@@ -50,9 +48,7 @@ export function LocationPicker({ isOpen, onClose, onConfirmLocation, initialAddr
       (error) => {
         console.error('Geolocation error:', error)
         setIsLoading(false)
-        toast.error('No se pudo obtener la ubicación actual', {
-          duration: 1200
-        })
+        toast.error('No se pudo obtener la ubicación actual', { position: 'top-right' })
       },
       {
         enableHighAccuracy: true,
@@ -66,22 +62,16 @@ export function LocationPicker({ isOpen, onClose, onConfirmLocation, initialAddr
     setSelectedLocation({ address, lat, lng })
     // Clear the trigger after processing
     setMoveToLocation(null)
-    toast.success('Ubicación encontrada', {
-      duration: 1200
-    })
+    toast.success('Ubicación encontrada', { position: 'top-right' })
   }
 
   const handleSave = () => {
     if (selectedLocation) {
       onConfirmLocation(selectedLocation.address, selectedLocation.lat, selectedLocation.lng)
-      toast.success('Ubicación guardada', {
-        duration: 1200
-      })
+      toast.success('Ubicación guardada', { position: 'top-right' })
       onClose()
     } else {
-      toast.error('Selecciona una ubicación en el mapa', {
-        duration: 1200
-      })
+      toast.error('Selecciona una ubicación en el mapa', { position: 'top-right' })
     }
   }
 
@@ -144,7 +134,7 @@ export function LocationPicker({ isOpen, onClose, onConfirmLocation, initialAddr
         </div>
 
         <DialogFooter className="flex flex-col gap-2 sm:flex-row">
-          <Button variant="outline" onClick={handleCancel} className="w-full sm:w-auto bg-transparent">
+          <Button variant="destructive" onClick={handleCancel} className="w-full sm:w-auto">
             Cancelar
           </Button>
           <Button

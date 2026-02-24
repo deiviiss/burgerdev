@@ -153,7 +153,9 @@ export function SidebarCart() {
       messageOrder += `📞 *Teléfono:* ${deliveryForm.receiverPhone}\n`
       messageOrder += `💳 *Pago:* ${capitalizeWords(deliveryForm.paymentMethod)}\n\n`
 
-      messageOrder += '¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar.'
+      messageOrder += deliveryForm.coordinates.lat !== 0
+        ? '¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar.'
+        : '¡Gracias por tu pedido! Por favor, presiona el botón de enviar mensaje para continuar y, seguido compártenos tu ubicación para que podamos enviarte tu pedido.'
     }
 
     const encodedMessage = encodeURIComponent(messageOrder)
@@ -604,7 +606,7 @@ export function SidebarCart() {
                   autoComplete='nope'
                 />
 
-                <div className="border rounded-md py-4 px-2">
+                <div className="py-4 px-0">
                   <div className='flex items-center gap-2 justify-between'>
                     <h2 className="font-normal text-sm mb-1">Ubicación</h2>
                     <Badge className="text-[10px]">
@@ -645,10 +647,20 @@ export function SidebarCart() {
                   placeholder="Dirección completa"
                   value={deliveryForm.address}
                   onChange={(e) => {
-                    setDeliveryForm({
-                      ...deliveryForm,
-                      address: e.target.value
-                    })
+                    const newAddress = e.target.value
+                    if (hasLocation && newAddress !== deliveryForm.address) {
+                      setDeliveryForm({
+                        ...deliveryForm,
+                        address: newAddress,
+                        coordinates: { lat: 0, lng: 0 }
+                      })
+                      toast.info('Ubicación del mapa reiniciada al editar manualmente', {
+                        description: 'Vuelve a seleccionar en el mapa si deseas enviar tu ubicación exacta.',
+                        position: 'top-right'
+                      })
+                    } else {
+                      setDeliveryForm({ ...deliveryForm, address: newAddress })
+                    }
                   }}
                   className="w-full p-2 rounded border text-sm"
                   autoComplete='nope'

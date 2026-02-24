@@ -17,6 +17,7 @@ export const GoogleMaps = ({ isOpen, onLocationChange, moveToLocation, initialLo
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null)
 
+  // Function to reverse geocode coordinates to address
   // reverse geocode helper
   const reverseGeocode = async (lat: number, lng: number) => {
     if (!geocoderRef.current) return
@@ -86,8 +87,8 @@ export const GoogleMaps = ({ isOpen, onLocationChange, moveToLocation, initialLo
 
         const hasInitialLocation = initialLocation?.lat !== 0 && initialLocation?.lng !== 0
 
-        // location Taco Madre
-        const defaultLocation = { lat: 19.8675683, lng: -90.4926057 }
+        // location default
+        const defaultLocation = { lat: 19.8491608, lng: -90.5344815 }
 
         // Set initial location
         // If moveToLocation → priority
@@ -155,6 +156,6 @@ export const GoogleMaps = ({ isOpen, onLocationChange, moveToLocation, initialLo
   }, [isOpen])
 
   return (
-    <div ref={mapRef} className="w-full h-full" />
+    <div ref={mapRef} className='w-full h-full' />
   )
 }
